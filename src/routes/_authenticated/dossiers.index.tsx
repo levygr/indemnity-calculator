@@ -25,6 +25,7 @@ import {
 import { formatDateFR } from "@/lib/calculs/format";
 import { Copy, Plus, Trash2, LogOut, FileText } from "lucide-react";
 import { toast } from "sonner";
+import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 export const Route = createFileRoute("/_authenticated/dossiers/")({
   component: DossiersList,
@@ -69,11 +70,14 @@ function DossiersList() {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <div className="text-xs font-semibold text-primary font-display tracking-wide">
-              VICTIMES &amp; PRÉJUDICES
+          <div className="flex items-center gap-3">
+            <img src={logoAsset.url} alt="Victimes & Préjudices" className="w-11 h-11 shrink-0" />
+            <div>
+              <div className="text-xs font-semibold text-primary font-display tracking-wide">
+                VICTIMES &amp; PRÉJUDICES
+              </div>
+              <h1 className="text-xl font-display font-semibold">Vos dossiers</h1>
             </div>
-            <h1 className="text-xl font-display font-semibold">Vos dossiers</h1>
           </div>
           <Button
             variant="ghost"
