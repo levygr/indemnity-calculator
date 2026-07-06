@@ -15,6 +15,7 @@
 import type { DossierData } from "../types";
 import { detteResponsable, repartition } from "../fractions";
 import { collecterAvertissements, type AvertissementCalcul } from "../avertissements";
+import { calculerRecoursTP, type RecoursTP } from "../recoursTP";
 import { calculerDSAPonctuelles, calculerDSARecurrentes } from "./dsa";
 import { calculerFraisDiversVictime } from "./fraisDiversVictime";
 import { calculerATPTemp } from "./atpTemp";
