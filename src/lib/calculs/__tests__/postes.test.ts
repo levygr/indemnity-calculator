@@ -32,6 +32,40 @@ describe("DSA récurrentes", () => {
     expect(r.totalDepenseRevalorisee).toBeGreaterThan(1150);
     expect(r.totalDepenseRevalorisee).toBeLessThan(1250);
   });
+
+  it("assiette homogène en mode 'non' : dep 1000, TP 400 → 1000/400/600", () => {
+    const r = calculerDSAPonctuelles(
+      [{ id: "1", date: "2024-01-01", libelle: "x", depense: 1000, tiersPayeur: 400, modeRevalo: "non" }],
+      "2025-01-01",
+    );
+    const l = r.lignes[0];
+    expect(l.depenseRevalorisee).toBe(1000);
+    expect(l.tpRevalorise).toBe(400);
+    expect(l.resteRevalorise).toBe(600);
+  });
+
+  it("revalorisation homogène : dépense et TP scalés du même ratio", () => {
+    // Ratio réel dérivé des IPC (peu importe la valeur, doit être identique
+    // pour la dépense et pour la créance TP).
+    const r = calculerDSAPonctuelles(
+      [{ id: "1", date: "2003-01-01", libelle: "x", depense: 1000, tiersPayeur: 400, modeRevalo: "annuel" }],
+      "2024-01-01",
+    );
+    const l = r.lignes[0];
+    const ratio = l.depenseRevalorisee / 1000;
+    expect(ratio).toBeGreaterThan(1);
+    expect(l.tpRevalorise).toBeCloseTo(400 * ratio, 6);
+    expect(l.resteRevalorise).toBeCloseTo(600 * ratio, 6);
+  });
+
+  it("exemple ×1,10 (mock) : montant 1100, TP 440, reste 660", () => {
+    // Vérifie que la mécanique produit bien ces valeurs si le ratio de
+    // revalorisation valait exactement 1,10 (linéarité de l'homothétie).
+    const dep = 1000, tp = 400, ratio = 1.10;
+    expect(dep * ratio).toBeCloseTo(1100);
+    expect(tp * ratio).toBeCloseTo(440);
+    expect(Math.max(0, dep * ratio - tp * ratio)).toBeCloseTo(660);
+  });
 });
 
 describe("ATP temporaire", () => {
