@@ -80,11 +80,11 @@ function PatrimoniauxTempPageInner({
   const atpCalc = useMemo(() => calculerATPTemp(pt.atpTemp), [pt.atpTemp]);
   const pgpaCalc = useMemo(() => calculerPGPA(pt.pgpa, dossier.dateLiquidation), [pt.pgpa, dossier.dateLiquidation]);
 
-  const totalDSAreste = dsaPCalc.totalRevalo + dsaRCalc.totalRevalo;
-  const totalDSAtp = dsaPCalc.totalTP + dsaRCalc.totalTP;
+  const totalDSAmontant = dsaPCalc.totalDepenseRevalorisee + dsaRCalc.totalDepenseRevalorisee;
+  const totalDSAtp = dsaPCalc.totalTpRevalorise + dsaRCalc.totalTpRevalorise;
 
-  const detteDSA = detteResponsable(totalDSAreste + totalDSAtp, dossier.fFaute, dossier.fChance);
-  const dsaRep = repartition(totalDSAreste + totalDSAtp, totalDSAtp, detteDSA);
+  const detteDSA = detteResponsable(totalDSAmontant, dossier.fFaute, dossier.fChance);
+  const dsaRep = repartition(totalDSAmontant, totalDSAtp, detteDSA);
   const detteATP = detteResponsable(atpCalc.total, dossier.fFaute, dossier.fChance);
   const dettePGPA = detteResponsable(pgpaCalc.perte, dossier.fFaute, dossier.fChance);
   const pgpaRep = repartition(pgpaCalc.perte, pgpaCalc.tiersPayeur, dettePGPA);
