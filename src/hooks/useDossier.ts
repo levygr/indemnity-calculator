@@ -56,8 +56,8 @@ export function useDossier(id: string) {
           ...(raw.postesDeces ?? {}),
           proches: (raw.postesDeces?.proches ?? []).map((p) => ({
             pensionReversionAnnuelle: 0,
-            ...p,
-          })),
+            ...(p as Partial<DossierData["postesDeces"]["proches"][number]>),
+          })) as DossierData["postesDeces"]["proches"],
         },
         postesSurvie: { ...base.postesSurvie, ...(raw.postesSurvie ?? {}) },
       };
