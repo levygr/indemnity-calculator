@@ -213,6 +213,7 @@ export function defaultDossierData(): DossierData {
     postesPerm: defaultPostesPermanents(),
     postesDeces: defaultPostesDeces(),
     postesSurvie: defaultPostesSurvie(),
+    provisions: [],
   };
 }
 
