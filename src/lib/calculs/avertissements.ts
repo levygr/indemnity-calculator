@@ -245,5 +245,21 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
     });
   }
 
+  // ---- e) REFERENTIEL_NON_VERSIONNE ----
+  if (AIPP_META.edition == null) {
+    out.push({
+      code: "REFERENTIEL_NON_VERSIONNE",
+      poste: "Référentiels",
+      message: `Édition du barème AIPP (${AIPP_META.source}) non renseignée : compléter src/data/bareme_aipp.ts avant tout usage juridique.`,
+    });
+  }
+  if (REFERENTIEL.edition == null) {
+    out.push({
+      code: "REFERENTIEL_NON_VERSIONNE",
+      poste: "Référentiels",
+      message: `Édition du référentiel d'évaluation (${REFERENTIEL.nom}) non renseignée : compléter src/data/referentiel_evaluation.ts avant tout usage juridique.`,
+    });
+  }
+
   return out;
 }
