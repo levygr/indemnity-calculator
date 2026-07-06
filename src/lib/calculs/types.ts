@@ -74,6 +74,5 @@ export function defaultDossierData(): DossierData {
     fChance: 1,
     dftDebutLendemain: false,
     periodesDFT: [],
-    postes: {},
   };
 }
