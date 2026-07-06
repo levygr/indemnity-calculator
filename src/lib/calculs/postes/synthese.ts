@@ -93,6 +93,7 @@ export interface Synthese {
   totalProvisions: number;
   soldeVictime: number;
   avertissements: AvertissementCalcul[];
+  recoursTP: RecoursTP;
 }
 
 function ligne(
