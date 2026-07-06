@@ -6,16 +6,19 @@ import { Button } from "@/components/ui/button";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Download, Printer, Upload } from "lucide-react";
+import { Download, ExternalLink, Printer, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
   defaultDossierData,
   formatEuros,
+  anneesRevolues,
   type Categorie,
   type DossierData,
 } from "@/lib/calculs";
+import { themiaLink } from "@/lib/themia";
 import { toast } from "sonner";
+
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/synthese")({
   component: Page,
