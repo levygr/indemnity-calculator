@@ -14,6 +14,7 @@
 
 import type { DossierData } from "../types";
 import { detteResponsable, repartition } from "../fractions";
+import { collecterAvertissements, type AvertissementCalcul } from "../avertissements";
 import { calculerDSAPonctuelles, calculerDSARecurrentes } from "./dsa";
 import { calculerATPTemp } from "./atpTemp";
 import { calculerPGPA } from "./pgpa";
