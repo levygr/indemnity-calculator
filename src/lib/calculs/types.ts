@@ -150,6 +150,13 @@ import { defaultPostesDeces, type PostesDeces } from "./postes/deces";
 import { defaultPostesSurvie, type PostesSurvie } from "./postes/survieProches";
 
 
+export interface Provision {
+  id: string;
+  date: string | null;
+  montant: number;
+  debiteur: string;
+}
+
 export interface DossierData {
   reference: string;
   faitGenerateur: FaitGenerateur;
@@ -178,6 +185,8 @@ export interface DossierData {
   postesPerm: PostesPermanents;
   postesDeces: PostesDeces;
   postesSurvie: PostesSurvie;
+
+  provisions: Provision[];
 }
 
 export function defaultDossierData(): DossierData {
