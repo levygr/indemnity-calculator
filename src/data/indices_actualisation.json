@@ -1,0 +1,1566 @@
+{
+ "indices_annuels": [
+  {
+   "annee": 2003,
+   "ipc": 85.3,
+   "smic_horaire_brut": 7.19
+  },
+  {
+   "annee": 2004,
+   "ipc": 86.7,
+   "smic_horaire_brut": 7.61
+  },
+  {
+   "annee": 2005,
+   "ipc": 88.3,
+   "smic_horaire_brut": 8.03
+  },
+  {
+   "annee": 2006,
+   "ipc": 89.77,
+   "smic_horaire_brut": 8.27
+  },
+  {
+   "annee": 2007,
+   "ipc": 91.09,
+   "smic_horaire_brut": 8.44
+  },
+  {
+   "annee": 2008,
+   "ipc": 93.64,
+   "smic_horaire_brut": 8.63
+  },
+  {
+   "annee": 2009,
+   "ipc": 93.7,
+   "smic_horaire_brut": 8.82
+  },
+  {
+   "annee": 2010,
+   "ipc": 95.06,
+   "smic_horaire_brut": 8.86
+  },
+  {
+   "annee": 2011,
+   "ipc": 97.01,
+   "smic_horaire_brut": 9
+  },
+  {
+   "annee": 2012,
+   "ipc": 98.83,
+   "smic_horaire_brut": 9.4
+  },
+  {
+   "annee": 2013,
+   "ipc": 99.56,
+   "smic_horaire_brut": 9.43
+  },
+  {
+   "annee": 2014,
+   "ipc": 99.97,
+   "smic_horaire_brut": 9.53
+  },
+  {
+   "annee": 2015,
+   "ipc": 100,
+   "smic_horaire_brut": 9.61
+  },
+  {
+   "annee": 2016,
+   "ipc": 100.19,
+   "smic_horaire_brut": 9.67
+  },
+  {
+   "annee": 2017,
+   "ipc": 101.19,
+   "smic_horaire_brut": 9.76
+  },
+  {
+   "annee": 2018,
+   "ipc": 102.82,
+   "smic_horaire_brut": 9.88
+  },
+  {
+   "annee": 2019,
+   "ipc": 103.77,
+   "smic_horaire_brut": 10.03
+  },
+  {
+   "annee": 2020,
+   "ipc": 103.98,
+   "smic_horaire_brut": 10.15
+  },
+  {
+   "annee": 2021,
+   "ipc": 105.6,
+   "smic_horaire_brut": 10.25
+  },
+  {
+   "annee": 2022,
+   "ipc": 111.24,
+   "smic_horaire_brut": 10.57
+  },
+  {
+   "annee": 2023,
+   "ipc": 116.61,
+   "smic_horaire_brut": 11.27
+  },
+  {
+   "annee": 2024,
+   "ipc": 118.76,
+   "smic_horaire_brut": 11.65
+  },
+  {
+   "annee": 2025,
+   "ipc": 119.82,
+   "smic_horaire_brut": 11.88
+  },
+  {
+   "annee": 2026,
+   "ipc": 119.82,
+   "smic_horaire_brut": 12.02
+  }
+ ],
+ "indices_mensuels": [
+  {
+   "annee": 2003,
+   "mois": "Janvier",
+   "ipc_mensuel": 84.42
+  },
+  {
+   "annee": 2003,
+   "mois": "Février",
+   "ipc_mensuel": 84.99
+  },
+  {
+   "annee": 2003,
+   "mois": "Mars",
+   "ipc_mensuel": 85.33
+  },
+  {
+   "annee": 2003,
+   "mois": "Avril",
+   "ipc_mensuel": 85.21
+  },
+  {
+   "annee": 2003,
+   "mois": "Mai",
+   "ipc_mensuel": 85.12
+  },
+  {
+   "annee": 2003,
+   "mois": "Juin",
+   "ipc_mensuel": 85.28
+  },
+  {
+   "annee": 2003,
+   "mois": "Juillet",
+   "ipc_mensuel": 85.19
+  },
+  {
+   "annee": 2003,
+   "mois": "Août",
+   "ipc_mensuel": 85.39
+  },
+  {
+   "annee": 2003,
+   "mois": "Septembre",
+   "ipc_mensuel": 85.73
+  },
+  {
+   "annee": 2003,
+   "mois": "Octobre",
+   "ipc_mensuel": 85.78
+  },
+  {
+   "annee": 2003,
+   "mois": "Novembre",
+   "ipc_mensuel": 85.67
+  },
+  {
+   "annee": 2003,
+   "mois": "Décembre",
+   "ipc_mensuel": 85.76
+  },
+  {
+   "annee": 2004,
+   "mois": "Janvier",
+   "ipc_mensuel": 85.61
+  },
+  {
+   "annee": 2004,
+   "mois": "Février",
+   "ipc_mensuel": 85.96
+  },
+  {
+   "annee": 2004,
+   "mois": "Mars",
+   "ipc_mensuel": 86.3
+  },
+  {
+   "annee": 2004,
+   "mois": "Avril",
+   "ipc_mensuel": 86.53
+  },
+  {
+   "annee": 2004,
+   "mois": "Mai",
+   "ipc_mensuel": 86.85
+  },
+  {
+   "annee": 2004,
+   "mois": "Juin",
+   "ipc_mensuel": 86.89
+  },
+  {
+   "annee": 2004,
+   "mois": "Juillet",
+   "ipc_mensuel": 86.75
+  },
+  {
+   "annee": 2004,
+   "mois": "Août",
+   "ipc_mensuel": 86.94
+  },
+  {
+   "annee": 2004,
+   "mois": "Septembre",
+   "ipc_mensuel": 87.02
+  },
+  {
+   "annee": 2004,
+   "mois": "Octobre",
+   "ipc_mensuel": 87.26
+  },
+  {
+   "annee": 2004,
+   "mois": "Novembre",
+   "ipc_mensuel": 87.3
+  },
+  {
+   "annee": 2004,
+   "mois": "Décembre",
+   "ipc_mensuel": 87.4
+  },
+  {
+   "annee": 2005,
+   "mois": "Janvier",
+   "ipc_mensuel": 86.91
+  },
+  {
+   "annee": 2005,
+   "mois": "Février",
+   "ipc_mensuel": 87.46
+  },
+  {
+   "annee": 2005,
+   "mois": "Mars",
+   "ipc_mensuel": 88.02
+  },
+  {
+   "annee": 2005,
+   "mois": "Avril",
+   "ipc_mensuel": 88.19
+  },
+  {
+   "annee": 2005,
+   "mois": "Mai",
+   "ipc_mensuel": 88.25
+  },
+  {
+   "annee": 2005,
+   "mois": "Juin",
+   "ipc_mensuel": 88.35
+  },
+  {
+   "annee": 2005,
+   "mois": "Juillet",
+   "ipc_mensuel": 88.22
+  },
+  {
+   "annee": 2005,
+   "mois": "Août",
+   "ipc_mensuel": 88.56
+  },
+  {
+   "annee": 2005,
+   "mois": "Septembre",
+   "ipc_mensuel": 88.91
+  },
+  {
+   "annee": 2005,
+   "mois": "Octobre",
+   "ipc_mensuel": 88.89
+  },
+  {
+   "annee": 2005,
+   "mois": "Novembre",
+   "ipc_mensuel": 88.71
+  },
+  {
+   "annee": 2005,
+   "mois": "Décembre",
+   "ipc_mensuel": 88.82
+  },
+  {
+   "annee": 2006,
+   "mois": "Janvier",
+   "ipc_mensuel": 88.73
+  },
+  {
+   "annee": 2006,
+   "mois": "Février",
+   "ipc_mensuel": 89.07
+  },
+  {
+   "annee": 2006,
+   "mois": "Mars",
+   "ipc_mensuel": 89.33
+  },
+  {
+   "annee": 2006,
+   "mois": "Avril",
+   "ipc_mensuel": 89.71
+  },
+  {
+   "annee": 2006,
+   "mois": "Mai",
+   "ipc_mensuel": 90.11
+  },
+  {
+   "annee": 2006,
+   "mois": "Juin",
+   "ipc_mensuel": 90.1
+  },
+  {
+   "annee": 2006,
+   "mois": "Juillet",
+   "ipc_mensuel": 89.95
+  },
+  {
+   "annee": 2006,
+   "mois": "Août",
+   "ipc_mensuel": 90.26
+  },
+  {
+   "annee": 2006,
+   "mois": "Septembre",
+   "ipc_mensuel": 90.05
+  },
+  {
+   "annee": 2006,
+   "mois": "Octobre",
+   "ipc_mensuel": 89.85
+  },
+  {
+   "annee": 2006,
+   "mois": "Novembre",
+   "ipc_mensuel": 89.96
+  },
+  {
+   "annee": 2006,
+   "mois": "Décembre",
+   "ipc_mensuel": 90.16
+  },
+  {
+   "annee": 2007,
+   "mois": "Janvier",
+   "ipc_mensuel": 89.85
+  },
+  {
+   "annee": 2007,
+   "mois": "Février",
+   "ipc_mensuel": 90.02
+  },
+  {
+   "annee": 2007,
+   "mois": "Mars",
+   "ipc_mensuel": 90.41
+  },
+  {
+   "annee": 2007,
+   "mois": "Avril",
+   "ipc_mensuel": 90.86
+  },
+  {
+   "annee": 2007,
+   "mois": "Mai",
+   "ipc_mensuel": 91.09
+  },
+  {
+   "annee": 2007,
+   "mois": "Juin",
+   "ipc_mensuel": 91.2
+  },
+  {
+   "annee": 2007,
+   "mois": "Juillet",
+   "ipc_mensuel": 90.97
+  },
+  {
+   "annee": 2007,
+   "mois": "Août",
+   "ipc_mensuel": 91.26
+  },
+  {
+   "annee": 2007,
+   "mois": "Septembre",
+   "ipc_mensuel": 91.34
+  },
+  {
+   "annee": 2007,
+   "mois": "Octobre",
+   "ipc_mensuel": 91.58
+  },
+  {
+   "annee": 2007,
+   "mois": "Novembre",
+   "ipc_mensuel": 92.09
+  },
+  {
+   "annee": 2007,
+   "mois": "Décembre",
+   "ipc_mensuel": 92.44
+  },
+  {
+   "annee": 2008,
+   "mois": "Janvier",
+   "ipc_mensuel": 92.33
+  },
+  {
+   "annee": 2008,
+   "mois": "Février",
+   "ipc_mensuel": 92.53
+  },
+  {
+   "annee": 2008,
+   "mois": "Mars",
+   "ipc_mensuel": 93.24
+  },
+  {
+   "annee": 2008,
+   "mois": "Avril",
+   "ipc_mensuel": 93.56
+  },
+  {
+   "annee": 2008,
+   "mois": "Mai",
+   "ipc_mensuel": 94.07
+  },
+  {
+   "annee": 2008,
+   "mois": "Juin",
+   "ipc_mensuel": 94.42
+  },
+  {
+   "annee": 2008,
+   "mois": "Juillet",
+   "ipc_mensuel": 94.21
+  },
+  {
+   "annee": 2008,
+   "mois": "Août",
+   "ipc_mensuel": 94.17
+  },
+  {
+   "annee": 2008,
+   "mois": "Septembre",
+   "ipc_mensuel": 94.11
+  },
+  {
+   "annee": 2008,
+   "mois": "Octobre",
+   "ipc_mensuel": 94.05
+  },
+  {
+   "annee": 2008,
+   "mois": "Novembre",
+   "ipc_mensuel": 93.6
+  },
+  {
+   "annee": 2008,
+   "mois": "Décembre",
+   "ipc_mensuel": 93.37
+  },
+  {
+   "annee": 2009,
+   "mois": "Janvier",
+   "ipc_mensuel": 92.98
+  },
+  {
+   "annee": 2009,
+   "mois": "Février",
+   "ipc_mensuel": 93.34
+  },
+  {
+   "annee": 2009,
+   "mois": "Mars",
+   "ipc_mensuel": 93.52
+  },
+  {
+   "annee": 2009,
+   "mois": "Avril",
+   "ipc_mensuel": 93.66
+  },
+  {
+   "annee": 2009,
+   "mois": "Mai",
+   "ipc_mensuel": 93.81
+  },
+  {
+   "annee": 2009,
+   "mois": "Juin",
+   "ipc_mensuel": 93.93
+  },
+  {
+   "annee": 2009,
+   "mois": "Juillet",
+   "ipc_mensuel": 93.5
+  },
+  {
+   "annee": 2009,
+   "mois": "Août",
+   "ipc_mensuel": 93.99
+  },
+  {
+   "annee": 2009,
+   "mois": "Septembre",
+   "ipc_mensuel": 93.76
+  },
+  {
+   "annee": 2009,
+   "mois": "Octobre",
+   "ipc_mensuel": 93.85
+  },
+  {
+   "annee": 2009,
+   "mois": "Novembre",
+   "ipc_mensuel": 93.91
+  },
+  {
+   "annee": 2009,
+   "mois": "Décembre",
+   "ipc_mensuel": 94.14
+  },
+  {
+   "annee": 2010,
+   "mois": "Janvier",
+   "ipc_mensuel": 93.92
+  },
+  {
+   "annee": 2010,
+   "mois": "Février",
+   "ipc_mensuel": 94.45
+  },
+  {
+   "annee": 2010,
+   "mois": "Mars",
+   "ipc_mensuel": 94.92
+  },
+  {
+   "annee": 2010,
+   "mois": "Avril",
+   "ipc_mensuel": 95.18
+  },
+  {
+   "annee": 2010,
+   "mois": "Mai",
+   "ipc_mensuel": 95.28
+  },
+  {
+   "annee": 2010,
+   "mois": "Juin",
+   "ipc_mensuel": 95.27
+  },
+  {
+   "annee": 2010,
+   "mois": "Juillet",
+   "ipc_mensuel": 95
+  },
+  {
+   "annee": 2010,
+   "mois": "Août",
+   "ipc_mensuel": 95.23
+  },
+  {
+   "annee": 2010,
+   "mois": "Septembre",
+   "ipc_mensuel": 95.15
+  },
+  {
+   "annee": 2010,
+   "mois": "Octobre",
+   "ipc_mensuel": 95.28
+  },
+  {
+   "annee": 2010,
+   "mois": "Novembre",
+   "ipc_mensuel": 95.32
+  },
+  {
+   "annee": 2010,
+   "mois": "Décembre",
+   "ipc_mensuel": 95.74
+  },
+  {
+   "annee": 2011,
+   "mois": "Janvier",
+   "ipc_mensuel": 95.51
+  },
+  {
+   "annee": 2011,
+   "mois": "Février",
+   "ipc_mensuel": 95.97
+  },
+  {
+   "annee": 2011,
+   "mois": "Mars",
+   "ipc_mensuel": 96.76
+  },
+  {
+   "annee": 2011,
+   "mois": "Avril",
+   "ipc_mensuel": 97.1
+  },
+  {
+   "annee": 2011,
+   "mois": "Mai",
+   "ipc_mensuel": 97.16
+  },
+  {
+   "annee": 2011,
+   "mois": "Juin",
+   "ipc_mensuel": 97.23
+  },
+  {
+   "annee": 2011,
+   "mois": "Juillet",
+   "ipc_mensuel": 96.79
+  },
+  {
+   "annee": 2011,
+   "mois": "Août",
+   "ipc_mensuel": 97.31
+  },
+  {
+   "annee": 2011,
+   "mois": "Septembre",
+   "ipc_mensuel": 97.23
+  },
+  {
+   "annee": 2011,
+   "mois": "Octobre",
+   "ipc_mensuel": 97.42
+  },
+  {
+   "annee": 2011,
+   "mois": "Novembre",
+   "ipc_mensuel": 97.64
+  },
+  {
+   "annee": 2011,
+   "mois": "Décembre",
+   "ipc_mensuel": 98.04
+  },
+  {
+   "annee": 2012,
+   "mois": "Janvier",
+   "ipc_mensuel": 97.68
+  },
+  {
+   "annee": 2012,
+   "mois": "Février",
+   "ipc_mensuel": 98.09
+  },
+  {
+   "annee": 2012,
+   "mois": "Mars",
+   "ipc_mensuel": 98.93
+  },
+  {
+   "annee": 2012,
+   "mois": "Avril",
+   "ipc_mensuel": 99.06
+  },
+  {
+   "annee": 2012,
+   "mois": "Mai",
+   "ipc_mensuel": 99
+  },
+  {
+   "annee": 2012,
+   "mois": "Juin",
+   "ipc_mensuel": 99.04
+  },
+  {
+   "annee": 2012,
+   "mois": "Juillet",
+   "ipc_mensuel": 98.6
+  },
+  {
+   "annee": 2012,
+   "mois": "Août",
+   "ipc_mensuel": 99.27
+  },
+  {
+   "annee": 2012,
+   "mois": "Septembre",
+   "ipc_mensuel": 99.01
+  },
+  {
+   "annee": 2012,
+   "mois": "Octobre",
+   "ipc_mensuel": 99.07
+  },
+  {
+   "annee": 2012,
+   "mois": "Novembre",
+   "ipc_mensuel": 98.91
+  },
+  {
+   "annee": 2012,
+   "mois": "Décembre",
+   "ipc_mensuel": 99.23
+  },
+  {
+   "annee": 2013,
+   "mois": "Janvier",
+   "ipc_mensuel": 98.71
+  },
+  {
+   "annee": 2013,
+   "mois": "Février",
+   "ipc_mensuel": 99
+  },
+  {
+   "annee": 2013,
+   "mois": "Mars",
+   "ipc_mensuel": 99.77
+  },
+  {
+   "annee": 2013,
+   "mois": "Avril",
+   "ipc_mensuel": 99.62
+  },
+  {
+   "annee": 2013,
+   "mois": "Mai",
+   "ipc_mensuel": 99.67
+  },
+  {
+   "annee": 2013,
+   "mois": "Juin",
+   "ipc_mensuel": 99.84
+  },
+  {
+   "annee": 2013,
+   "mois": "Juillet",
+   "ipc_mensuel": 99.5
+  },
+  {
+   "annee": 2013,
+   "mois": "Août",
+   "ipc_mensuel": 99.94
+  },
+  {
+   "annee": 2013,
+   "mois": "Septembre",
+   "ipc_mensuel": 99.7
+  },
+  {
+   "annee": 2013,
+   "mois": "Octobre",
+   "ipc_mensuel": 99.57
+  },
+  {
+   "annee": 2013,
+   "mois": "Novembre",
+   "ipc_mensuel": 99.52
+  },
+  {
+   "annee": 2013,
+   "mois": "Décembre",
+   "ipc_mensuel": 99.87
+  },
+  {
+   "annee": 2014,
+   "mois": "Janvier",
+   "ipc_mensuel": 99.26
+  },
+  {
+   "annee": 2014,
+   "mois": "Février",
+   "ipc_mensuel": 99.79
+  },
+  {
+   "annee": 2014,
+   "mois": "Mars",
+   "ipc_mensuel": 100.25
+  },
+  {
+   "annee": 2014,
+   "mois": "Avril",
+   "ipc_mensuel": 100.2
+  },
+  {
+   "annee": 2014,
+   "mois": "Mai",
+   "ipc_mensuel": 100.23
+  },
+  {
+   "annee": 2014,
+   "mois": "Juin",
+   "ipc_mensuel": 100.19
+  },
+  {
+   "annee": 2014,
+   "mois": "Juillet",
+   "ipc_mensuel": 99.87
+  },
+  {
+   "annee": 2014,
+   "mois": "Août",
+   "ipc_mensuel": 100.31
+  },
+  {
+   "annee": 2014,
+   "mois": "Septembre",
+   "ipc_mensuel": 99.92
+  },
+  {
+   "annee": 2014,
+   "mois": "Octobre",
+   "ipc_mensuel": 99.95
+  },
+  {
+   "annee": 2014,
+   "mois": "Novembre",
+   "ipc_mensuel": 99.78
+  },
+  {
+   "annee": 2014,
+   "mois": "Décembre",
+   "ipc_mensuel": 99.86
+  },
+  {
+   "annee": 2015,
+   "mois": "Janvier",
+   "ipc_mensuel": 98.85
+  },
+  {
+   "annee": 2015,
+   "mois": "Février",
+   "ipc_mensuel": 99.51
+  },
+  {
+   "annee": 2015,
+   "mois": "Mars",
+   "ipc_mensuel": 100.17
+  },
+  {
+   "annee": 2015,
+   "mois": "Avril",
+   "ipc_mensuel": 100.29
+  },
+  {
+   "annee": 2015,
+   "mois": "Mai",
+   "ipc_mensuel": 100.53
+  },
+  {
+   "annee": 2015,
+   "mois": "Juin",
+   "ipc_mensuel": 100.45
+  },
+  {
+   "annee": 2015,
+   "mois": "Juillet",
+   "ipc_mensuel": 100.03
+  },
+  {
+   "annee": 2015,
+   "mois": "Août",
+   "ipc_mensuel": 100.36
+  },
+  {
+   "annee": 2015,
+   "mois": "Septembre",
+   "ipc_mensuel": 99.95
+  },
+  {
+   "annee": 2015,
+   "mois": "Octobre",
+   "ipc_mensuel": 100.01
+  },
+  {
+   "annee": 2015,
+   "mois": "Novembre",
+   "ipc_mensuel": 99.81
+  },
+  {
+   "annee": 2015,
+   "mois": "Décembre",
+   "ipc_mensuel": 100.04
+  },
+  {
+   "annee": 2016,
+   "mois": "Janvier",
+   "ipc_mensuel": 99.07
+  },
+  {
+   "annee": 2016,
+   "mois": "Février",
+   "ipc_mensuel": 99.32
+  },
+  {
+   "annee": 2016,
+   "mois": "Mars",
+   "ipc_mensuel": 100.02
+  },
+  {
+   "annee": 2016,
+   "mois": "Avril",
+   "ipc_mensuel": 100.09
+  },
+  {
+   "annee": 2016,
+   "mois": "Mai",
+   "ipc_mensuel": 100.51
+  },
+  {
+   "annee": 2016,
+   "mois": "Juin",
+   "ipc_mensuel": 100.64
+  },
+  {
+   "annee": 2016,
+   "mois": "Juillet",
+   "ipc_mensuel": 100.26
+  },
+  {
+   "annee": 2016,
+   "mois": "Août",
+   "ipc_mensuel": 100.59
+  },
+  {
+   "annee": 2016,
+   "mois": "Septembre",
+   "ipc_mensuel": 100.35
+  },
+  {
+   "annee": 2016,
+   "mois": "Octobre",
+   "ipc_mensuel": 100.37
+  },
+  {
+   "annee": 2016,
+   "mois": "Novembre",
+   "ipc_mensuel": 100.36
+  },
+  {
+   "annee": 2016,
+   "mois": "Décembre",
+   "ipc_mensuel": 100.66
+  },
+  {
+   "annee": 2017,
+   "mois": "Janvier",
+   "ipc_mensuel": 100.41
+  },
+  {
+   "annee": 2017,
+   "mois": "Février",
+   "ipc_mensuel": 100.52
+  },
+  {
+   "annee": 2017,
+   "mois": "Mars",
+   "ipc_mensuel": 101.14
+  },
+  {
+   "annee": 2017,
+   "mois": "Avril",
+   "ipc_mensuel": 101.23
+  },
+  {
+   "annee": 2017,
+   "mois": "Mai",
+   "ipc_mensuel": 101.28
+  },
+  {
+   "annee": 2017,
+   "mois": "Juin",
+   "ipc_mensuel": 101.3
+  },
+  {
+   "annee": 2017,
+   "mois": "Juillet",
+   "ipc_mensuel": 100.94
+  },
+  {
+   "annee": 2017,
+   "mois": "Août",
+   "ipc_mensuel": 101.47
+  },
+  {
+   "annee": 2017,
+   "mois": "Septembre",
+   "ipc_mensuel": 101.3
+  },
+  {
+   "annee": 2017,
+   "mois": "Octobre",
+   "ipc_mensuel": 101.4
+  },
+  {
+   "annee": 2017,
+   "mois": "Novembre",
+   "ipc_mensuel": 101.47
+  },
+  {
+   "annee": 2017,
+   "mois": "Décembre",
+   "ipc_mensuel": 101.76
+  },
+  {
+   "annee": 2018,
+   "mois": "Janvier",
+   "ipc_mensuel": 101.67
+  },
+  {
+   "annee": 2018,
+   "mois": "Février",
+   "ipc_mensuel": 101.64
+  },
+  {
+   "annee": 2018,
+   "mois": "Mars",
+   "ipc_mensuel": 102.42
+  },
+  {
+   "annee": 2018,
+   "mois": "Avril",
+   "ipc_mensuel": 102.59
+  },
+  {
+   "annee": 2018,
+   "mois": "Mai",
+   "ipc_mensuel": 103.06
+  },
+  {
+   "annee": 2018,
+   "mois": "Juin",
+   "ipc_mensuel": 103.07
+  },
+  {
+   "annee": 2018,
+   "mois": "Juillet",
+   "ipc_mensuel": 102.96
+  },
+  {
+   "annee": 2018,
+   "mois": "Août",
+   "ipc_mensuel": 103.48
+  },
+  {
+   "annee": 2018,
+   "mois": "Septembre",
+   "ipc_mensuel": 103.25
+  },
+  {
+   "annee": 2018,
+   "mois": "Octobre",
+   "ipc_mensuel": 103.37
+  },
+  {
+   "annee": 2018,
+   "mois": "Novembre",
+   "ipc_mensuel": 103.14
+  },
+  {
+   "annee": 2018,
+   "mois": "Décembre",
+   "ipc_mensuel": 103.16
+  },
+  {
+   "annee": 2019,
+   "mois": "Janvier",
+   "ipc_mensuel": 102.67
+  },
+  {
+   "annee": 2019,
+   "mois": "Février",
+   "ipc_mensuel": 102.73
+  },
+  {
+   "annee": 2019,
+   "mois": "Mars",
+   "ipc_mensuel": 103.43
+  },
+  {
+   "annee": 2019,
+   "mois": "Avril",
+   "ipc_mensuel": 103.76
+  },
+  {
+   "annee": 2019,
+   "mois": "Mai",
+   "ipc_mensuel": 103.86
+  },
+  {
+   "annee": 2019,
+   "mois": "Juin",
+   "ipc_mensuel": 104.12
+  },
+  {
+   "annee": 2019,
+   "mois": "Juillet",
+   "ipc_mensuel": 103.91
+  },
+  {
+   "annee": 2019,
+   "mois": "Août",
+   "ipc_mensuel": 104.4
+  },
+  {
+   "annee": 2019,
+   "mois": "Septembre",
+   "ipc_mensuel": 104.04
+  },
+  {
+   "annee": 2019,
+   "mois": "Octobre",
+   "ipc_mensuel": 103.99
+  },
+  {
+   "annee": 2019,
+   "mois": "Novembre",
+   "ipc_mensuel": 103.92
+  },
+  {
+   "annee": 2019,
+   "mois": "Décembre",
+   "ipc_mensuel": 104.39
+  },
+  {
+   "annee": 2020,
+   "mois": "Janvier",
+   "ipc_mensuel": 103.94
+  },
+  {
+   "annee": 2020,
+   "mois": "Février",
+   "ipc_mensuel": 103.93
+  },
+  {
+   "annee": 2020,
+   "mois": "Mars",
+   "ipc_mensuel": 103.85
+  },
+  {
+   "annee": 2020,
+   "mois": "Avril",
+   "ipc_mensuel": 103.81
+  },
+  {
+   "annee": 2020,
+   "mois": "Mai",
+   "ipc_mensuel": 103.95
+  },
+  {
+   "annee": 2020,
+   "mois": "Juin",
+   "ipc_mensuel": 104.04
+  },
+  {
+   "annee": 2020,
+   "mois": "Juillet",
+   "ipc_mensuel": 104.44
+  },
+  {
+   "annee": 2020,
+   "mois": "Août",
+   "ipc_mensuel": 104.34
+  },
+  {
+   "annee": 2020,
+   "mois": "Septembre",
+   "ipc_mensuel": 103.8
+  },
+  {
+   "annee": 2020,
+   "mois": "Octobre",
+   "ipc_mensuel": 103.75
+  },
+  {
+   "annee": 2020,
+   "mois": "Novembre",
+   "ipc_mensuel": 103.86
+  },
+  {
+   "annee": 2020,
+   "mois": "Décembre",
+   "ipc_mensuel": 104.09
+  },
+  {
+   "annee": 2021,
+   "mois": "Janvier",
+   "ipc_mensuel": 104.24
+  },
+  {
+   "annee": 2021,
+   "mois": "Février",
+   "ipc_mensuel": 104.24
+  },
+  {
+   "annee": 2021,
+   "mois": "Mars",
+   "ipc_mensuel": 104.89
+  },
+  {
+   "annee": 2021,
+   "mois": "Avril",
+   "ipc_mensuel": 105
+  },
+  {
+   "annee": 2021,
+   "mois": "Mai",
+   "ipc_mensuel": 105.34
+  },
+  {
+   "annee": 2021,
+   "mois": "Juin",
+   "ipc_mensuel": 105.48
+  },
+  {
+   "annee": 2021,
+   "mois": "Juillet",
+   "ipc_mensuel": 105.55
+  },
+  {
+   "annee": 2021,
+   "mois": "Août",
+   "ipc_mensuel": 106.21
+  },
+  {
+   "annee": 2021,
+   "mois": "Septembre",
+   "ipc_mensuel": 105.97
+  },
+  {
+   "annee": 2021,
+   "mois": "Octobre",
+   "ipc_mensuel": 106.42
+  },
+  {
+   "annee": 2021,
+   "mois": "Novembre",
+   "ipc_mensuel": 106.82
+  },
+  {
+   "annee": 2021,
+   "mois": "Décembre",
+   "ipc_mensuel": 107.03
+  },
+  {
+   "annee": 2022,
+   "mois": "Janvier",
+   "ipc_mensuel": 107.3
+  },
+  {
+   "annee": 2022,
+   "mois": "Février",
+   "ipc_mensuel": 108.14
+  },
+  {
+   "annee": 2022,
+   "mois": "Mars",
+   "ipc_mensuel": 109.7
+  },
+  {
+   "annee": 2022,
+   "mois": "Avril",
+   "ipc_mensuel": 110.19
+  },
+  {
+   "annee": 2022,
+   "mois": "Mai",
+   "ipc_mensuel": 110.95
+  },
+  {
+   "annee": 2022,
+   "mois": "Juin",
+   "ipc_mensuel": 111.8
+  },
+  {
+   "annee": 2022,
+   "mois": "Juillet",
+   "ipc_mensuel": 112.11
+  },
+  {
+   "annee": 2022,
+   "mois": "Août",
+   "ipc_mensuel": 112.63
+  },
+  {
+   "annee": 2022,
+   "mois": "Septembre",
+   "ipc_mensuel": 111.99
+  },
+  {
+   "annee": 2022,
+   "mois": "Octobre",
+   "ipc_mensuel": 113.16
+  },
+  {
+   "annee": 2022,
+   "mois": "Novembre",
+   "ipc_mensuel": 113.53
+  },
+  {
+   "annee": 2022,
+   "mois": "Décembre",
+   "ipc_mensuel": 113.42
+  },
+  {
+   "annee": 2023,
+   "mois": "Janvier",
+   "ipc_mensuel": 113.86
+  },
+  {
+   "annee": 2023,
+   "mois": "Février",
+   "ipc_mensuel": 115.06
+  },
+  {
+   "annee": 2023,
+   "mois": "Mars",
+   "ipc_mensuel": 115.92
+  },
+  {
+   "annee": 2023,
+   "mois": "Avril",
+   "ipc_mensuel": 116.61
+  },
+  {
+   "annee": 2023,
+   "mois": "Mai",
+   "ipc_mensuel": 116.54
+  },
+  {
+   "annee": 2023,
+   "mois": "Juin",
+   "ipc_mensuel": 116.75
+  },
+  {
+   "annee": 2023,
+   "mois": "Juillet",
+   "ipc_mensuel": 116.81
+  },
+  {
+   "annee": 2023,
+   "mois": "Août",
+   "ipc_mensuel": 118
+  },
+  {
+   "annee": 2023,
+   "mois": "Septembre",
+   "ipc_mensuel": 117.37
+  },
+  {
+   "annee": 2023,
+   "mois": "Octobre",
+   "ipc_mensuel": 117.54
+  },
+  {
+   "annee": 2023,
+   "mois": "Novembre",
+   "ipc_mensuel": 117.33
+  },
+  {
+   "annee": 2023,
+   "mois": "Décembre",
+   "ipc_mensuel": 117.5
+  },
+  {
+   "annee": 2024,
+   "mois": "Janvier",
+   "ipc_mensuel": 117.16
+  },
+  {
+   "annee": 2024,
+   "mois": "Février",
+   "ipc_mensuel": 118.15
+  },
+  {
+   "annee": 2024,
+   "mois": "Mars",
+   "ipc_mensuel": 118.4
+  },
+  {
+   "annee": 2024,
+   "mois": "Avril",
+   "ipc_mensuel": 119.01
+  },
+  {
+   "annee": 2024,
+   "mois": "Mai",
+   "ipc_mensuel": 119.05
+  },
+  {
+   "annee": 2024,
+   "mois": "Juin",
+   "ipc_mensuel": 119.14
+  },
+  {
+   "annee": 2024,
+   "mois": "Juillet",
+   "ipc_mensuel": 119.37
+  },
+  {
+   "annee": 2024,
+   "mois": "Août",
+   "ipc_mensuel": 120.01
+  },
+  {
+   "annee": 2024,
+   "mois": "Septembre",
+   "ipc_mensuel": 118.5
+  },
+  {
+   "annee": 2024,
+   "mois": "Octobre",
+   "ipc_mensuel": 118.83
+  },
+  {
+   "annee": 2024,
+   "mois": "Novembre",
+   "ipc_mensuel": 118.66
+  },
+  {
+   "annee": 2024,
+   "mois": "Décembre",
+   "ipc_mensuel": 118.88
+  },
+  {
+   "annee": 2025,
+   "mois": "Janvier",
+   "ipc_mensuel": 119.01
+  },
+  {
+   "annee": 2025,
+   "mois": "Février",
+   "ipc_mensuel": 119.02
+  },
+  {
+   "annee": 2025,
+   "mois": "Mars",
+   "ipc_mensuel": 119.24
+  },
+  {
+   "annee": 2025,
+   "mois": "Avril",
+   "ipc_mensuel": 119.93
+  },
+  {
+   "annee": 2025,
+   "mois": "Mai",
+   "ipc_mensuel": 119.77
+  },
+  {
+   "annee": 2025,
+   "mois": "Juin",
+   "ipc_mensuel": 120.23
+  },
+  {
+   "annee": 2025,
+   "mois": "Juillet",
+   "ipc_mensuel": 120.49
+  },
+  {
+   "annee": 2025,
+   "mois": "Août",
+   "ipc_mensuel": 121
+  },
+  {
+   "annee": 2025,
+   "mois": "Septembre",
+   "ipc_mensuel": 119.81
+  },
+  {
+   "annee": 2025,
+   "mois": "Octobre",
+   "ipc_mensuel": 119.89
+  },
+  {
+   "annee": 2025,
+   "mois": "Novembre",
+   "ipc_mensuel": 119.67
+  },
+  {
+   "annee": 2025,
+   "mois": "Décembre",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Janvier",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Février",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Mars",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Avril",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Mai",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Juin",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Juillet",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Août",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Septembre",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Octobre",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Novembre",
+   "ipc_mensuel": 119.76
+  },
+  {
+   "annee": 2026,
+   "mois": "Décembre",
+   "ipc_mensuel": 119.76
+  }
+ ]
+}
