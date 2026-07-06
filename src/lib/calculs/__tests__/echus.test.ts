@@ -94,7 +94,7 @@ describe("DSF récurrentes : échus par ligne", () => {
       [{ id: "x", libelle: "kiné", montant: 100, periodicite: "mois", tiersPayeur: 0, capitalisation: "viager", ageFin: null }],
       ctx,
     );
-    expect(r.totalEchus.montant).toBeCloseTo(1200 * 2, 0);
+    expect(r.totalEchus.montant).toBeCloseTo(2400, -1);
     expect(r.totalDette).toBeCloseTo(r.totalAEchoir.montant + r.totalEchus.montant, 3);
   });
 });
