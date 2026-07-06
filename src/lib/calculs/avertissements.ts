@@ -20,7 +20,8 @@ export type AvertissementCode =
   | "DATES_INCOHERENTES"
   | "PERIODES_CHEVAUCHANTES"
   | "AIPP_HORS_BORNES"
-  | "DONNEE_MANQUANTE";
+  | "DONNEE_MANQUANTE"
+  | "PROVISIONS_SUPERIEURES";
 
 export interface AvertissementCalcul {
   code: AvertissementCode;
