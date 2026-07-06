@@ -218,6 +218,7 @@ function PageInner({
           <Recap label="Créance TP" value={formatEuros(tpDSF)} accent="tiers" />
           <Recap label="Part victime" value={formatEuros(repDSF.victime)} accent="victime" />
         </div>
+        <EchusInfo echus={{ montant: dsfR.totalEchus.montant, tp: dsfR.totalEchus.tp }} aEchoirLabel="Capital à échoir DSF récurrentes" aEchoir={{ montant: dsfR.totalAEchoir.montant, tp: dsfR.totalAEchoir.tp }} />
       </Section>
 
       {/* -------- ATP permanente -------- */}
