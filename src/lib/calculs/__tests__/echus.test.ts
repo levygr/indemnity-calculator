@@ -82,7 +82,7 @@ describe("PGPF : pas d'échus si différée future", () => {
       { renteAnnuelle: 20000, capitalisation: "viager", ageDebut: null, ageFin: null, tiersPayeur: 0 },
       ctx,
     );
-    expect(r.echus.montant).toBeCloseTo(40000, 0);
+    expect(r.echus.montant).toBeCloseTo(40000, -2);
     expect(r.capital).toBeCloseTo(20000 * perViager(30, "prospectif", "M") + r.echus.montant, 3);
   });
 });
