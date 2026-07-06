@@ -71,7 +71,7 @@ function PageInner({
         <div className="text-xs font-display font-semibold text-primary tracking-wide">
           PAGE 4 — PRÉJUDICES EXTRAPATRIMONIAUX PERMANENTS
         </div>
-        <h1 className="mt-1 text-2xl font-display font-semibold">DFP, agrément, PSex, PEP, établissement, pathologies évolutives</h1>
+        <h1 className="mt-1 text-2xl font-display font-semibold">DFP, agrément, PSex, PEP, établissement, pathologies évolutives, préjudice permanent exceptionnel</h1>
       </header>
 
       {/* -------- DFP -------- */}
