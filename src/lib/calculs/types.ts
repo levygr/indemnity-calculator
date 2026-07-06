@@ -233,6 +233,8 @@ export function defaultDossierData(): DossierData {
     postesDeces: defaultPostesDeces(),
     postesSurvie: defaultPostesSurvie(),
     provisions: [],
+    organismesTP: [],
+    creancesTP: [],
   };
 }
 
