@@ -164,6 +164,8 @@ export interface DossierData {
 
   postesTemp: PostesTemporaires;
   postesPerm: PostesPermanents;
+  postesDeces: PostesDeces;
+  postesSurvie: PostesSurvie;
 }
 
 export function defaultDossierData(): DossierData {
@@ -188,6 +190,9 @@ export function defaultDossierData(): DossierData {
     periodesDFT: [],
     postesTemp: defaultPostesTemporaires(),
     postesPerm: defaultPostesPermanents(),
+    postesDeces: defaultPostesDeces(),
+    postesSurvie: defaultPostesSurvie(),
   };
 }
+
 
