@@ -9,14 +9,14 @@ function mk(overrides: Partial<FraisDiversVictime> = {}): FraisDiversVictime {
     libelle: overrides.libelle ?? "Test",
     montant: overrides.montant ?? 1000,
     tiersPayeur: overrides.tiersPayeur ?? 0,
-    modeRevalo: overrides.modeRevalo ?? "aucun",
+    modeRevalo: overrides.modeRevalo ?? "non",
   };
 }
 
 describe("calculerFraisDiversVictime", () => {
   it("cas nominal sans revalorisation : reste = montant - TP", () => {
     const r = calculerFraisDiversVictime(
-      [mk({ montant: 1000, tiersPayeur: 300, modeRevalo: "aucun" })],
+      [mk({ montant: 1000, tiersPayeur: 300, modeRevalo: "non" })],
       "2025-06-01",
     );
     expect(r.lignes).toHaveLength(1);
@@ -63,7 +63,7 @@ describe("calculerFraisDiversVictime", () => {
 
   it("plafonne le reste à 0 quand le TP dépasse le montant", () => {
     const r = calculerFraisDiversVictime(
-      [mk({ montant: 500, tiersPayeur: 800, modeRevalo: "aucun" })],
+      [mk({ montant: 500, tiersPayeur: 800, modeRevalo: "non" })],
       "2025-06-01",
     );
     expect(r.totalResteRevalorise).toBe(0);
