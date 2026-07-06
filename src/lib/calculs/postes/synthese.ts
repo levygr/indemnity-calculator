@@ -217,6 +217,7 @@ export function calculerSynthese(d: DossierData): Synthese {
     totalDette: sum(lignes, "dette"),
     totalVictime: sum(lignes, "partVictime"),
     totalTPRepartition: sum(lignes, "partTP"),
+    avertissements: collecterAvertissements(d),
   };
 }
 
