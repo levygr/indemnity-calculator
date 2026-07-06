@@ -16,6 +16,7 @@ import type { DossierData } from "../types";
 import { detteResponsable, repartition } from "../fractions";
 import { collecterAvertissements, type AvertissementCalcul } from "../avertissements";
 import { calculerDSAPonctuelles, calculerDSARecurrentes } from "./dsa";
+import { calculerFraisDiversVictime } from "./fraisDiversVictime";
 import { calculerATPTemp } from "./atpTemp";
 import { calculerPGPA } from "./pgpa";
 import { calculerDFT } from "./dft";
@@ -125,6 +126,10 @@ export function calculerSynthese(d: DossierData): Synthese {
     "PT",
     dsaP.totalDepenseRevalorisee + dsaR.totalDepenseRevalorisee,
     dsaP.totalTpRevalorise + dsaR.totalTpRevalorise, f, c));
+
+  const fdV = calculerFraisDiversVictime(d.postesTemp.fraisDivers, d.dateLiquidation);
+  lignes.push(ligne("FD", "Frais divers", "PT",
+    fdV.totalDepenseRevalorisee, fdV.totalTpRevalorise, f, c));
 
   const atpT = calculerATPTemp(d.postesTemp.atpTemp);
   lignes.push(ligne("ATP-T", "Assistance tierce personne (temporaire)", "PT", atpT.total, 0, f, c));
