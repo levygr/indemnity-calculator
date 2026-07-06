@@ -14,6 +14,7 @@
 
 import type { DossierData } from "../types";
 import { detteResponsable, repartition } from "../fractions";
+import { collecterAvertissements, type AvertissementCalcul } from "../avertissements";
 import { calculerDSAPonctuelles, calculerDSARecurrentes } from "./dsa";
 import { calculerATPTemp } from "./atpTemp";
 import { calculerPGPA } from "./pgpa";
@@ -85,6 +86,7 @@ export interface Synthese {
   totalDette: number;
   totalVictime: number;
   totalTPRepartition: number;
+  avertissements: AvertissementCalcul[];
 }
 
 function ligne(
@@ -215,6 +217,7 @@ export function calculerSynthese(d: DossierData): Synthese {
     totalDette: sum(lignes, "dette"),
     totalVictime: sum(lignes, "partVictime"),
     totalTPRepartition: sum(lignes, "partTP"),
+    avertissements: collecterAvertissements(d),
   };
 }
 

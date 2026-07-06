@@ -22,7 +22,7 @@ const SECTIONS: Section[] = [
 ];
 
 
-export function AppSidebar({ id, reference }: { id: string; reference: string }) {
+export function AppSidebar({ id, reference, nbAvertissements = 0 }: { id: string; reference: string; nbAvertissements?: number }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
@@ -65,6 +65,11 @@ export function AppSidebar({ id, reference }: { id: string; reference: string })
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span className="flex-1">{s.label}</span>
+              {s.to === "/dossiers/$id/synthese" && nbAvertissements > 0 && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground font-display font-semibold">
+                  {nbAvertissements}
+                </span>
+              )}
               {s.phase && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-sidebar-border text-sidebar-foreground/70 font-display">
                   {s.phase}
