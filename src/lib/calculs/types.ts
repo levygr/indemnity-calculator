@@ -130,6 +130,11 @@ export function defaultPostesTemporaires(): PostesTemporaires {
   };
 }
 
+import {
+  defaultPostesPermanents,
+  type PostesPermanents,
+} from "./postes/permanents";
+
 export interface DossierData {
   reference: string;
   faitGenerateur: FaitGenerateur;
@@ -151,10 +156,11 @@ export interface DossierData {
   fFaute: number; // 0..1
   fChance: number; // 0..1
 
-  dftDebutLendemain: boolean; // false = jour même de l'accident
+  dftDebutLendemain: boolean;
   periodesDFT: PeriodeDFT[];
 
   postesTemp: PostesTemporaires;
+  postesPerm: PostesPermanents;
 }
 
 export function defaultDossierData(): DossierData {
@@ -178,5 +184,7 @@ export function defaultDossierData(): DossierData {
     dftDebutLendemain: false,
     periodesDFT: [],
     postesTemp: defaultPostesTemporaires(),
+    postesPerm: defaultPostesPermanents(),
   };
 }
+

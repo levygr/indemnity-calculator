@@ -10,3 +10,4 @@ export * from "./postes/dsa";
 export * from "./postes/atpTemp";
 export * from "./postes/pgpa";
 export * from "./postes/dft";
+export * from "./postes/permanents";
