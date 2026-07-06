@@ -15,5 +15,6 @@ export * from "./postes/deces";
 export * from "./postes/survieProches";
 export * from "./postes/synthese";
 export * from "./avertissements";
+export * from "./hydratation";
 
 
