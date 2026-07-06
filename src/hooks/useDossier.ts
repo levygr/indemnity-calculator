@@ -38,6 +38,19 @@ export function useDossier(id: string) {
         ...base,
         ...raw,
         postesTemp: { ...base.postesTemp, ...(raw.postesTemp ?? {}) },
+        postesPerm: {
+          ...base.postesPerm,
+          ...(raw.postesPerm ?? {}),
+          atpPerm: { ...base.postesPerm.atpPerm, ...(raw.postesPerm?.atpPerm ?? {}) },
+          pgpf: { ...base.postesPerm.pgpf, ...(raw.postesPerm?.pgpf ?? {}) },
+          ip: { ...base.postesPerm.ip, ...(raw.postesPerm?.ip ?? {}) },
+          dfp: { ...base.postesPerm.dfp, ...(raw.postesPerm?.dfp ?? {}) },
+          agrement: { ...base.postesPerm.agrement, ...(raw.postesPerm?.agrement ?? {}) },
+          sexuel: { ...base.postesPerm.sexuel, ...(raw.postesPerm?.sexuel ?? {}) },
+          esthetiquePerm: { ...base.postesPerm.esthetiquePerm, ...(raw.postesPerm?.esthetiquePerm ?? {}) },
+          etablissement: { ...base.postesPerm.etablissement, ...(raw.postesPerm?.etablissement ?? {}) },
+          pathologiesEvo: { ...base.postesPerm.pathologiesEvo, ...(raw.postesPerm?.pathologiesEvo ?? {}) },
+        },
       };
       setLocal(merged);
     }
