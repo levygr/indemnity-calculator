@@ -24,6 +24,7 @@ import {
   type Proche,
   type Sexe,
 } from "@/lib/calculs";
+import { FourchetteAffectionHint } from "@/components/vp/FourchetteHint";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/deces")({
   component: Page,
