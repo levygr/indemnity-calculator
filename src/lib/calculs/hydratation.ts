@@ -43,6 +43,7 @@ export function hydraterDossier(raw: unknown): DossierData {
       ...(srcPT as Partial<DossierData["postesTemp"]>),
       dsaPonctuelles: pickArray(srcPT.dsaPonctuelles),
       dsaRecurrentes: pickArray(srcPT.dsaRecurrentes),
+      fraisDivers: pickArray(srcPT.fraisDivers),
       atpTemp: pickArray(srcPT.atpTemp),
       pgpa: {
         ...base.postesTemp.pgpa,
