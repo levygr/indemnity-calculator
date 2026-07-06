@@ -1,58 +1,24 @@
-# Correction des erreurs de navigation dans le dossier
+## Objectif
+Intégrer le logo fourni (feuilles jaune + rouge) comme identité visuelle de l'application Victimes & Préjudices.
 
-## Diagnostic
+## Étapes
 
-Chaque page interne d'un dossier (postes temporaires, permanents, décès, survie) crashe avec :
+1. **Ajouter le logo en tant qu'asset Lovable**
+   - Créer `src/assets/logo-vp.png.asset.json` via `lovable-assets create` depuis `/mnt/user-uploads/Hervé_Gerbi.png`.
+   - L'asset sera servi via CDN (pas de binaire dans le repo).
 
-> `Rendered more hooks than during the previous render.`
+2. **Favicon**
+   - Copier le PNG dans `public/favicon.png`.
+   - Mettre à jour `src/routes/__root.tsx` : remplacer l'entrée `{ rel: "icon", href: "/favicon.ico" }` par `{ rel: "icon", type: "image/png", href: "/favicon.png" }`.
+   - Supprimer `public/favicon.ico` (favicon Lovable par défaut).
 
-Toutes ces pages suivent le même anti-pattern React :
+3. **Sidebar (`src/components/vp/AppSidebar.tsx`)**
+   - Ajouter le logo à côté du titre "VICTIMES & PRÉJUDICES" dans l'en-tête (petit format ~28-32px, aligné à gauche du texte).
+   - Importer le pointeur JSON de l'asset et l'utiliser dans un `<img>` avec `alt="Victimes & Préjudices"`.
 
-```tsx
-const { dossier, update } = useDossier(id);
-if (!dossier) return null;      // ← early return AVANT les hooks
+4. **Page de connexion / listing dossiers** (si présent un en-tête de marque)
+   - Vérifier `src/routes/auth.tsx` et `src/routes/_authenticated/dossiers.index.tsx` pour ajouter le logo si un branding est déjà affiché — sinon laisser tel quel.
 
-const ctx = useMemo(...);       // ← ces hooks ne sont pas appelés au 1er render
-const dsaP = useMemo(...);
-// ...
-```
-
-Au premier rendu `dossier` est `undefined` → la fonction retourne `null` avant d'atteindre les `useMemo`. Au rendu suivant, `dossier` arrive → les `useMemo` s'exécutent → React voit plus de hooks qu'au rendu précédent et fait tomber le composant dans l'`errorComponent`. C'est pourquoi *tout* clic sur un item du menu affiche une erreur.
-
-La page `synthese.tsx` fait déjà correctement : `useMemo` d'abord (avec garde `dossier ? ... : null`), puis `if (!dossier) return null;`.
-
-## Fichiers à corriger (même pattern dans tous)
-
-- `src/routes/_authenticated/dossiers.$id.patrimoniaux-temporaires.tsx`
-- `src/routes/_authenticated/dossiers.$id.extrapatrimoniaux-temporaires.tsx`
-- `src/routes/_authenticated/dossiers.$id.patrimoniaux-permanents.tsx`
-- `src/routes/_authenticated/dossiers.$id.extrapatrimoniaux-permanents.tsx`
-- `src/routes/_authenticated/dossiers.$id.deces.tsx`
-- `src/routes/_authenticated/dossiers.$id.survie-proches.tsx`
-
-## Correction
-
-Dans chaque `Page()` :
-
-1. Déplacer le `if (!dossier) return null;` **après** tous les `useMemo`.
-2. Rendre chaque `useMemo` tolérant à `dossier === undefined` : lire les sous‑objets via optional chaining et retourner une valeur neutre quand le dossier n'est pas encore chargé, par exemple :
-
-```tsx
-const { dossier, update } = useDossier(id);
-const pt = dossier?.postesPT;
-const ctx = useMemo(() => (dossier ? buildContexte(dossier) : null), [dossier]);
-const dsaPCalc = useMemo(
-  () => (pt ? calculerDSAPonctuelles(pt.dsaPonctuelles) : null),
-  [pt],
-);
-// ... tous les autres useMemo suivent le même schéma
-if (!dossier || !ctx) return null;
-```
-
-Ainsi la liste et l'ordre des hooks appelés restent identiques entre les rendus, ce qui supprime l'erreur React et permet l'affichage normal de chaque page.
-
-## Vérification
-
-- Recharger le dossier, cliquer successivement sur chaque item du menu latéral.
-- Chaque page doit s'afficher sans tomber dans l'`errorComponent`.
-- Aucune régression fonctionnelle attendue : les calculs restent inchangés une fois le dossier chargé.
+## Ce qui ne change pas
+- Aucun changement de palette de couleurs ou de typographie (le logo utilise jaune/rouge, mais la refonte du thème n'est pas demandée).
+- Aucune modification de logique métier.
