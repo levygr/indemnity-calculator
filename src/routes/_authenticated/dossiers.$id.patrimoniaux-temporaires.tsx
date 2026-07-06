@@ -81,6 +81,13 @@ function PatrimoniauxTempPageInner({
   );
   const atpCalc = useMemo(() => calculerATPTemp(pt.atpTemp), [pt.atpTemp]);
   const pgpaCalc = useMemo(() => calculerPGPA(pt.pgpa, dossier.dateLiquidation), [pt.pgpa, dossier.dateLiquidation]);
+  const fdCalc = useMemo(
+    () => calculerFraisDiversVictime(pt.fraisDivers, dossier.dateLiquidation),
+    [pt.fraisDivers, dossier.dateLiquidation],
+  );
+
+  const detteFD = detteResponsable(fdCalc.totalDepenseRevalorisee, dossier.fFaute, dossier.fChance);
+  const fdRep = repartition(fdCalc.totalDepenseRevalorisee, fdCalc.totalTpRevalorise, detteFD);
 
   const totalDSAmontant = dsaPCalc.totalDepenseRevalorisee + dsaRCalc.totalDepenseRevalorisee;
   const totalDSAtp = dsaPCalc.totalTpRevalorise + dsaRCalc.totalTpRevalorise;
