@@ -24,7 +24,8 @@ export type AvertissementCode =
   | "AIPP_HORS_BORNES"
   | "DONNEE_MANQUANTE"
   | "PROVISIONS_SUPERIEURES"
-  | "ECART_CREANCES_TP";
+  | "ECART_CREANCES_TP"
+  | "REFERENTIEL_NON_VERSIONNE";
 
 export interface AvertissementCalcul {
   code: AvertissementCode;
