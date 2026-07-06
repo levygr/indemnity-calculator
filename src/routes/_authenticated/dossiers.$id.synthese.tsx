@@ -234,3 +234,57 @@ function Recap({ label, value, accent }: { label: string; value: string; accent?
     </div>
   );
 }
+
+function ProvisionsSection({ provisions, onChange, total }: {
+  provisions: Provision[];
+  onChange: (list: Provision[]) => void;
+  total: number;
+}) {
+  function add() {
+    onChange([...provisions, { id: uid(), date: null, montant: 0, debiteur: "" }]);
+  }
+  function patch(id: string, p: Partial<Provision>) {
+    onChange(provisions.map((x) => (x.id === id ? { ...x, ...p } : x)));
+  }
+  function del(id: string) { onChange(provisions.filter((x) => x.id !== id)); }
+  return (
+    <Section title="Provisions versées" description="Provisions et indemnités provisionnelles déjà versées à la victime. Elles s'imputent sur la part revenant à la victime pour déterminer le solde final.">
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-40">Date</TableHead>
+              <TableHead>Débiteur</TableHead>
+              <TableHead className="w-40 text-right">Montant (€)</TableHead>
+              <TableHead className="w-10"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {provisions.length === 0 && (
+              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune provision.</TableCell></TableRow>
+            )}
+            {provisions.map((p) => (
+              <TableRow key={p.id} className="vp-row-alt">
+                <TableCell><Input type="date" value={p.date ?? ""} onChange={(e) => patch(p.id, { date: e.target.value || null })} /></TableCell>
+                <TableCell><Input value={p.debiteur} placeholder="Assureur, FGAO…" onChange={(e) => patch(p.id, { debiteur: e.target.value })} /></TableCell>
+                <TableCell><Input type="number" min={0} step="0.01" className="text-right" value={p.montant} onChange={(e) => patch(p.id, { montant: num(e.target.value) })} /></TableCell>
+                <TableCell>
+                  <Button size="icon" variant="ghost" onClick={() => del(p.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="mt-3 flex justify-between items-center">
+        <Button size="sm" variant="outline" onClick={add}><Plus className="w-4 h-4 mr-2" />Ajouter une provision</Button>
+        <div className="text-sm font-display">
+          <span className="text-muted-foreground mr-2">Total provisions</span>
+          <span className="font-semibold text-primary">{formatEuros(total)}</span>
+        </div>
+      </div>
+    </Section>
+  );
+}
