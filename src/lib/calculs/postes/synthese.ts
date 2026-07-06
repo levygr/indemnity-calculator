@@ -86,6 +86,7 @@ export interface Synthese {
   totalDette: number;
   totalVictime: number;
   totalTPRepartition: number;
+  avertissements: AvertissementCalcul[];
 }
 
 function ligne(
