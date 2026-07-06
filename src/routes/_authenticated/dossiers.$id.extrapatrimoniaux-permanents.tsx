@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/dossiers/$id/extrapatrimon
 function n(v: string) { const x = Number(v); return isFinite(x) ? x : 0; }
 function nOrNull(v: string) { if (v === "") return null; const x = Number(v); return isFinite(x) ? x : null; }
 
-const FORFAIT_KEYS = ["agrement", "sexuel", "esthetiquePerm", "etablissement", "pathologiesEvo"] as const;
+const FORFAIT_KEYS = ["agrement", "sexuel", "esthetiquePerm", "etablissement", "pathologiesEvolutives", "permanentExceptionnel"] as const;
 type ForfaitKey = (typeof FORFAIT_KEYS)[number];
 
 const FORFAIT_LABELS: Record<ForfaitKey, { title: string; description: string; cotationLabel?: string }> = {
@@ -32,7 +32,8 @@ const FORFAIT_LABELS: Record<ForfaitKey, { title: string; description: string; c
   sexuel: { title: "Préjudice sexuel (PSex)", description: "Atteinte à la fonction, à l'acte ou à la fertilité." },
   esthetiquePerm: { title: "Préjudice esthétique permanent (PEP)", description: "Cotation 0 à 7 sur la charte V&P.", cotationLabel: "Cotation (0-7)" },
   etablissement: { title: "Préjudice d'établissement (PE)", description: "Perte de chance d'organiser une vie familiale normale." },
-  pathologiesEvo: { title: "Pathologies évolutives / anxiété", description: "Préjudice lié à une pathologie évolutive ou à l'angoisse d'une aggravation." },
+  pathologiesEvolutives: { title: "Préjudices liés à des pathologies évolutives (PEV)", description: "Préjudice spécifique lié à une pathologie évolutive (VIH, hépatite C, amiante, etc.) ou à l'angoisse d'une aggravation." },
+  permanentExceptionnel: { title: "Préjudice permanent exceptionnel (PPE)", description: "Préjudice atypique directement lié aux circonstances exceptionnelles de l'accident ou à la nature de la victime (attentats, catastrophes collectives…)." },
 };
 
 function Page() {
