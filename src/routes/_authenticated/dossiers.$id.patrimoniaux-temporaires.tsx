@@ -130,6 +130,8 @@ function PatrimoniauxTempPageInner({
   }
   function delDSAR(idL: string) {
     patchPT({ dsaRecurrentes: pt.dsaRecurrentes.filter((l) => l.id !== idL) });
+  }
+
 
   // --- Frais divers helpers ----------------------------------------------
   function addFD() {
