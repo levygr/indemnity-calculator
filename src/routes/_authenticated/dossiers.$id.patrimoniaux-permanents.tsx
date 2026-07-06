@@ -341,6 +341,8 @@ function PageInner({
         title="Frais de logement adapté"
         description="Travaux ponctuels ou frais récurrents (surloyer, entretien). Capitalisation viagère ou temporaire pour le récurrent."
         rows={pp.logement} calc={log.lignes} totalReste={log.totalReste} repVictime={repLog.victime}
+        echus={{ montant: log.totalEchus.montant, tp: log.totalEchus.tp }}
+        aEchoir={{ montant: log.totalAEchoir.montant, tp: log.totalAEchoir.tp }}
         onAdd={() => addAdapt("logement")} onPatch={(id, p) => patchAdapt("logement", id, p)} onDel={(id) => delAdapt("logement", id)}
       />
 
@@ -349,6 +351,8 @@ function PageInner({
         title="Frais de véhicule adapté"
         description="Aménagement, surcoût d'achat, entretien. Même règles de capitalisation que le logement."
         rows={pp.vehicule} calc={veh.lignes} totalReste={veh.totalReste} repVictime={repVeh.victime}
+        echus={{ montant: veh.totalEchus.montant, tp: veh.totalEchus.tp }}
+        aEchoir={{ montant: veh.totalAEchoir.montant, tp: veh.totalAEchoir.tp }}
         onAdd={() => addAdapt("vehicule")} onPatch={(id, p) => patchAdapt("vehicule", id, p)} onDel={(id) => delAdapt("vehicule", id)}
       />
     </div>
