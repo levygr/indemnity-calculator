@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList } from "lucide-react";
+import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
   label: string;
@@ -27,10 +28,13 @@ export function AppSidebar({ id, reference }: { id: string; reference: string })
   return (
     <aside className="w-72 shrink-0 min-h-screen bg-sidebar text-sidebar-foreground flex flex-col">
       <div className="p-5 border-b border-sidebar-border">
-        <div className="text-[10px] font-semibold text-accent font-display tracking-widest">
-          VICTIMES &amp; PRÉJUDICES
+        <div className="flex items-center gap-2">
+          <img src={logoAsset.url} alt="Victimes & Préjudices" className="w-8 h-8 shrink-0" />
+          <div className="text-[10px] font-semibold text-accent font-display tracking-widest">
+            VICTIMES &amp; PRÉJUDICES
+          </div>
         </div>
-        <Link to="/dossiers" className="mt-2 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
+        <Link to="/dossiers" className="mt-3 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
           <Home className="w-4 h-4" />
           Retour aux dossiers
         </Link>
