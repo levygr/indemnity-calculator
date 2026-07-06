@@ -14,7 +14,9 @@ describe("DSA ponctuelles", () => {
       "2025-01-01",
     );
     expect(r.lignes).toHaveLength(1);
-    expect(r.totalRevalo).toBe(700);
+    expect(r.totalDepenseRevalorisee).toBe(1000);
+    expect(r.totalTpRevalorise).toBe(300);
+    expect(r.totalResteRevalorise).toBe(700);
   });
 });
 
@@ -27,8 +29,8 @@ describe("DSA récurrentes", () => {
       "2025-01-01",
     );
     // 100 €/mois × 12 = 1200 €/an ; durée ≈ 1 an
-    expect(r.totalRevalo).toBeGreaterThan(1150);
-    expect(r.totalRevalo).toBeLessThan(1250);
+    expect(r.totalDepenseRevalorisee).toBeGreaterThan(1150);
+    expect(r.totalDepenseRevalorisee).toBeLessThan(1250);
   });
 });
 

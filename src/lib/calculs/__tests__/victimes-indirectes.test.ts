@@ -22,8 +22,8 @@ describe("Décès — perte de revenus du foyer", () => {
       revenuAnnuelDefunt: 40000,
       partConsommeeDefunt: 0.3,
       proches: [
-        { id: "c", lien: "conjoint", prenom: "A", dateNaissance: "1985-01-01", sexe: "F", partFoyer: 2, ageFinEtudes: 25, affection: 0 },
-        { id: "e1", lien: "enfant", prenom: "B", dateNaissance: "2015-01-01", sexe: "M", partFoyer: 1, ageFinEtudes: 25, affection: 0 },
+        { id: "c", lien: "conjoint", prenom: "A", dateNaissance: "1985-01-01", sexe: "F", partFoyer: 2, ageFinEtudes: 25, affection: 0, pensionReversionAnnuelle: 0 },
+        { id: "e1", lien: "enfant", prenom: "B", dateNaissance: "2015-01-01", sexe: "M", partFoyer: 1, ageFinEtudes: 25, affection: 0, pensionReversionAnnuelle: 0 },
       ],
     };
     const r = calculerPerteRevenusFoyer(d, ctx);
@@ -48,7 +48,7 @@ describe("Décès — perte de revenus du foyer", () => {
       ...defaultPostesDeces(),
       revenuAnnuelDefunt: 40000,
       partConsommeeDefunt: 0.3,
-      proches: [{ id: "c", lien: "conjoint", prenom: "", dateNaissance: null, sexe: "F", partFoyer: 1, ageFinEtudes: 25, affection: 0 }],
+      proches: [{ id: "c", lien: "conjoint", prenom: "", dateNaissance: null, sexe: "F", partFoyer: 1, ageFinEtudes: 25, affection: 0, pensionReversionAnnuelle: 0 }],
     };
     const r = calculerPerteRevenusFoyer(d, ctx);
     expect(r.lignes).toHaveLength(0);

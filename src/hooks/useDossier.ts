@@ -51,7 +51,14 @@ export function useDossier(id: string) {
           etablissement: { ...base.postesPerm.etablissement, ...(raw.postesPerm?.etablissement ?? {}) },
           pathologiesEvo: { ...base.postesPerm.pathologiesEvo, ...(raw.postesPerm?.pathologiesEvo ?? {}) },
         },
-        postesDeces: { ...base.postesDeces, ...(raw.postesDeces ?? {}) },
+        postesDeces: {
+          ...base.postesDeces,
+          ...(raw.postesDeces ?? {}),
+          proches: (raw.postesDeces?.proches ?? []).map((p) => ({
+            pensionReversionAnnuelle: 0,
+            ...p,
+          })),
+        },
         postesSurvie: { ...base.postesSurvie, ...(raw.postesSurvie ?? {}) },
       };
 
