@@ -26,7 +26,7 @@ import { formatDateFR } from "@/lib/calculs/format";
 import { Copy, Plus, Trash2, LogOut, FileText } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/dossiers")({
+export const Route = createFileRoute("/_authenticated/dossiers/")({
   component: DossiersList,
 });
 
