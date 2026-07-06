@@ -48,8 +48,10 @@ export interface DossierData {
   dftDebutLendemain: boolean; // false = jour même de l'accident
   periodesDFT: PeriodeDFT[];
 
-  /** Données des postes (pages 2 à 7). Structuré ultérieurement par page. */
-  postes?: Record<string, unknown>;
+  // Note : les données des postes (pages 2 à 7) seront ajoutées dans les
+  // phases suivantes sous forme de champs typés dédiés (patrimoniauxTemp,
+  // extrapatrimoniauxTemp, etc.), pour préserver la sérialisation stricte
+  // exigée par TanStack Start.
 }
 
 export function defaultDossierData(): DossierData {
