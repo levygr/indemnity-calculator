@@ -238,14 +238,22 @@ export function calculerSynthese(d: DossierData): Synthese {
     return s;
   });
 
+  const totalVictime = sum(lignes, "partVictime");
+  const totalProvisions = (d.provisions || []).reduce(
+    (a, p) => a + (isFinite(p.montant) && p.montant > 0 ? p.montant : 0),
+    0,
+  );
+
   return {
     lignes,
     sousTotaux,
     totalMontant: sum(lignes, "montant"),
     totalTP: sum(lignes, "tiersPayeur"),
     totalDette: sum(lignes, "dette"),
-    totalVictime: sum(lignes, "partVictime"),
+    totalVictime,
     totalTPRepartition: sum(lignes, "partTP"),
+    totalProvisions,
+    soldeVictime: totalVictime - totalProvisions,
     avertissements: collecterAvertissements(d),
   };
 }
