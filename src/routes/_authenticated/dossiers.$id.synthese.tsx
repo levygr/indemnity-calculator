@@ -129,7 +129,29 @@ function Page() {
             <Note>Fractions de réduction appliquées : faute {(dossier.fFaute * 100).toFixed(0)} % × perte de chance {(dossier.fChance * 100).toFixed(0)} %.</Note>
           </div>
         )}
+        <div className="mt-4 rounded-md border border-primary/30 bg-primary/5 px-4 py-3 space-y-1">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Part victime (droit de préférence)</span>
+            <span className="tabular-nums font-medium">{formatEuros(synth.totalVictime)}</span>
+          </div>
+          <div className="flex justify-between text-sm text-destructive">
+            <span>Provisions versées</span>
+            <span className="tabular-nums">− {formatEuros(synth.totalProvisions)}</span>
+          </div>
+          <div className="flex justify-between items-baseline pt-2 border-t border-primary/20">
+            <span className="font-display font-semibold">Solde revenant à la victime</span>
+            <span className={`tabular-nums font-display font-semibold text-lg ${synth.soldeVictime < 0 ? "text-destructive" : "text-success"}`}>
+              {formatEuros(synth.soldeVictime)}
+            </span>
+          </div>
+        </div>
       </Section>
+
+      <ProvisionsSection
+        provisions={dossier.provisions}
+        onChange={(list) => update({ provisions: list })}
+        total={synth.totalProvisions}
+      />
 
       <Section title="Recherche de décisions comparables" description="Ouvre Themia dans un onglet séparé avec des critères pré-remplis (âge ± 5 ans, AIPP ± 5 points).">
         <div className="flex flex-wrap gap-2 print:hidden">
