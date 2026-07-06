@@ -10,11 +10,10 @@ import { AlertTriangle, CheckCircle2, Download, ExternalLink, Printer, Upload } 
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
-  defaultDossierData,
   formatEuros,
   anneesRevolues,
+  hydraterDossier,
   type Categorie,
-  type DossierData,
 } from "@/lib/calculs";
 import { themiaLink } from "@/lib/themia";
 import { toast } from "sonner";
@@ -51,9 +50,8 @@ function Page() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result));
-        // Merge léger sur les valeurs par défaut pour éviter les propriétés manquantes
-        const base = defaultDossierData();
-        const merged: DossierData = { ...base, ...parsed };
+        // Hydratation profonde : conserve toutes les valeurs par défaut manquantes
+        const merged = hydraterDossier(parsed);
         update(() => merged);
         toast.success("Dossier importé");
       } catch {

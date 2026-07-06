@@ -11,7 +11,7 @@ import {
   type DossierRow,
 } from "@/lib/dossiers.functions";
 import type { DossierData } from "@/lib/calculs/types";
-import { defaultDossierData } from "@/lib/calculs/types";
+import { hydraterDossier } from "@/lib/calculs/hydratation";
 
 export type SaveStatus = "idle" | "dirty" | "saving" | "saved" | "error";
 
@@ -29,40 +29,10 @@ export function useDossier(id: string) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timer = useRef<number | null>(null);
 
-  // Hydratation initiale (deep-merge partiel pour compatibilité avec les anciens dossiers)
+  // Hydratation initiale (deep-merge unifié via hydraterDossier)
   useEffect(() => {
     if (row && !local) {
-      const base = defaultDossierData();
-      const raw = (row.data ?? {}) as Partial<DossierData>;
-      const merged: DossierData = {
-        ...base,
-        ...raw,
-        postesTemp: { ...base.postesTemp, ...(raw.postesTemp ?? {}) },
-        postesPerm: {
-          ...base.postesPerm,
-          ...(raw.postesPerm ?? {}),
-          atpPerm: { ...base.postesPerm.atpPerm, ...(raw.postesPerm?.atpPerm ?? {}) },
-          pgpf: { ...base.postesPerm.pgpf, ...(raw.postesPerm?.pgpf ?? {}) },
-          ip: { ...base.postesPerm.ip, ...(raw.postesPerm?.ip ?? {}) },
-          dfp: { ...base.postesPerm.dfp, ...(raw.postesPerm?.dfp ?? {}) },
-          agrement: { ...base.postesPerm.agrement, ...(raw.postesPerm?.agrement ?? {}) },
-          sexuel: { ...base.postesPerm.sexuel, ...(raw.postesPerm?.sexuel ?? {}) },
-          esthetiquePerm: { ...base.postesPerm.esthetiquePerm, ...(raw.postesPerm?.esthetiquePerm ?? {}) },
-          etablissement: { ...base.postesPerm.etablissement, ...(raw.postesPerm?.etablissement ?? {}) },
-          pathologiesEvo: { ...base.postesPerm.pathologiesEvo, ...(raw.postesPerm?.pathologiesEvo ?? {}) },
-        },
-        postesDeces: {
-          ...base.postesDeces,
-          ...(raw.postesDeces ?? {}),
-          proches: (raw.postesDeces?.proches ?? []).map((p) => ({
-            pensionReversionAnnuelle: 0,
-            ...(p as Partial<DossierData["postesDeces"]["proches"][number]>),
-          })) as DossierData["postesDeces"]["proches"],
-        },
-        postesSurvie: { ...base.postesSurvie, ...(raw.postesSurvie ?? {}) },
-      };
-
-      setLocal(merged);
+      setLocal(hydraterDossier(row.data ?? {}));
     }
   }, [row, local]);
 
