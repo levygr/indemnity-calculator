@@ -1,8 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { AppSidebar } from "@/components/vp/AppSidebar";
 import { useDossier } from "@/hooks/useDossier";
 import type { SaveStatus } from "@/hooks/useDossier";
 import { Check, CircleDashed, Cloud, CloudOff } from "lucide-react";
+import { collecterAvertissements } from "@/lib/calculs";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id")({
   component: DossierLayout,
@@ -11,10 +13,14 @@ export const Route = createFileRoute("/_authenticated/dossiers/$id")({
 function DossierLayout() {
   const { id } = Route.useParams();
   const { dossier, status, isLoading } = useDossier(id);
+  const nbAvertissements = useMemo(
+    () => (dossier ? collecterAvertissements(dossier).length : 0),
+    [dossier],
+  );
 
   return (
     <div className="min-h-screen flex bg-background">
-      <AppSidebar id={id} reference={dossier?.reference ?? ""} />
+      <AppSidebar id={id} reference={dossier?.reference ?? ""} nbAvertissements={nbAvertissements} />
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-12 border-b bg-card flex items-center justify-end px-6 gap-4">
           <SaveIndicator status={status} />
