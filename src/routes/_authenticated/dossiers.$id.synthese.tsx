@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef } from "react";
 import { useDossier } from "@/hooks/useDossier";
-import { Field, Note, Section } from "@/components/vp/Field";
+import { Note, Section } from "@/components/vp/Field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
