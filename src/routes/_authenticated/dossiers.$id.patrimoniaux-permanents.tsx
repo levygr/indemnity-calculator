@@ -245,6 +245,7 @@ function PageInner({
           <Recap label="Capital dette" value={formatEuros(atp.capital)} />
           <Recap label="Part victime" value={formatEuros(repATP.victime)} accent="victime" />
         </div>
+        <EchusInfo echus={{ montant: atp.echus.montant, tp: atp.echus.tp }} aEchoirLabel={`Capital à échoir : rente ${formatEuros(atp.aEchoir.renteAnnuelle)} × PER ${atp.aEchoir.per.toFixed(3)}`} aEchoir={{ montant: atp.aEchoir.capital, tp: atp.aEchoir.capitalTP }} />
       </Section>
 
       {/* -------- PGPF -------- */}
