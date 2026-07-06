@@ -325,6 +325,80 @@ function PatrimoniauxTempPageInner({
       </Section>
 
       <Section
+        title="Frais divers (FD)"
+        description="Frais restés à charge en lien avec le dommage avant consolidation."
+      >
+        <Note>
+          Honoraires du médecin-conseil, frais de déplacement aux expertises,
+          garde d'enfants, frais administratifs et tous frais restés à charge
+          en lien avec le dommage avant consolidation.
+        </Note>
+        <div className="overflow-x-auto mt-3">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Libellé</TableHead>
+                <TableHead>Montant</TableHead>
+                <TableHead>Montant revalorisé</TableHead>
+                <TableHead>TP</TableHead>
+                <TableHead>TP revalorisé</TableHead>
+                <TableHead>Reste</TableHead>
+                <TableHead>Revalorisation</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {pt.fraisDivers.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-6">
+                    Aucun frais divers.
+                  </TableCell>
+                </TableRow>
+              )}
+              {pt.fraisDivers.map((l) => {
+                const calc = fdCalc.lignes.find((x) => x.id === l.id);
+                return (
+                  <TableRow key={l.id} className="vp-row-alt">
+                    <TableCell className="w-40">
+                      <Input type="date" value={l.date ?? ""} onChange={(e) => patchFD(l.id, { date: e.target.value || null })} />
+                    </TableCell>
+                    <TableCell>
+                      <Input value={l.libelle} onChange={(e) => patchFD(l.id, { libelle: e.target.value })} />
+                    </TableCell>
+                    <TableCell className="w-28">
+                      <Input type="number" min={0} step="0.01" value={l.montant} onChange={(e) => patchFD(l.id, { montant: numOr0(e.target.value) })} />
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{formatEuros(calc?.depenseRevalorisee ?? 0)}</TableCell>
+                    <TableCell className="w-28">
+                      <Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchFD(l.id, { tiersPayeur: numOr0(e.target.value) })} />
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">{formatEuros(calc?.tpRevalorise ?? 0)}</TableCell>
+                    <TableCell className="font-medium">{formatEuros(calc?.resteRevalorise ?? 0)}</TableCell>
+                    <TableCell className="w-36">
+                      <ModeRevaloSelect value={l.modeRevalo} onChange={(v) => patchFD(l.id, { modeRevalo: v })} />
+                    </TableCell>
+                    <TableCell><IconDelete onClick={() => delFD(l.id)} /></TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="mt-3 flex items-center justify-between">
+          <Button size="sm" variant="outline" onClick={addFD}><Plus className="w-4 h-4 mr-2" />Ajouter un frais</Button>
+          <TotalPill label="Total Frais divers (revalorisé)" value={fdCalc.totalDepenseRevalorisee} />
+        </div>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Recap label="Total FD (revalorisé)" value={formatEuros(fdCalc.totalDepenseRevalorisee)} />
+          <Recap label="Créance tiers payeur (revalorisée)" value={formatEuros(fdCalc.totalTpRevalorise)} />
+          <Recap label="Part victime" value={formatEuros(fdRep.victime)} accent="victime" />
+        </div>
+      </Section>
+
+
+
+      <Section
         title="Assistance tierce personne — temporaire"
         description="Montant = taux horaire × heures/jour × jours × (facteur / 365). Facteur usuel 412 pour tenir compte des congés et jours fériés."
       >
