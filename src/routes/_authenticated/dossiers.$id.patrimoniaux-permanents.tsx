@@ -288,6 +288,51 @@ function PageInner({
         </div>
       </Section>
 
+      {/* -------- PSU -------- */}
+      <Section
+        title="Préjudice scolaire, universitaire ou de formation (PSU)"
+        description="Forfait indemnisant le retard, le redoublement, la réorientation ou la perte d'années de formation subis en raison du dommage."
+      >
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <Field label="Montant retenu (€)">
+            <Input
+              type="number"
+              min={0}
+              step="0.01"
+              value={pp.psu.montant}
+              onChange={(e) => patch({ psu: { ...pp.psu, montant: n(e.target.value) } })}
+            />
+          </Field>
+          <div className="md:col-span-3">
+            <Field label="Note (redoublement, réorientation, perte d'années…)">
+              <Input
+                value={pp.psu.note}
+                onChange={(e) => patch({ psu: { ...pp.psu, note: e.target.value } })}
+                placeholder="Ex. redoublement de terminale, réorientation professionnelle imposée…"
+              />
+            </Field>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <Recap label="Montant PSU" value={formatEuros(Math.max(0, pp.psu.montant || 0))} />
+          <Recap
+            label="Dette responsable"
+            value={formatEuros(detteResponsable(Math.max(0, pp.psu.montant || 0), dossier.fFaute, dossier.fChance))}
+          />
+          <Recap
+            label="Part victime"
+            value={formatEuros(
+              repartition(
+                Math.max(0, pp.psu.montant || 0),
+                0,
+                detteResponsable(Math.max(0, pp.psu.montant || 0), dossier.fFaute, dossier.fChance),
+              ).victime,
+            )}
+            accent="victime"
+          />
+        </div>
+      </Section>
+
       {/* -------- Logement -------- */}
       <AdaptationSection
         title="Frais de logement adapté"
