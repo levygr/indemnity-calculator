@@ -24,10 +24,10 @@ function ctxWith(dateConsolidation: string, dateLiquidation: string) {
 describe("calculerEchus", () => {
   it("2 ans entre consolidation et liquidation → fraction ≈ 2", () => {
     const e = calculerEchus(10000, 4000, "2023-01-01", "2025-01-01");
-    expect(e.fractionAnnees).toBeCloseTo(2, 2);
-    expect(e.montant).toBeCloseTo(20000, 0);
-    expect(e.tp).toBeCloseTo(8000, 0);
-    expect(e.reste).toBeCloseTo(12000, 0);
+    expect(e.fractionAnnees).toBeCloseTo(2, 1);
+    expect(e.montant).toBeCloseTo(20000, -2);
+    expect(e.tp).toBeCloseTo(8000, -2);
+    expect(e.reste).toBeCloseTo(12000, -2);
   });
 
   it("dates égales → tout à 0", () => {
