@@ -427,7 +427,33 @@ function AdaptationSection({
       <div className="mt-3">
         <Note>Part victime après répartition et coefficients : <strong>{formatEuros(repVictime)}</strong></Note>
       </div>
+      <EchusInfo echus={echus} aEchoirLabel="Capital à échoir (lignes récurrentes)" aEchoir={aEchoir} />
     </Section>
+  );
+}
+
+function EchusInfo({ echus, aEchoirLabel, aEchoir }: {
+  echus: { montant: number; tp: number };
+  aEchoirLabel: string;
+  aEchoir: { montant: number; tp: number };
+}) {
+  if ((echus.montant || 0) <= 0 && (aEchoir.montant || 0) <= 0) return null;
+  return (
+    <div className="mt-3 text-xs text-muted-foreground space-y-1">
+      {echus.montant > 0 && (
+        <div>
+          Arrérages échus (consolidation → liquidation) :{" "}
+          <strong className="text-foreground">{formatEuros(echus.montant)}</strong>
+          {echus.tp > 0 && <> dont TP <strong className="text-foreground">{formatEuros(echus.tp)}</strong></>}
+        </div>
+      )}
+      {aEchoir.montant > 0 && (
+        <div>
+          {aEchoirLabel} : <strong className="text-foreground">{formatEuros(aEchoir.montant)}</strong>
+          {aEchoir.tp > 0 && <> dont TP <strong className="text-foreground">{formatEuros(aEchoir.tp)}</strong></>}
+        </div>
+      )}
+    </div>
   );
 }
 
