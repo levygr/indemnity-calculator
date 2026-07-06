@@ -15,6 +15,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDossiersRouteImport } from './routes/_authenticated/dossiers'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
 import { Route as AuthenticatedDossiersIdIndexRouteImport } from './routes/_authenticated/dossiers.$id.index'
+import { Route as AuthenticatedDossiersIdPatrimoniauxTemporairesRouteImport } from './routes/_authenticated/dossiers.$id.patrimoniaux-temporaires'
+import { Route as AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-temporaires'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -46,18 +48,34 @@ const AuthenticatedDossiersIdIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedDossiersIdRoute,
   } as any)
+const AuthenticatedDossiersIdPatrimoniauxTemporairesRoute =
+  AuthenticatedDossiersIdPatrimoniauxTemporairesRouteImport.update({
+    id: '/patrimoniaux-temporaires',
+    path: '/patrimoniaux-temporaires',
+    getParentRoute: () => AuthenticatedDossiersIdRoute,
+  } as any)
+const AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute =
+  AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRouteImport.update({
+    id: '/extrapatrimoniaux-temporaires',
+    path: '/extrapatrimoniaux-temporaires',
+    getParentRoute: () => AuthenticatedDossiersIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dossiers': typeof AuthenticatedDossiersRouteWithChildren
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
+  '/dossiers/$id/patrimoniaux-temporaires': typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   '/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dossiers': typeof AuthenticatedDossiersRouteWithChildren
+  '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
+  '/dossiers/$id/patrimoniaux-temporaires': typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdIndexRoute
 }
 export interface FileRoutesById {
@@ -67,13 +85,28 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dossiers': typeof AuthenticatedDossiersRouteWithChildren
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
+  '/_authenticated/dossiers/$id/patrimoniaux-temporaires': typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   '/_authenticated/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dossiers' | '/dossiers/$id' | '/dossiers/$id/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dossiers'
+    | '/dossiers/$id'
+    | '/dossiers/$id/extrapatrimoniaux-temporaires'
+    | '/dossiers/$id/patrimoniaux-temporaires'
+    | '/dossiers/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dossiers' | '/dossiers/$id'
+  to:
+    | '/'
+    | '/auth'
+    | '/dossiers'
+    | '/dossiers/$id/extrapatrimoniaux-temporaires'
+    | '/dossiers/$id/patrimoniaux-temporaires'
+    | '/dossiers/$id'
   id:
     | '__root__'
     | '/'
@@ -81,6 +114,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dossiers'
     | '/_authenticated/dossiers/$id'
+    | '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires'
+    | '/_authenticated/dossiers/$id/patrimoniaux-temporaires'
     | '/_authenticated/dossiers/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -134,15 +169,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDossiersIdIndexRouteImport
       parentRoute: typeof AuthenticatedDossiersIdRoute
     }
+    '/_authenticated/dossiers/$id/patrimoniaux-temporaires': {
+      id: '/_authenticated/dossiers/$id/patrimoniaux-temporaires'
+      path: '/patrimoniaux-temporaires'
+      fullPath: '/dossiers/$id/patrimoniaux-temporaires'
+      preLoaderRoute: typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRouteImport
+      parentRoute: typeof AuthenticatedDossiersIdRoute
+    }
+    '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires': {
+      id: '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires'
+      path: '/extrapatrimoniaux-temporaires'
+      fullPath: '/dossiers/$id/extrapatrimoniaux-temporaires'
+      preLoaderRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRouteImport
+      parentRoute: typeof AuthenticatedDossiersIdRoute
+    }
   }
 }
 
 interface AuthenticatedDossiersIdRouteChildren {
+  AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
+  AuthenticatedDossiersIdPatrimoniauxTemporairesRoute: typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   AuthenticatedDossiersIdIndexRoute: typeof AuthenticatedDossiersIdIndexRoute
 }
 
 const AuthenticatedDossiersIdRouteChildren: AuthenticatedDossiersIdRouteChildren =
   {
+    AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute:
+      AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute,
+    AuthenticatedDossiersIdPatrimoniauxTemporairesRoute:
+      AuthenticatedDossiersIdPatrimoniauxTemporairesRoute,
     AuthenticatedDossiersIdIndexRoute: AuthenticatedDossiersIdIndexRoute,
   }
 
@@ -183,3 +238,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
