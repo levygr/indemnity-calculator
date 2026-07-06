@@ -18,6 +18,8 @@ import {
   type Provision,
 } from "@/lib/calculs";
 import { themiaLink } from "@/lib/themia";
+import { AIPP_META } from "@/data/bareme_aipp";
+import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { toast } from "sonner";
 
 
@@ -281,9 +283,18 @@ function Page() {
       )}
 
 
+      <div className="mt-6 rounded-md border border-border bg-muted/30 px-4 py-3 text-[11px] text-muted-foreground space-y-1">
+        <div className="font-display font-semibold text-foreground text-xs">Référentiels retenus</div>
+        <div>Capitalisation : Gazette du Palais 2025 (taux 0,5 %), table {dossier.tableMortalite}.</div>
+        <div>Valeur du point AIPP : {AIPP_META.source} — édition {AIPP_META.edition ?? "non renseignée"}.</div>
+        <div>Fourchettes indicatives : {REFERENTIEL.nom} — édition {REFERENTIEL.edition ?? "non renseignée"}.</div>
+        <div>Date du chiffrage : {new Date().toLocaleDateString("fr-FR")}.</div>
+      </div>
+
       <div className="text-xs text-muted-foreground text-center pt-4 print:pt-8">
         Cabinet Victimes &amp; Préjudices — Grenoble &amp; Annecy — victimesetprejudices.fr
       </div>
+
     </div>
   );
 }

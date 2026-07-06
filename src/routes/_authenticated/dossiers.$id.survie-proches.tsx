@@ -24,6 +24,7 @@ import {
   type ProcheSurvie,
   type Sexe,
 } from "@/lib/calculs";
+import { FourchetteAffectionHint } from "@/components/vp/FourchetteHint";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/survie-proches")({
   component: Page,
@@ -141,7 +142,10 @@ function PageInner({
                   </TableCell>
                   <TableCell><Input type="number" min={0} step="0.01" className="w-32" value={p.perteRevenusAnnuelle} onChange={(e) => patchProche(p.id, { perteRevenusAnnuelle: n(e.target.value) })} /></TableCell>
                   <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.perteRevenusTP} onChange={(e) => patchProche(p.id, { perteRevenusTP: n(e.target.value) })} /></TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.affection} onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} /></TableCell>
+                  <TableCell>
+                    <Input type="number" min={0} step="0.01" className="w-28" value={p.affection} onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
+                    <div className="mt-1"><FourchetteAffectionHint lien={p.lien} /></div>
+                  </TableCell>
                   <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.pep} onChange={(e) => patchProche(p.id, { pep: n(e.target.value) })} /></TableCell>
                   <TableCell><Button variant="ghost" size="icon" onClick={() => delProche(p.id)}><Trash2 className="w-4 h-4" /></Button></TableCell>
                 </TableRow>

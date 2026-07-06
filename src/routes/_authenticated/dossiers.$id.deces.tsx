@@ -24,6 +24,7 @@ import {
   type Proche,
   type Sexe,
 } from "@/lib/calculs";
+import { FourchetteAffectionHint } from "@/components/vp/FourchetteHint";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/deces")({
   component: Page,
@@ -193,6 +194,7 @@ function PageInner({
                     <Input type="number" min={0} step="0.01" className="w-28"
                       value={p.affection}
                       onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
+                    <div className="mt-1"><FourchetteAffectionHint lien={p.lien} /></div>
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="icon" onClick={() => delProche(p.id)}><Trash2 className="w-4 h-4" /></Button>

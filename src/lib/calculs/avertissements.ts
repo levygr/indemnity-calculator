@@ -13,6 +13,8 @@ import {
   buildContexte,
   perFromMode,
 } from "./postes/permanents";
+import { AIPP_META } from "@/data/bareme_aipp";
+import { REFERENTIEL } from "@/data/referentiel_evaluation";
 
 export type AvertissementCode =
   | "PER_NUL"
@@ -22,7 +24,8 @@ export type AvertissementCode =
   | "AIPP_HORS_BORNES"
   | "DONNEE_MANQUANTE"
   | "PROVISIONS_SUPERIEURES"
-  | "ECART_CREANCES_TP";
+  | "ECART_CREANCES_TP"
+  | "REFERENTIEL_NON_VERSIONNE";
 
 export interface AvertissementCalcul {
   code: AvertissementCode;
@@ -239,6 +242,22 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       code: "AIPP_HORS_BORNES",
       poste: "Dossier",
       message: `Taux d'AIPP hors de la plage [0, 100] : ${d.tauxAIPP}.`,
+    });
+  }
+
+  // ---- e) REFERENTIEL_NON_VERSIONNE ----
+  if (AIPP_META.edition == null) {
+    out.push({
+      code: "REFERENTIEL_NON_VERSIONNE",
+      poste: "Référentiels",
+      message: `Édition du barème AIPP (${AIPP_META.source}) non renseignée : compléter src/data/bareme_aipp.ts avant tout usage juridique.`,
+    });
+  }
+  if (REFERENTIEL.edition == null) {
+    out.push({
+      code: "REFERENTIEL_NON_VERSIONNE",
+      poste: "Référentiels",
+      message: `Édition du référentiel d'évaluation (${REFERENTIEL.nom}) non renseignée : compléter src/data/referentiel_evaluation.ts avant tout usage juridique.`,
     });
   }
 

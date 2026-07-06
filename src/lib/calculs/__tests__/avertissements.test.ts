@@ -2,8 +2,10 @@ import { describe, it, expect } from "vitest";
 import { collecterAvertissements, defaultDossierData } from "@/lib/calculs";
 
 describe("Avertissements de calcul", () => {
-  it("aucun avertissement sur dossier vide", () => {
-    const a = collecterAvertissements(defaultDossierData());
+  it("aucun avertissement de calcul sur dossier vide (hors référentiel non versionné)", () => {
+    const a = collecterAvertissements(defaultDossierData()).filter(
+      (x) => x.code !== "REFERENTIEL_NON_VERSIONNE",
+    );
     expect(a).toEqual([]);
   });
 

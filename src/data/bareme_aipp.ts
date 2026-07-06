@@ -4,6 +4,18 @@
  * Intégré en dur (petit tableau, non versionné dans les JSON).
  */
 
+/**
+ * Métadonnées du barème AIPP. L'édition doit être renseignée avant tout
+ * usage juridique : sans édition, les valeurs du point ne peuvent pas être
+ * réputées à jour.
+ */
+export const AIPP_META: { source: string; edition: string | null; note: string } = {
+  source: "Référentiel Intercours",
+  edition: null,
+  note: "Vérifier l'édition en vigueur du référentiel avant tout usage. Ne jamais utiliser les valeurs sans avoir confirmé l'édition applicable.",
+};
+
+
 export const AIPP_TRANCHES_TAUX: Array<{ min: number; max: number; label: string }> = [
   { min: 1, max: 5, label: "1-5" },
   { min: 6, max: 10, label: "6-10" },

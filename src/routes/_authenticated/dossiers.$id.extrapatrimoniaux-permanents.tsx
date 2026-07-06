@@ -16,6 +16,8 @@ import {
   type ForfaitPoste,
   type PostesPermanents,
 } from "@/lib/calculs";
+import { AIPP_META } from "@/data/bareme_aipp";
+import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/extrapatrimoniaux-permanents")({
   component: Page,
@@ -110,10 +112,14 @@ function PageInner({
           <Recap label="Dette responsable (après coefficients)" value={formatEuros(detteDFP)} />
           <Recap label="Part victime" value={formatEuros(repDFP.victime)} accent="victime" />
         </div>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          Valeur du point : {AIPP_META.source}, édition {AIPP_META.edition ?? "non renseignée"}.
+        </p>
         {ctx.tauxAIPP <= 0 && pp.dfp.methode === "point" && (
           <div className="mt-3"><Note variant="warning">Renseignez un taux d'AIPP sur la page Dossier pour calculer la valeur du point.</Note></div>
         )}
       </Section>
+
 
       {/* -------- Forfaits -------- */}
       {FORFAIT_KEYS.map((k) => {
@@ -133,9 +139,11 @@ function PageInner({
               <Recap label="Dette responsable" value={formatEuros(dette)} />
               <Recap label="Part victime" value={formatEuros(rep.victime)} accent="victime" />
             </div>
+            {k === "esthetiquePerm" && <FourchetteDegreHint poste="PEP" degre={f.cotation} />}
           </Section>
         );
       })}
+
     </div>
   );
 }
