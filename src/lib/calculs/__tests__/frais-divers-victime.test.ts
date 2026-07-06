@@ -4,12 +4,13 @@ import type { FraisDiversVictime } from "../types";
 
 function mk(overrides: Partial<FraisDiversVictime> = {}): FraisDiversVictime {
   return {
-    id: overrides.id ?? "l1",
-    date: overrides.date ?? "2024-01-01",
-    libelle: overrides.libelle ?? "Test",
-    montant: overrides.montant ?? 1000,
-    tiersPayeur: overrides.tiersPayeur ?? 0,
-    modeRevalo: overrides.modeRevalo ?? "non",
+    id: "l1",
+    date: "2024-01-01",
+    libelle: "Test",
+    montant: 1000,
+    tiersPayeur: 0,
+    modeRevalo: "non",
+    ...overrides,
   };
 }
 
