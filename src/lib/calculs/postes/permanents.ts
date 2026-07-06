@@ -237,6 +237,8 @@ export interface LigneDSFRecurrente {
   capitalDette: number;
   capitalTP: number;
   capitalReste: number;
+  echus: EchusResult;
+  aEchoir: { renteAnnuelle: number; per: number; capital: number; capitalTP: number; reste: number };
 }
 
 export function calculerDSFPonctuelles(lignes: DSFPonctuelle[]): {
