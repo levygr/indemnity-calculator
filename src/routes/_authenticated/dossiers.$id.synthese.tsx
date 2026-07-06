@@ -18,6 +18,8 @@ import {
   type Provision,
 } from "@/lib/calculs";
 import { themiaLink } from "@/lib/themia";
+import { AIPP_META } from "@/data/bareme_aipp";
+import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { toast } from "sonner";
 
 
