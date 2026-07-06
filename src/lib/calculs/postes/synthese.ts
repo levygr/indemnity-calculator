@@ -244,6 +244,15 @@ export function calculerSynthese(d: DossierData): Synthese {
     0,
   );
 
+  const avertissements = collecterAvertissements(d);
+  if (totalProvisions > totalVictime) {
+    avertissements.push({
+      code: "PROVISIONS_SUPERIEURES",
+      poste: "Provisions",
+      message: "Le total des provisions excède la part revenant à la victime.",
+    });
+  }
+
   return {
     lignes,
     sousTotaux,
@@ -254,7 +263,7 @@ export function calculerSynthese(d: DossierData): Synthese {
     totalTPRepartition: sum(lignes, "partTP"),
     totalProvisions,
     soldeVictime: totalVictime - totalProvisions,
-    avertissements: collecterAvertissements(d),
+    avertissements,
   };
 }
 
