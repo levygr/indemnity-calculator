@@ -55,3 +55,37 @@ describe("Synthèse", () => {
     expect(s.totalMontant).toBe(15000);
   });
 });
+
+describe("Provisions", () => {
+  it("totalProvisions = somme et soldeVictime = totalVictime − totalProvisions", () => {
+    const d = defaultDossierData();
+    d.postesTemp.se.montant = 10000;
+    d.provisions = [
+      { id: "1", date: "2024-06-01", montant: 3000, debiteur: "Assureur" },
+      { id: "2", date: "2024-12-01", montant: 2000, debiteur: "FGAO" },
+    ];
+    const s = calculerSynthese(d);
+    expect(s.totalProvisions).toBe(5000);
+    expect(s.soldeVictime).toBeCloseTo(s.totalVictime - 5000, 6);
+    expect(s.avertissements.some((a) => a.code === "PROVISIONS_SUPERIEURES")).toBe(false);
+  });
+
+  it("avertissement PROVISIONS_SUPERIEURES si provisions > part victime", () => {
+    const d = defaultDossierData();
+    d.postesTemp.se.montant = 1000;
+    d.provisions = [{ id: "1", date: "2024-06-01", montant: 5000, debiteur: "Assureur" }];
+    const s = calculerSynthese(d);
+    expect(s.soldeVictime).toBeLessThan(0);
+    expect(s.avertissements.some((a) => a.code === "PROVISIONS_SUPERIEURES")).toBe(true);
+  });
+
+  it("montants négatifs ou invalides ignorés", () => {
+    const d = defaultDossierData();
+    d.provisions = [
+      { id: "1", date: null, montant: -100, debiteur: "" },
+      { id: "2", date: null, montant: 500, debiteur: "" },
+    ];
+    const s = calculerSynthese(d);
+    expect(s.totalProvisions).toBe(500);
+  });
+});
