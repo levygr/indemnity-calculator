@@ -360,12 +360,14 @@ function PageInner({
 }
 
 function AdaptationSection({
-  title, description, rows, calc, totalReste, repVictime, onAdd, onPatch, onDel,
+  title, description, rows, calc, totalReste, repVictime, echus, aEchoir, onAdd, onPatch, onDel,
 }: {
   title: string; description: string;
   rows: AdaptationLigne[];
   calc: Array<{ id: string; per: number; reste: number }>;
   totalReste: number; repVictime: number;
+  echus: { montant: number; tp: number };
+  aEchoir: { montant: number; tp: number };
   onAdd: () => void;
   onPatch: (id: string, p: Partial<AdaptationLigne>) => void;
   onDel: (id: string) => void;
