@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef } from "react";
 import { useDossier } from "@/hooks/useDossier";
-import { Note, Section } from "@/components/vp/Field";
+import { Field, Note, Section } from "@/components/vp/Field";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { AlertTriangle, CheckCircle2, Download, ExternalLink, Printer, Upload } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Download, ExternalLink, Plus, Printer, Trash2, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
@@ -14,6 +15,7 @@ import {
   anneesRevolues,
   hydraterDossier,
   type Categorie,
+  type Provision,
 } from "@/lib/calculs";
 import { themiaLink } from "@/lib/themia";
 import { toast } from "sonner";
