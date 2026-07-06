@@ -159,6 +159,9 @@ export function calculerSynthese(d: DossierData): Synthese {
   const ip = calculerIP(pp.ip, ctx);
   lignes.push(ligne("IP", "Incidence professionnelle", "PP", ip.total, ip.totalTP, f, c));
 
+  lignes.push(ligne("PSU", "Préjudice scolaire, universitaire ou de formation",
+    "PP", Math.max(0, pp.psu.montant || 0), 0, f, c));
+
   const log = calculerAdaptation(pp.logement, ctx);
   lignes.push(ligne("LOG", "Frais de logement adapté", "PP", log.total, log.totalTP, f, c));
 
@@ -172,7 +175,8 @@ export function calculerSynthese(d: DossierData): Synthese {
   lignes.push(ligne("PSex", "Préjudice sexuel", "EPP", Math.max(0, pp.sexuel.montant || 0), 0, f, c));
   lignes.push(ligne("PEP", "Préjudice esthétique permanent", "EPP", Math.max(0, pp.esthetiquePerm.montant || 0), 0, f, c));
   lignes.push(ligne("PE", "Préjudice d'établissement", "EPP", Math.max(0, pp.etablissement.montant || 0), 0, f, c));
-  lignes.push(ligne("PathEvo", "Pathologies évolutives / anxiété", "EPP", Math.max(0, pp.pathologiesEvo.montant || 0), 0, f, c));
+  lignes.push(ligne("PEV", "Préjudices liés à des pathologies évolutives", "EPP", Math.max(0, pp.pathologiesEvolutives.montant || 0), 0, f, c));
+  lignes.push(ligne("PPE", "Préjudice permanent exceptionnel", "EPP", Math.max(0, pp.permanentExceptionnel.montant || 0), 0, f, c));
 
   // ----- Victimes indirectes — décès -----
   const pd = d.postesDeces;

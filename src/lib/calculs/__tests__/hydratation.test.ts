@@ -73,4 +73,31 @@ describe("hydraterDossier", () => {
     expect(d.postesDeces.proches[0].pensionReversionAnnuelle).toBe(0);
     expect(d.postesDeces.proches[0].affection).toBe(30000);
   });
+
+  it("migre l'ancien poste pathologiesEvo vers pathologiesEvolutives", () => {
+    const d = hydraterDossier({
+      postesPerm: {
+        pathologiesEvo: { montant: 12000, cotation: 4 },
+      },
+    });
+    expect(d.postesPerm.pathologiesEvolutives).toEqual({ montant: 12000, cotation: 4 });
+    expect(d.postesPerm.permanentExceptionnel).toEqual({ montant: 0, cotation: 0 });
+  });
+
+  it("conserve pathologiesEvolutives et permanentExceptionnel déjà scindés", () => {
+    const d = hydraterDossier({
+      postesPerm: {
+        pathologiesEvolutives: { montant: 8000, cotation: 3 },
+        permanentExceptionnel: { montant: 15000, cotation: 5 },
+      },
+    });
+    expect(d.postesPerm.pathologiesEvolutives.montant).toBe(8000);
+    expect(d.postesPerm.permanentExceptionnel.montant).toBe(15000);
+  });
+
+  it("initialise psu par défaut", () => {
+    const d = hydraterDossier({});
+    expect(d.postesPerm.psu).toEqual({ montant: 0, note: "" });
+  });
 });
+

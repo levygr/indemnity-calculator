@@ -64,12 +64,25 @@ export function hydraterDossier(raw: unknown): DossierData {
       atpPerm: { ...base.postesPerm.atpPerm, ...(isObject(srcPP.atpPerm) ? srcPP.atpPerm : {}) },
       pgpf: { ...base.postesPerm.pgpf, ...(isObject(srcPP.pgpf) ? srcPP.pgpf : {}) },
       ip: { ...base.postesPerm.ip, ...(isObject(srcPP.ip) ? srcPP.ip : {}) },
+      psu: { ...base.postesPerm.psu, ...(isObject(srcPP.psu) ? srcPP.psu : {}) },
       dfp: { ...base.postesPerm.dfp, ...(isObject(srcPP.dfp) ? srcPP.dfp : {}) },
       agrement: { ...base.postesPerm.agrement, ...(isObject(srcPP.agrement) ? srcPP.agrement : {}) },
       sexuel: { ...base.postesPerm.sexuel, ...(isObject(srcPP.sexuel) ? srcPP.sexuel : {}) },
       esthetiquePerm: { ...base.postesPerm.esthetiquePerm, ...(isObject(srcPP.esthetiquePerm) ? srcPP.esthetiquePerm : {}) },
       etablissement: { ...base.postesPerm.etablissement, ...(isObject(srcPP.etablissement) ? srcPP.etablissement : {}) },
-      pathologiesEvo: { ...base.postesPerm.pathologiesEvo, ...(isObject(srcPP.pathologiesEvo) ? srcPP.pathologiesEvo : {}) },
+      // Migration : ancien poste unique pathologiesEvo → pathologiesEvolutives
+      pathologiesEvolutives: {
+        ...base.postesPerm.pathologiesEvolutives,
+        ...(isObject(srcPP.pathologiesEvolutives)
+          ? srcPP.pathologiesEvolutives
+          : isObject(srcPP.pathologiesEvo)
+          ? srcPP.pathologiesEvo
+          : {}),
+      },
+      permanentExceptionnel: {
+        ...base.postesPerm.permanentExceptionnel,
+        ...(isObject(srcPP.permanentExceptionnel) ? srcPP.permanentExceptionnel : {}),
+      },
     },
     postesDeces: {
       ...base.postesDeces,
