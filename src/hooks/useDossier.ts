@@ -29,10 +29,17 @@ export function useDossier(id: string) {
   const [status, setStatus] = useState<SaveStatus>("idle");
   const timer = useRef<number | null>(null);
 
-  // Hydratation initiale
+  // Hydratation initiale (deep-merge partiel pour compatibilité avec les anciens dossiers)
   useEffect(() => {
     if (row && !local) {
-      setLocal({ ...defaultDossierData(), ...(row.data as DossierData) });
+      const base = defaultDossierData();
+      const raw = (row.data ?? {}) as Partial<DossierData>;
+      const merged: DossierData = {
+        ...base,
+        ...raw,
+        postesTemp: { ...base.postesTemp, ...(raw.postesTemp ?? {}) },
+      };
+      setLocal(merged);
     }
   }, [row, local]);
 
