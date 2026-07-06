@@ -89,6 +89,8 @@ export interface Synthese {
   totalDette: number;
   totalVictime: number;
   totalTPRepartition: number;
+  totalProvisions: number;
+  soldeVictime: number;
   avertissements: AvertissementCalcul[];
 }
 
