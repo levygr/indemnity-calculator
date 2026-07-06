@@ -174,18 +174,19 @@ function PatrimoniauxTempPageInner({
               <TableRow>
                 <TableHead>Date</TableHead>
                 <TableHead>Libellé</TableHead>
-                <TableHead>Dépense (€)</TableHead>
-                <TableHead>TP (€)</TableHead>
-                <TableHead>Reste (€)</TableHead>
+                <TableHead>Dépense</TableHead>
+                <TableHead>Dépense revalorisée</TableHead>
+                <TableHead>TP</TableHead>
+                <TableHead>TP revalorisé</TableHead>
+                <TableHead>Reste</TableHead>
                 <TableHead>Revalorisation</TableHead>
-                <TableHead>Reste revalorisé</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {pt.dsaPonctuelles.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-muted-foreground py-6">
+                  <TableCell colSpan={9} className="text-center text-muted-foreground py-6">
                     Aucune dépense ponctuelle.
                   </TableCell>
                 </TableRow>
@@ -203,14 +204,15 @@ function PatrimoniauxTempPageInner({
                     <TableCell className="w-28">
                       <Input type="number" min={0} step="0.01" value={l.depense} onChange={(e) => patchDSAP(l.id, { depense: numOr0(e.target.value) })} />
                     </TableCell>
+                    <TableCell className="text-muted-foreground">{formatEuros(calc?.depenseRevalorisee ?? 0)}</TableCell>
                     <TableCell className="w-28">
                       <Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchDSAP(l.id, { tiersPayeur: numOr0(e.target.value) })} />
                     </TableCell>
-                    <TableCell className="text-muted-foreground">{formatEuros(calc?.resteACharge ?? 0)}</TableCell>
+                    <TableCell className="text-muted-foreground">{formatEuros(calc?.tpRevalorise ?? 0)}</TableCell>
+                    <TableCell className="font-medium">{formatEuros(calc?.resteRevalorise ?? 0)}</TableCell>
                     <TableCell className="w-36">
                       <ModeRevaloSelect value={l.modeRevalo} onChange={(v) => patchDSAP(l.id, { modeRevalo: v })} />
                     </TableCell>
-                    <TableCell className="font-medium">{formatEuros(calc?.revalorise ?? 0)}</TableCell>
                     <TableCell><IconDelete onClick={() => delDSAP(l.id)} /></TableCell>
                   </TableRow>
                 );
@@ -220,7 +222,7 @@ function PatrimoniauxTempPageInner({
         </div>
         <div className="mt-3 flex items-center justify-between">
           <Button size="sm" variant="outline" onClick={addDSAP}><Plus className="w-4 h-4 mr-2" />Ajouter une dépense</Button>
-          <TotalPill label="Total DSA ponctuelles (reste revalorisé)" value={dsaPCalc.totalRevalo} />
+          <TotalPill label="Total DSA ponctuelles (dépense revalorisée)" value={dsaPCalc.totalDepenseRevalorisee} />
         </div>
       </Section>
 
