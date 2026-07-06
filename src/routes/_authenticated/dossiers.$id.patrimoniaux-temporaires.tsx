@@ -53,7 +53,16 @@ function PatrimoniauxTempPage() {
   const { id } = Route.useParams();
   const { dossier, update } = useDossier(id);
   if (!dossier) return null;
+  return <PatrimoniauxTempPageInner dossier={dossier} update={update} />;
+}
 
+function PatrimoniauxTempPageInner({
+  dossier,
+  update,
+}: {
+  dossier: NonNullable<ReturnType<typeof useDossier>["dossier"]>;
+  update: ReturnType<typeof useDossier>["update"];
+}) {
   const pt = dossier.postesTemp;
 
   function patchPT(patch: Partial<PostesTemporaires>) {

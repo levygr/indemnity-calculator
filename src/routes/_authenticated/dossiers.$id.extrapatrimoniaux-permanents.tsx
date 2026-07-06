@@ -39,7 +39,16 @@ function Page() {
   const { id } = Route.useParams();
   const { dossier, update } = useDossier(id);
   if (!dossier) return null;
+  return <PageInner dossier={dossier} update={update} />;
+}
 
+function PageInner({
+  dossier,
+  update,
+}: {
+  dossier: NonNullable<ReturnType<typeof useDossier>["dossier"]>;
+  update: ReturnType<typeof useDossier>["update"];
+}) {
   const pp = dossier.postesPerm;
   const ctx = useMemo(() => buildContexte(dossier), [dossier]);
   const dfp = useMemo(() => calculerDFP(pp.dfp, ctx), [pp.dfp, ctx]);

@@ -36,7 +36,16 @@ function Page() {
   const { id } = Route.useParams();
   const { dossier, update } = useDossier(id);
   if (!dossier) return null;
+  return <PageInner dossier={dossier} update={update} />;
+}
 
+function PageInner({
+  dossier,
+  update,
+}: {
+  dossier: NonNullable<ReturnType<typeof useDossier>["dossier"]>;
+  update: ReturnType<typeof useDossier>["update"];
+}) {
   const ps = dossier.postesSurvie;
   const ctx = { dateLiquidation: dossier.dateLiquidation, bareme: dossier.bareme };
 

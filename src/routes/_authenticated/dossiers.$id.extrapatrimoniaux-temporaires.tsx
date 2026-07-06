@@ -13,7 +13,16 @@ function ExtraTempPage() {
   const { id } = Route.useParams();
   const { dossier, update } = useDossier(id);
   if (!dossier) return null;
+  return <ExtraTempPageInner dossier={dossier} update={update} />;
+}
 
+function ExtraTempPageInner({
+  dossier,
+  update,
+}: {
+  dossier: NonNullable<ReturnType<typeof useDossier>["dossier"]>;
+  update: ReturnType<typeof useDossier>["update"];
+}) {
   const pt = dossier.postesTemp;
   const dft = useMemo(() => calculerDFT(dossier.periodesDFT, pt.dft.tauxJournalier), [dossier.periodesDFT, pt.dft.tauxJournalier]);
 
