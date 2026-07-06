@@ -1,95 +1,68 @@
 
-# Calculateur d'indemnisation en dommage corporel — Cabinet Victimes & Préjudices
+# Compléter le calculateur — Phases 3, 4 et 5
 
-Application web professionnelle reproduisant fidèlement la logique du fichier Excel (nomenclature Dintilhac). Priorité absolue : exactitude des calculs. Étant donné l'ampleur (7 pages de saisie, ~50 sous-postes, moteur de calcul complexe, capitalisation, revalorisation, tests), je propose une construction en **phases livrables**, chacune vérifiable, plutôt que de tout livrer d'un coup.
+Le moteur est déjà en place (dates, revalorisation, capitalisation PER stationnaire/prospectif, fractions, tests 26/26 verts) et les pages 1 à 3 fonctionnent. Il reste à ajouter les postes viagers (permanents), les victimes indirectes, et la synthèse/exports.
 
-## Stack et architecture
+## Ce qui va être ajouté au moteur (`src/lib/calculs/postes/`)
 
-- TanStack Start (React 19 + TS + Vite 7 + Tailwind v4) — stack déjà en place.
-- **Lovable Cloud** (Supabase managé) pour l'auth email/mot de passe et la table `dossiers (id, reference, user_id, created_at, updated_at, data jsonb)` avec RLS par `user_id`.
-- Persistance : tout le dossier dans `data jsonb`, sauvegarde auto debounce 2 s (mutation server function).
-- Moteur de calcul isolé dans `src/lib/calculs/` — fonctions pures, aucune dépendance UI, testées avec Vitest.
-- Données de référence figées dans `src/data/` (9 JSON importés tels quels, jamais modifiés).
-- Charte : Poppins (titres) + Open Sans (texte), tokens sémantiques dans `src/styles.css` (rouge #B52026, ambre #FDAF19, vert #8EC33F, anthracite #2F3032, gris #F6F5F3).
-- Navigation : sidebar fixe anthracite, une section = une route sous `_authenticated/dossiers/$id/...`, bandeau récap en haut de chaque page.
+- `dsf.ts` — Dépenses de santé futures : lignes ponctuelles et récurrentes (capitalisées viager ou temporaire).
+- `atpPerm.ts` — Assistance tierce personne permanente : capitalisation PER viager ou différée (méthode habituelle / exacte selon le dossier).
+- `pgpf.ts` — Perte de gains professionnels futurs : méthode capitalisée (rente annuelle × PER) + reliquat éventuel d'IJ/pension.
+- `ip.ts` — Incidence professionnelle (dévalorisation, pénibilité, perte de retraite capitalisée).
+- `dfp.ts` — Déficit fonctionnel permanent : valeur du point (barème AIPP déjà fourni dans `src/data/bareme_aipp.ts`, interpolé par âge et taux).
+- `agrement.ts` / `sexuel.ts` / `esthetiquePerm.ts` / `etablissement.ts` — postes forfaitaires avec cotation → montant.
+- `pathologiesEvo.ts` — préjudice d'anxiété / pathologies évolutives (forfait).
+- `logementVehicule.ts` — adaptation logement (ponctuel + récurrent capitalisé) et véhicule.
+- `deces.ts` — obsèques, perte de revenus du foyer (méthode conjoint + enfants avec parts, capitalisation viagère), frais divers, accompagnement, préjudice d'affection (2 méthodes : cotation ou barème).
+- `survieProches.ts` — perte de revenus du conjoint survivant, frais divers, affection, préjudice extrapatrimonial exceptionnel.
+- `synthese.ts` — agrégation transversale par poste, sous-totaux par catégorie (patrimoniaux/extrapatrimoniaux × temporaires/permanents + victimes indirectes), totaux généraux dette / TP / victime avec droit de préférence.
 
-## Structure de code
+Chaque module reste une fonction pure testée (une suite Vitest par poste : valeurs limites, lignes incomplètes ignorées, capitalisation viager vs différée).
 
-```text
-src/
-  data/                          # 9 JSON de référence + bareme_aipp.ts
-  lib/calculs/
-    dates.ts                     # âges, durées (DATEDIF Y/d)
-    esperance.ts                 # lookup EV mortalité
-    fractions.ts                 # fFaute × fChance, répartition V/TP
-    revalorisation.ts            # IPC annuel/mensuel
-    actualisation.ts             # IPC/SMIC
-    capitalisation.ts            # PER viager/temporaire, habituelle/exacte
-    annualisation.ts             # /jour /semaine /mois /an
-    postes/                      # une fonction par sous-poste
-      depensesSante.ts, atp.ts, pgpa.ts, dft.ts, se.ts,
-      depensesFutures.ts, atpPermanente.ts, pgpf.ts, ip.ts,
-      dfp.ts, agrement.ts, esthetique.ts, sexuel.ts, etablissement.ts,
-      deces.ts, survieProches.ts
-    synthese.ts
-    __tests__/                   # Vitest, incl. cas de contrôle 47,919 / 51,328
-  components/
-    ui/ (shadcn), layout/ (Sidebar, PosteHeader), inputs/ (DateFR, MontantEUR, PeriodeChainee), themia/ (LienThemia)
-  routes/
-    auth.tsx
-    _authenticated/
-      route.tsx (fourni par intégration Cloud)
-      index.tsx                  # liste dossiers
-      dossiers.$id.tsx           # layout (sidebar + Outlet + bandeau)
-      dossiers.$id.index.tsx     # page 1 Dossier
-      dossiers.$id.patrimoniaux-temporaires.tsx
-      dossiers.$id.extrapatrimoniaux-temporaires.tsx
-      dossiers.$id.patrimoniaux-permanents.tsx
-      dossiers.$id.extrapatrimoniaux-permanents.tsx
-      dossiers.$id.deces.tsx
-      dossiers.$id.survie-proches.tsx
-      dossiers.$id.synthese.tsx
-```
+## Extension du type `DossierData`
 
-## Phases livrables
+Ajout d'une sous-structure `postesPerm`, `postesDeces`, `postesSurvie` en jsonb, initialisées vides. Aucun changement de schéma DB (tout tient dans la colonne `data`). Hydratation deep-merge déjà en place dans `useDossier` — il suffit d'étendre le merge.
 
-**Phase 1 — Fondations (livrée en premier)**
-1. Activation Lovable Cloud, migration `dossiers` + RLS, auth email/mot de passe.
-2. Import des 9 JSON dans `src/data/`, tableau AIPP en dur.
-3. Design system (Poppins/Open Sans via `<link>` dans `__root.tsx`, tokens oklch).
-4. Moteur de calcul complet — TOUTES les fonctions pures listées ci-dessus, avec tests Vitest (cas de contrôle 47,919 et 51,328, revalorisation, répartition V/TP, PER habituelle/exacte, PGPF, viager du foyer).
-5. Layout `_authenticated`, liste des dossiers (CRUD + duplication), sauvegarde auto debounce.
-6. Page 1 — **Dossier** complète (identité, dates, fractions, périodes DFT chaînées, âges/EV calculés, note sexe indéterminé, note barèmes).
+## Pages et navigation
 
-**Phase 2 — Préjudices temporaires**
-7. Page 2 — Patrimoniaux temporaires (DSA ponctuelles/récurrentes, ATP temporaire, frais divers, PGPA 3 méthodes, autres).
-8. Page 3 — Extrapatrimoniaux temporaires (DFT + agrément/sexuel temp par période, SE, PET, autres).
+Nouvelles routes sous `_authenticated/dossiers.$id.` :
 
-**Phase 3 — Préjudices permanents**
-9. Page 4 — Patrimoniaux permanents (DSF, logement, véhicule, ATP perm, PGPF, IP avec reliquat TP, PSU, autres).
-10. Page 5 — Extrapatrimoniaux permanents (DFP au point/au jour, agrément, PEP, PSE, établissement, PEP, pathologies évolutives).
+- `patrimoniaux-permanents.tsx` — DSF, adaptation logement/véhicule, ATP perm, PGPF, IP, PSU.
+- `extrapatrimoniaux-permanents.tsx` — DFP (point AIPP), agrément, PEP, PSE, établissement, pathologies évolutives.
+- `deces.tsx` — obsèques, perte revenus foyer, frais divers, accompagnement, affection.
+- `survie-proches.tsx` — perte revenus conjoint, frais divers, affection, PEP.
+- `synthese.tsx` — tableau récap par poste, sous-totaux, totaux généraux, avec surlignage victime / tiers payeur.
 
-**Phase 4 — Victimes indirectes**
-11. Page 6 — Décès (obsèques, perte revenus foyer + enfants + conjoint, frais divers, accompagnement, affection 2 méthodes, autres).
-12. Page 7 — Survie proches (perte revenus conjoint, frais divers, affection 2 méthodes, PEP, autres).
+La sidebar bascule ces entrées de « Phase X » à actives. Chaque page suit le même patron que les pages 2/3 (Section + Field + Table + auto-save).
 
-**Phase 5 — Synthèse et exports**
-13. Page synthèse (tableau récap par poste, sous-totaux catégories, totaux généraux).
-14. Export PDF charté V&P (via `@react-pdf/renderer`), export/import JSON du dossier.
-15. Liens Themia contextuels (ATP, cotations SE/PET/PEP, relations affection/accompagnement, recherche décisions similaires ± 5 ans / ± 5 pts).
+## Exports (page synthèse)
 
-## Points techniques importants
+- Export JSON du dossier (bouton `Télécharger le dossier`).
+- Import JSON (upload → validation Zod → écrasement contrôlé).
+- Export PDF charté V&P via `@react-pdf/renderer` (à installer). Composant `<DossierPDF>` reprenant la synthèse + détail par poste. Sortie A4 avec en-tête cabinet.
 
-- **Aucun arrondi intermédiaire** : calculs en `number` JS, arrondi uniquement à l'affichage (`Intl.NumberFormat('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})`).
-- **Dates** : ISO en stockage, saisie/affichage JJ/MM/AAAA via composant `DateFR` (natif `<input type="date">` + formatage FR pour affichage).
-- **Répartition V/TP** : implémentée une seule fois dans `fractions.ts` et réutilisée partout.
-- **Incohérence Excel corrigée** (ATP temporaire, facteur H/365 sur toutes les lignes) — commentée dans le code.
-- **PER prospectif > 90** : bascule automatique sur viager, testée.
-- **Champs vides** : les lignes incomplètes sont ignorées des totaux (jamais de NaN).
-- **Tables JSON null** : jamais utilisées, filtrées à la lecture.
+## Liens Themia (page synthèse et fiches postes)
 
-## Ce que je livre à la fin de cette réponse (Phase 1 uniquement)
+Helper `themiaLink(poste, params)` → construit une URL de recherche vers Themia avec les critères contextuels (cotation ± 1 point, âge ± 5 ans, taux AIPP ± 5 points, mots-clés fait générateur). Rendu en bouton discret « Rechercher des décisions similaires ».
 
-Le prompt est trop dense pour livrer les 7 pages + synthèse + exports en une seule fois sans erreurs. Je propose de commencer par la **Phase 1 complète** (fondations + moteur de calcul intégralement testé + page Dossier + liste dossiers + auth + sauvegarde). Vous validez le socle (calculs, charte, ergonomie), puis j'enchaîne les Phases 2 à 5 sur les tours suivants — chacune ajoutant une ou deux pages entièrement fonctionnelles branchées sur le même moteur.
+## Découpage en tours
 
-Confirmez-moi : **je démarre par la Phase 1** ? Ou vous préférez un autre ordre (par exemple prioriser une page métier spécifique) ?
+Vu le volume (≈ 12 modules moteur + 5 pages + synthèse + exports), je propose de livrer en 3 tours :
+
+1. **Ce tour** : moteur permanents (DSF, ATP perm, PGPF, IP, DFP, agrément, PEP, PSE, étab., pathologies, logement/véhicule) + pages 4 et 5 (Patrimoniaux/Extrapatrimoniaux permanents) + tests. Sidebar Phase 3 activée.
+2. **Tour suivant** : victimes indirectes (décès + survie proches), moteur et pages 6/7. Sidebar Phase 4 activée.
+3. **Dernier tour** : synthèse, exports PDF/JSON, liens Themia. Sidebar Phase 5 activée. App complète.
+
+## Points techniques importants (rappels du prompt)
+
+- Aucun arrondi intermédiaire : `number` JS, arrondi à l'affichage uniquement.
+- Capitalisation viager = `perViager(âgeLiquidation, bareme, sexe)`. Rente différée = `perRenteDifferee(...)` avec méthode `habituelle` ou `exacte` selon le dossier. Prospectif > 90 ans → retombe sur viager (déjà géré et testé).
+- DFP capitalisé (au jour) = valeur du point × jours restants / EV ; DFP au point = valeur point × taux AIPP (interpolée par âge).
+- Répartition victime / tiers payeur toujours via `fractions.repartition` (droit de préférence).
+- Perte de revenus du foyer : parts conjoint / enfants, méthode arithmétique, capitalisation viagère par tête sur EV commune.
+- Lignes incomplètes ignorées, jamais de NaN affiché.
+- Aucune valeur inventée : uniquement les barèmes et indices déjà présents dans `src/data/`. Les valeurs monétaires (point DFP hors table AIPP, SE, PET, affection, agrément forfait) restent saisies par l'utilisateur.
+
+## Livraison de ce tour
+
+Je démarre immédiatement le tour 1 (permanents) : moteur + tests + 2 pages + activation sidebar. Puis je vous laisse tester, avant de continuer avec les victimes indirectes et la synthèse.
