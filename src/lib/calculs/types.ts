@@ -3,6 +3,9 @@
  * Toutes les dates sont stockées au format ISO (YYYY-MM-DD).
  */
 
+import type { ModeRevalo, IndiceActualisation } from "./revalorisation";
+import type { Periodicite } from "./annualisation";
+
 export type Sexe = "F" | "M" | "I";
 export type TableMortalite = "2020-2022" | "2023-2025";
 export type BaremeType = "stationnaire" | "prospectif";
@@ -22,6 +25,109 @@ export interface PeriodeDFT {
   debut: string | null;
   fin: string | null;
   taux: number; // 0 à 1 (ex : 1 = 100%, 0.5 = 50%)
+}
+
+// ---- Postes temporaires (Phase 2) --------------------------------------
+
+/** Dépense de santé actuelle ponctuelle (une facture ponctuelle). */
+export interface DSAPonctuelle {
+  id: string;
+  date: string | null;
+  libelle: string;
+  depense: number; // montant total de la dépense (brut)
+  tiersPayeur: number; // créance TP (indemnisée)
+  modeRevalo: ModeRevalo;
+}
+
+/** Dépense de santé actuelle récurrente (ex. transports mensuels). */
+export interface DSARecurrente {
+  id: string;
+  debut: string | null;
+  fin: string | null;
+  libelle: string;
+  montant: number; // montant par période
+  periodicite: Periodicite;
+  tiersPayeur: number; // TP total sur la période
+  modeRevalo: ModeRevalo;
+}
+
+/** Période d'assistance tierce personne temporaire. */
+export interface ATPTempPeriode {
+  id: string;
+  debut: string | null;
+  fin: string | null;
+  heuresParJour: number;
+  tauxHoraire: number; // €/h
+  facteurJours: number; // par défaut 412 (H/365 corrigé) selon plan ; sinon 365
+}
+
+export type PGPAMethode = "reference" | "periodes" | "forfait";
+
+export interface PGPAPeriode {
+  id: string;
+  debut: string | null;
+  fin: string | null;
+  perte: number; // montant total de perte nette sur la période
+}
+
+export interface PGPAData {
+  methode: PGPAMethode;
+  // Méthode 1 (référence) : revenu annuel net actualisé × durée d'arrêt
+  revenuReference: number;
+  anneeReference: number | null;
+  indice: IndiceActualisation;
+  debut: string | null;
+  fin: string | null;
+  // Méthode 2 (périodes)
+  periodes: PGPAPeriode[];
+  // Méthode 3 (forfait)
+  forfait: number;
+  // Indemnités journalières perçues (créance TP)
+  ij: number;
+}
+
+export interface DFTMontant {
+  tauxJournalier: number; // €/j pour 100 % de DFT (défaut 30)
+}
+
+export interface SEMontant {
+  montant: number; // €
+}
+
+export interface PETMontant {
+  montant: number; // €
+}
+
+export interface PostesTemporaires {
+  dsaPonctuelles: DSAPonctuelle[];
+  dsaRecurrentes: DSARecurrente[];
+  atpTemp: ATPTempPeriode[];
+  pgpa: PGPAData;
+  dft: DFTMontant;
+  se: SEMontant;
+  pet: PETMontant;
+}
+
+export function defaultPostesTemporaires(): PostesTemporaires {
+  return {
+    dsaPonctuelles: [],
+    dsaRecurrentes: [],
+    atpTemp: [],
+    pgpa: {
+      methode: "reference",
+      revenuReference: 0,
+      anneeReference: null,
+      indice: "ipc",
+      debut: null,
+      fin: null,
+      periodes: [],
+      forfait: 0,
+      ij: 0,
+    },
+    dft: { tauxJournalier: 30 },
+    se: { montant: 0 },
+    pet: { montant: 0 },
+  };
 }
 
 export interface DossierData {
@@ -48,10 +154,7 @@ export interface DossierData {
   dftDebutLendemain: boolean; // false = jour même de l'accident
   periodesDFT: PeriodeDFT[];
 
-  // Note : les données des postes (pages 2 à 7) seront ajoutées dans les
-  // phases suivantes sous forme de champs typés dédiés (patrimoniauxTemp,
-  // extrapatrimoniauxTemp, etc.), pour préserver la sérialisation stricte
-  // exigée par TanStack Start.
+  postesTemp: PostesTemporaires;
 }
 
 export function defaultDossierData(): DossierData {
@@ -74,5 +177,6 @@ export function defaultDossierData(): DossierData {
     fChance: 1,
     dftDebutLendemain: false,
     periodesDFT: [],
+    postesTemp: defaultPostesTemporaires(),
   };
 }

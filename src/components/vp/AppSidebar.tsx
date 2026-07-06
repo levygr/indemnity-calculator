@@ -11,8 +11,8 @@ interface Section {
 
 const SECTIONS: Section[] = [
   { label: "Dossier", to: "/dossiers/$id", icon: FileText },
-  { label: "Préj. patrimoniaux temporaires", to: "/dossiers/$id/patrimoniaux-temporaires", icon: Receipt, phase: "Phase 2" },
-  { label: "Préj. extrapatrimoniaux temporaires", to: "/dossiers/$id/extrapatrimoniaux-temporaires", icon: HeartPulse, phase: "Phase 2" },
+  { label: "Préj. patrimoniaux temporaires", to: "/dossiers/$id/patrimoniaux-temporaires", icon: Receipt },
+  { label: "Préj. extrapatrimoniaux temporaires", to: "/dossiers/$id/extrapatrimoniaux-temporaires", icon: HeartPulse },
   { label: "Préj. patrimoniaux permanents", to: "/dossiers/$id/patrimoniaux-permanents", icon: TrendingUp, phase: "Phase 3" },
   { label: "Préj. extrapatrimoniaux permanents", to: "/dossiers/$id/extrapatrimoniaux-permanents", icon: User2, phase: "Phase 3" },
   { label: "Victimes indirectes — décès", to: "/dossiers/$id/deces", icon: Users, phase: "Phase 4" },
