@@ -218,6 +218,7 @@ function PageInner({
           <Recap label="Créance TP" value={formatEuros(tpDSF)} accent="tiers" />
           <Recap label="Part victime" value={formatEuros(repDSF.victime)} accent="victime" />
         </div>
+        <EchusInfo echus={{ montant: dsfR.totalEchus.montant, tp: dsfR.totalEchus.tp }} aEchoirLabel="Capital à échoir DSF récurrentes" aEchoir={{ montant: dsfR.totalAEchoir.montant, tp: dsfR.totalAEchoir.tp }} />
       </Section>
 
       {/* -------- ATP permanente -------- */}
@@ -244,6 +245,7 @@ function PageInner({
           <Recap label="Capital dette" value={formatEuros(atp.capital)} />
           <Recap label="Part victime" value={formatEuros(repATP.victime)} accent="victime" />
         </div>
+        <EchusInfo echus={{ montant: atp.echus.montant, tp: atp.echus.tp }} aEchoirLabel={`Capital à échoir : rente ${formatEuros(atp.aEchoir.renteAnnuelle)} × PER ${atp.aEchoir.per.toFixed(3)}`} aEchoir={{ montant: atp.aEchoir.capital, tp: atp.aEchoir.capitalTP }} />
       </Section>
 
       {/* -------- PGPF -------- */}
@@ -270,6 +272,7 @@ function PageInner({
           <Recap label="Capital TP" value={formatEuros(pgpf.capitalTP)} accent="tiers" />
           <Recap label="Part victime" value={formatEuros(repPGPF.victime)} accent="victime" />
         </div>
+        <EchusInfo echus={{ montant: pgpf.echus.montant, tp: pgpf.echus.tp }} aEchoirLabel={`Capital à échoir : rente ${formatEuros(pgpf.aEchoir.renteAnnuelle)} × PER ${pgpf.aEchoir.per.toFixed(3)}`} aEchoir={{ montant: pgpf.aEchoir.capital, tp: pgpf.aEchoir.capitalTP }} />
       </Section>
 
       {/* -------- IP -------- */}
@@ -338,6 +341,8 @@ function PageInner({
         title="Frais de logement adapté"
         description="Travaux ponctuels ou frais récurrents (surloyer, entretien). Capitalisation viagère ou temporaire pour le récurrent."
         rows={pp.logement} calc={log.lignes} totalReste={log.totalReste} repVictime={repLog.victime}
+        echus={{ montant: log.totalEchus.montant, tp: log.totalEchus.tp }}
+        aEchoir={{ montant: log.totalAEchoir.montant, tp: log.totalAEchoir.tp }}
         onAdd={() => addAdapt("logement")} onPatch={(id, p) => patchAdapt("logement", id, p)} onDel={(id) => delAdapt("logement", id)}
       />
 
@@ -346,6 +351,8 @@ function PageInner({
         title="Frais de véhicule adapté"
         description="Aménagement, surcoût d'achat, entretien. Même règles de capitalisation que le logement."
         rows={pp.vehicule} calc={veh.lignes} totalReste={veh.totalReste} repVictime={repVeh.victime}
+        echus={{ montant: veh.totalEchus.montant, tp: veh.totalEchus.tp }}
+        aEchoir={{ montant: veh.totalAEchoir.montant, tp: veh.totalAEchoir.tp }}
         onAdd={() => addAdapt("vehicule")} onPatch={(id, p) => patchAdapt("vehicule", id, p)} onDel={(id) => delAdapt("vehicule", id)}
       />
     </div>
@@ -353,12 +360,14 @@ function PageInner({
 }
 
 function AdaptationSection({
-  title, description, rows, calc, totalReste, repVictime, onAdd, onPatch, onDel,
+  title, description, rows, calc, totalReste, repVictime, echus, aEchoir, onAdd, onPatch, onDel,
 }: {
   title: string; description: string;
   rows: AdaptationLigne[];
   calc: Array<{ id: string; per: number; reste: number }>;
   totalReste: number; repVictime: number;
+  echus: { montant: number; tp: number };
+  aEchoir: { montant: number; tp: number };
   onAdd: () => void;
   onPatch: (id: string, p: Partial<AdaptationLigne>) => void;
   onDel: (id: string) => void;
@@ -418,7 +427,33 @@ function AdaptationSection({
       <div className="mt-3">
         <Note>Part victime après répartition et coefficients : <strong>{formatEuros(repVictime)}</strong></Note>
       </div>
+      <EchusInfo echus={echus} aEchoirLabel="Capital à échoir (lignes récurrentes)" aEchoir={aEchoir} />
     </Section>
+  );
+}
+
+function EchusInfo({ echus, aEchoirLabel, aEchoir }: {
+  echus: { montant: number; tp: number };
+  aEchoirLabel: string;
+  aEchoir: { montant: number; tp: number };
+}) {
+  if ((echus.montant || 0) <= 0 && (aEchoir.montant || 0) <= 0) return null;
+  return (
+    <div className="mt-3 text-xs text-muted-foreground space-y-1">
+      {echus.montant > 0 && (
+        <div>
+          Arrérages échus (consolidation → liquidation) :{" "}
+          <strong className="text-foreground">{formatEuros(echus.montant)}</strong>
+          {echus.tp > 0 && <> dont TP <strong className="text-foreground">{formatEuros(echus.tp)}</strong></>}
+        </div>
+      )}
+      {aEchoir.montant > 0 && (
+        <div>
+          {aEchoirLabel} : <strong className="text-foreground">{formatEuros(aEchoir.montant)}</strong>
+          {aEchoir.tp > 0 && <> dont TP <strong className="text-foreground">{formatEuros(aEchoir.tp)}</strong></>}
+        </div>
+      )}
+    </div>
   );
 }
 

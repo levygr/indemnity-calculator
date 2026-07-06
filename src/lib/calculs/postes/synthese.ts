@@ -67,6 +67,8 @@ export interface LigneSynthese {
   dette: number;
   partVictime: number;
   partTP: number;
+  echus?: { montant: number; tp: number };
+  aEchoir?: { montant: number; tp: number };
 }
 
 export interface SousTotal {
@@ -147,14 +149,23 @@ export function calculerSynthese(d: DossierData): Synthese {
   const pp = d.postesPerm;
   const dsfP = calculerDSFPonctuelles(pp.dsfPonctuelles);
   const dsfR = calculerDSFRecurrentes(pp.dsfRecurrentes, ctx);
-  lignes.push(ligne("DSF", "Dépenses de santé futures", "PP",
-    dsfP.totalMontant + dsfR.totalDette, dsfP.totalTP + dsfR.totalTP, f, c));
+  const dsfLine = ligne("DSF", "Dépenses de santé futures", "PP",
+    dsfP.totalMontant + dsfR.totalDette, dsfP.totalTP + dsfR.totalTP, f, c);
+  dsfLine.echus = { montant: dsfR.totalEchus.montant, tp: dsfR.totalEchus.tp };
+  dsfLine.aEchoir = { montant: dsfP.totalMontant + dsfR.totalAEchoir.montant, tp: dsfP.totalTP + dsfR.totalAEchoir.tp };
+  lignes.push(dsfLine);
 
   const atpP = calculerATPPerm(pp.atpPerm, ctx);
-  lignes.push(ligne("ATP-P", "Assistance tierce personne permanente", "PP", atpP.capital, atpP.capitalTP, f, c));
+  const atpLine = ligne("ATP-P", "Assistance tierce personne permanente", "PP", atpP.total.montant, atpP.total.tp, f, c);
+  atpLine.echus = { montant: atpP.echus.montant, tp: atpP.echus.tp };
+  atpLine.aEchoir = { montant: atpP.aEchoir.capital, tp: atpP.aEchoir.capitalTP };
+  lignes.push(atpLine);
 
   const pgpf = calculerPGPF(pp.pgpf, ctx);
-  lignes.push(ligne("PGPF", "Perte de gains professionnels futurs", "PP", pgpf.capital, pgpf.capitalTP, f, c));
+  const pgpfLine = ligne("PGPF", "Perte de gains professionnels futurs", "PP", pgpf.total.montant, pgpf.total.tp, f, c);
+  pgpfLine.echus = { montant: pgpf.echus.montant, tp: pgpf.echus.tp };
+  pgpfLine.aEchoir = { montant: pgpf.aEchoir.capital, tp: pgpf.aEchoir.capitalTP };
+  lignes.push(pgpfLine);
 
   const ip = calculerIP(pp.ip, ctx);
   lignes.push(ligne("IP", "Incidence professionnelle", "PP", ip.total, ip.totalTP, f, c));
@@ -163,10 +174,16 @@ export function calculerSynthese(d: DossierData): Synthese {
     "PP", Math.max(0, pp.psu.montant || 0), 0, f, c));
 
   const log = calculerAdaptation(pp.logement, ctx);
-  lignes.push(ligne("LOG", "Frais de logement adapté", "PP", log.total, log.totalTP, f, c));
+  const logLine = ligne("LOG", "Frais de logement adapté", "PP", log.total, log.totalTP, f, c);
+  logLine.echus = { montant: log.totalEchus.montant, tp: log.totalEchus.tp };
+  logLine.aEchoir = { montant: log.totalAEchoir.montant, tp: log.totalAEchoir.tp };
+  lignes.push(logLine);
 
   const veh = calculerAdaptation(pp.vehicule, ctx);
-  lignes.push(ligne("VEH", "Frais de véhicule adapté", "PP", veh.total, veh.totalTP, f, c));
+  const vehLine = ligne("VEH", "Frais de véhicule adapté", "PP", veh.total, veh.totalTP, f, c);
+  vehLine.echus = { montant: veh.totalEchus.montant, tp: veh.totalEchus.tp };
+  vehLine.aEchoir = { montant: veh.totalAEchoir.montant, tp: veh.totalAEchoir.tp };
+  lignes.push(vehLine);
 
   // ----- Extrapatrimoniaux permanents -----
   const dfp = calculerDFP(pp.dfp, ctx);
