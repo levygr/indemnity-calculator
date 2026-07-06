@@ -112,10 +112,14 @@ function PageInner({
           <Recap label="Dette responsable (après coefficients)" value={formatEuros(detteDFP)} />
           <Recap label="Part victime" value={formatEuros(repDFP.victime)} accent="victime" />
         </div>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          Valeur du point : {AIPP_META.source}, édition {AIPP_META.edition ?? "non renseignée"}.
+        </p>
         {ctx.tauxAIPP <= 0 && pp.dfp.methode === "point" && (
           <div className="mt-3"><Note variant="warning">Renseignez un taux d'AIPP sur la page Dossier pour calculer la valeur du point.</Note></div>
         )}
       </Section>
+
 
       {/* -------- Forfaits -------- */}
       {FORFAIT_KEYS.map((k) => {
