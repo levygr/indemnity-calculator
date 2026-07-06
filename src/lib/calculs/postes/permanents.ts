@@ -259,6 +259,19 @@ export function calculerDSFPonctuelles(lignes: DSFPonctuelle[]): {
   return { lignes: out, totalMontant: tM, totalTP: tT, totalReste: tR };
 }
 
+export interface AgregatCap {
+  montant: number;
+  tp: number;
+  reste: number;
+}
+
+function ligneRecurrentEchusEligible(mode: "viager" | "temporaire" | "differee", ageDebut: number | null, ctx: CapitalisationContexte): boolean {
+  // Une rente différée dont le début est postérieur à la liquidation n'a pas d'arrérages échus.
+  if (mode !== "differee") return true;
+  if (ageDebut == null || ctx.ageLiquidation == null) return false;
+  return ageDebut <= ctx.ageLiquidation;
+}
+
 export function calculerDSFRecurrentes(
   lignes: DSFRecurrente[],
   ctx: CapitalisationContexte,
@@ -267,63 +280,117 @@ export function calculerDSFRecurrentes(
   totalDette: number;
   totalTP: number;
   totalReste: number;
+  totalEchus: AgregatCap;
+  totalAEchoir: AgregatCap;
 } {
   const out: LigneDSFRecurrente[] = [];
   let tD = 0, tT = 0, tR = 0;
+  const totalEchus: AgregatCap = { montant: 0, tp: 0, reste: 0 };
+  const totalAEchoir: AgregatCap = { montant: 0, tp: 0, reste: 0 };
   for (const l of lignes) {
     if (!isFinite(l.montant) || l.montant <= 0) continue;
     const annuel = annualiser(l.montant, l.periodicite);
     const per = perFromMode(l.capitalisation, ctx, l.ageFin, null);
     if (per <= 0) continue;
-    const capital = annuel * per;
-    const capitalTP = Math.max(0, (l.tiersPayeur || 0) * per);
-    const reste = Math.max(0, capital - capitalTP);
+    const capAE = annuel * per;
+    const capTPAE = Math.max(0, (l.tiersPayeur || 0) * per);
+    const resteAE = Math.max(0, capAE - capTPAE);
+    const echus = calculerEchus(annuel, l.tiersPayeur || 0, ctx.dateConsolidation, ctx.dateLiquidation);
+    const capital = capAE + echus.montant;
+    const capitalTP = capTPAE + echus.tp;
+    const reste = resteAE + echus.reste;
     out.push({
       id: l.id, libelle: l.libelle, renteAnnuelle: annuel, per,
       capitalDette: capital, capitalTP, capitalReste: reste,
+      echus,
+      aEchoir: { renteAnnuelle: annuel, per, capital: capAE, capitalTP: capTPAE, reste: resteAE },
     });
     tD += capital; tT += capitalTP; tR += reste;
+    totalEchus.montant += echus.montant; totalEchus.tp += echus.tp; totalEchus.reste += echus.reste;
+    totalAEchoir.montant += capAE; totalAEchoir.tp += capTPAE; totalAEchoir.reste += resteAE;
   }
-  return { lignes: out, totalDette: tD, totalTP: tT, totalReste: tR };
+  return { lignes: out, totalDette: tD, totalTP: tT, totalReste: tR, totalEchus, totalAEchoir };
 }
 
 // ============================================================
 // ATP permanente
 // ============================================================
 
+export interface ATPPermResult {
+  renteAnnuelle: number;
+  per: number;
+  capital: number;
+  capitalTP: number;
+  reste: number;
+  echus: EchusResult;
+  aEchoir: { renteAnnuelle: number; per: number; capital: number; capitalTP: number; reste: number };
+  total: AgregatCap;
+}
+
 export function calculerATPPerm(
   d: ATPPermData,
   ctx: CapitalisationContexte,
-): { renteAnnuelle: number; per: number; capital: number; capitalTP: number; reste: number } {
-  if (!isFinite(d.heuresParJour) || !isFinite(d.tauxHoraire)) return zeroCap();
-  if (d.heuresParJour <= 0 || d.tauxHoraire <= 0) return zeroCap();
+): ATPPermResult {
+  if (!isFinite(d.heuresParJour) || !isFinite(d.tauxHoraire)) return zeroATPPerm();
+  if (d.heuresParJour <= 0 || d.tauxHoraire <= 0) return zeroATPPerm();
   const facteur = d.facteurJours > 0 ? d.facteurJours : 365;
   const renteAnnuelle = d.tauxHoraire * d.heuresParJour * facteur;
   const per = perFromMode(d.capitalisation, ctx, d.ageFin, null);
-  const capital = renteAnnuelle * per;
-  const capitalTP = Math.max(0, (d.tiersPayeur || 0) * per);
-  const reste = Math.max(0, capital - capitalTP);
-  return { renteAnnuelle, per, capital, capitalTP, reste };
+  const capAE = renteAnnuelle * per;
+  const capTPAE = Math.max(0, (d.tiersPayeur || 0) * per);
+  const resteAE = Math.max(0, capAE - capTPAE);
+  const echus = calculerEchus(renteAnnuelle, d.tiersPayeur || 0, ctx.dateConsolidation, ctx.dateLiquidation);
+  const capital = capAE + echus.montant;
+  const capitalTP = capTPAE + echus.tp;
+  const reste = resteAE + echus.reste;
+  return {
+    renteAnnuelle, per, capital, capitalTP, reste,
+    echus,
+    aEchoir: { renteAnnuelle, per, capital: capAE, capitalTP: capTPAE, reste: resteAE },
+    total: { montant: capital, tp: capitalTP, reste },
+  };
 }
 
 // ============================================================
 // PGPF
 // ============================================================
 
+export interface PGPFResult {
+  per: number;
+  capital: number;
+  capitalTP: number;
+  reste: number;
+  echus: EchusResult;
+  aEchoir: { renteAnnuelle: number; per: number; capital: number; capitalTP: number; reste: number };
+  total: AgregatCap;
+}
+
 export function calculerPGPF(
   d: PGPFData,
   ctx: CapitalisationContexte,
-): { per: number; capital: number; capitalTP: number; reste: number } {
-  if (!isFinite(d.renteAnnuelle) || d.renteAnnuelle <= 0) return zeroCap2();
+): PGPFResult {
+  if (!isFinite(d.renteAnnuelle) || d.renteAnnuelle <= 0) return zeroPGPF();
   const per = perFromMode(d.capitalisation, ctx, d.ageFin, d.ageDebut);
-  const capital = d.renteAnnuelle * per;
-  const capitalTP = Math.max(0, (d.tiersPayeur || 0) * per);
-  const reste = Math.max(0, capital - capitalTP);
-  return { per, capital, capitalTP, reste };
+  const capAE = d.renteAnnuelle * per;
+  const capTPAE = Math.max(0, (d.tiersPayeur || 0) * per);
+  const resteAE = Math.max(0, capAE - capTPAE);
+  const eligibleEchus = ligneRecurrentEchusEligible(d.capitalisation, d.ageDebut, ctx);
+  const echus = eligibleEchus
+    ? calculerEchus(d.renteAnnuelle, d.tiersPayeur || 0, ctx.dateConsolidation, ctx.dateLiquidation)
+    : { fractionAnnees: 0, montant: 0, tp: 0, reste: 0 };
+  const capital = capAE + echus.montant;
+  const capitalTP = capTPAE + echus.tp;
+  const reste = resteAE + echus.reste;
+  return {
+    per, capital, capitalTP, reste,
+    echus,
+    aEchoir: { renteAnnuelle: d.renteAnnuelle, per, capital: capAE, capitalTP: capTPAE, reste: resteAE },
+    total: { montant: capital, tp: capitalTP, reste },
+  };
 }
 
 // ============================================================
-// IP (Incidence professionnelle)
+// IP (Incidence professionnelle) — pas d'échus (rente différée par nature)
 // ============================================================
 
 export function calculerIP(
@@ -359,34 +426,61 @@ export interface LigneAdaptation {
   capital: number;
   capitalTP: number;
   reste: number;
+  echus: EchusResult;
+  aEchoir: { capital: number; capitalTP: number; reste: number };
 }
 
 export function calculerAdaptation(
   lignes: AdaptationLigne[],
   ctx: CapitalisationContexte,
-): { lignes: LigneAdaptation[]; total: number; totalTP: number; totalReste: number } {
+): {
+  lignes: LigneAdaptation[];
+  total: number;
+  totalTP: number;
+  totalReste: number;
+  totalEchus: AgregatCap;
+  totalAEchoir: AgregatCap;
+} {
   const out: LigneAdaptation[] = [];
   let tC = 0, tT = 0, tR = 0;
+  const totalEchus: AgregatCap = { montant: 0, tp: 0, reste: 0 };
+  const totalAEchoir: AgregatCap = { montant: 0, tp: 0, reste: 0 };
+  const zeroE: EchusResult = { fractionAnnees: 0, montant: 0, tp: 0, reste: 0 };
   for (const l of lignes) {
     if (!isFinite(l.montant) || l.montant <= 0) continue;
     if (l.recurrent) {
       const annuel = annualiser(l.montant, l.periodicite);
       const per = perFromMode(l.capitalisation, ctx, l.ageFin, null);
       if (per <= 0) continue;
-      const cap = annuel * per;
-      const tp = Math.max(0, (l.tiersPayeur || 0) * per);
-      const r = Math.max(0, cap - tp);
-      out.push({ id: l.id, libelle: l.libelle, montantOuRente: annuel, per, capital: cap, capitalTP: tp, reste: r });
+      const capAE = annuel * per;
+      const tpAE = Math.max(0, (l.tiersPayeur || 0) * per);
+      const rAE = Math.max(0, capAE - tpAE);
+      const echus = calculerEchus(annuel, l.tiersPayeur || 0, ctx.dateConsolidation, ctx.dateLiquidation);
+      const cap = capAE + echus.montant;
+      const tp = tpAE + echus.tp;
+      const r = rAE + echus.reste;
+      out.push({
+        id: l.id, libelle: l.libelle, montantOuRente: annuel, per, capital: cap, capitalTP: tp, reste: r,
+        echus, aEchoir: { capital: capAE, capitalTP: tpAE, reste: rAE },
+      });
       tC += cap; tT += tp; tR += r;
+      totalEchus.montant += echus.montant; totalEchus.tp += echus.tp; totalEchus.reste += echus.reste;
+      totalAEchoir.montant += capAE; totalAEchoir.tp += tpAE; totalAEchoir.reste += rAE;
     } else {
       const tp = Math.max(0, l.tiersPayeur || 0);
       const r = Math.max(0, l.montant - tp);
-      out.push({ id: l.id, libelle: l.libelle, montantOuRente: l.montant, per: 1, capital: l.montant, capitalTP: tp, reste: r });
+      out.push({
+        id: l.id, libelle: l.libelle, montantOuRente: l.montant, per: 1, capital: l.montant, capitalTP: tp, reste: r,
+        echus: zeroE, aEchoir: { capital: l.montant, capitalTP: tp, reste: r },
+      });
       tC += l.montant; tT += tp; tR += r;
+      totalAEchoir.montant += l.montant; totalAEchoir.tp += tp; totalAEchoir.reste += r;
     }
   }
-  return { lignes: out, total: tC, totalTP: tT, totalReste: tR };
+  return { lignes: out, total: tC, totalTP: tT, totalReste: tR, totalEchus, totalAEchoir };
 }
+
+
 
 // ============================================================
 // DFP
