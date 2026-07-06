@@ -318,7 +318,10 @@ function DossierPage() {
 
       <Section title="Barème de capitalisation">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Barème">
+          <Field
+            label="Barème"
+            hint="Barème de capitalisation Gazette du Palais 2025, taux 0,5 %. Stationnaire : tables INSEE 2020-2022. Prospectif : tables INSEE 2021-2121."
+          >
             <Select
               value={dossier.bareme}
               onValueChange={(v) => update({ bareme: v as BaremeType })}
