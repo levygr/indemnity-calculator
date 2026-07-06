@@ -27,6 +27,7 @@ import type {
   Sexe,
   TableMortalite,
 } from "@/lib/calculs/types";
+import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
 import {
   ajouterJours,
   anneesRevolues,
