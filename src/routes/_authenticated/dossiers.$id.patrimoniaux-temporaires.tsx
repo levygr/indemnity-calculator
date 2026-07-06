@@ -239,16 +239,18 @@ function PatrimoniauxTempPageInner({
                 <TableHead>Libellé</TableHead>
                 <TableHead>Montant</TableHead>
                 <TableHead>Périodicité</TableHead>
+                <TableHead>Dépense revalorisée</TableHead>
                 <TableHead>TP total</TableHead>
+                <TableHead>TP revalorisé</TableHead>
+                <TableHead>Reste</TableHead>
                 <TableHead>Revalo</TableHead>
-                <TableHead>Reste revalorisé</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {pt.dsaRecurrentes.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground py-6">Aucune dépense récurrente.</TableCell>
+                  <TableCell colSpan={12} className="text-center text-muted-foreground py-6">Aucune dépense récurrente.</TableCell>
                 </TableRow>
               )}
               {pt.dsaRecurrentes.map((l) => {
@@ -270,9 +272,11 @@ function PatrimoniauxTempPageInner({
                         </SelectContent>
                       </Select>
                     </TableCell>
+                    <TableCell className="text-muted-foreground">{formatEuros(calc?.depenseRevalorisee ?? 0)}</TableCell>
                     <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchDSAR(l.id, { tiersPayeur: numOr0(e.target.value) })} /></TableCell>
+                    <TableCell className="text-muted-foreground">{formatEuros(calc?.tpRevalorise ?? 0)}</TableCell>
+                    <TableCell className="font-medium">{formatEuros(calc?.resteRevalorise ?? 0)}</TableCell>
                     <TableCell className="w-32"><ModeRevaloSelect value={l.modeRevalo} onChange={(v) => patchDSAR(l.id, { modeRevalo: v })} /></TableCell>
-                    <TableCell className="font-medium">{formatEuros(calc?.revalorise ?? 0)}</TableCell>
                     <TableCell><IconDelete onClick={() => delDSAR(l.id)} /></TableCell>
                   </TableRow>
                 );
@@ -282,11 +286,11 @@ function PatrimoniauxTempPageInner({
         </div>
         <div className="mt-3 flex items-center justify-between">
           <Button size="sm" variant="outline" onClick={addDSAR}><Plus className="w-4 h-4 mr-2" />Ajouter une dépense récurrente</Button>
-          <TotalPill label="Total DSA récurrentes (reste revalorisé)" value={dsaRCalc.totalRevalo} />
+          <TotalPill label="Total DSA récurrentes (dépense revalorisée)" value={dsaRCalc.totalDepenseRevalorisee} />
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Recap label="Total DSA (poste)" value={formatEuros(totalDSAreste + totalDSAtp)} />
-          <Recap label="Créance tiers payeur" value={formatEuros(totalDSAtp)} />
+          <Recap label="Total DSA (dépense revalorisée)" value={formatEuros(totalDSAmontant)} />
+          <Recap label="Créance tiers payeur (revalorisée)" value={formatEuros(totalDSAtp)} />
           <Recap label="Part victime" value={formatEuros(dsaRep.victime)} accent="victime" />
         </div>
       </Section>
