@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDossiersRouteImport } from './routes/_authenticated/dossiers'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
 import { Route as AuthenticatedDossiersIdIndexRouteImport } from './routes/_authenticated/dossiers.$id.index'
+import { Route as AuthenticatedDossiersIdSyntheseRouteImport } from './routes/_authenticated/dossiers.$id.synthese'
 import { Route as AuthenticatedDossiersIdSurvieProchesRouteImport } from './routes/_authenticated/dossiers.$id.survie-proches'
 import { Route as AuthenticatedDossiersIdPatrimoniauxTemporairesRouteImport } from './routes/_authenticated/dossiers.$id.patrimoniaux-temporaires'
 import { Route as AuthenticatedDossiersIdPatrimoniauxPermanentsRouteImport } from './routes/_authenticated/dossiers.$id.patrimoniaux-permanents'
@@ -50,6 +51,12 @@ const AuthenticatedDossiersIdIndexRoute =
   AuthenticatedDossiersIdIndexRouteImport.update({
     id: '/',
     path: '/',
+    getParentRoute: () => AuthenticatedDossiersIdRoute,
+  } as any)
+const AuthenticatedDossiersIdSyntheseRoute =
+  AuthenticatedDossiersIdSyntheseRouteImport.update({
+    id: '/synthese',
+    path: '/synthese',
     getParentRoute: () => AuthenticatedDossiersIdRoute,
   } as any)
 const AuthenticatedDossiersIdSurvieProchesRoute =
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/dossiers/$id/patrimoniaux-permanents': typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
   '/dossiers/$id/patrimoniaux-temporaires': typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   '/dossiers/$id/survie-proches': typeof AuthenticatedDossiersIdSurvieProchesRoute
+  '/dossiers/$id/synthese': typeof AuthenticatedDossiersIdSyntheseRoute
   '/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -112,6 +120,7 @@ export interface FileRoutesByTo {
   '/dossiers/$id/patrimoniaux-permanents': typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
   '/dossiers/$id/patrimoniaux-temporaires': typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   '/dossiers/$id/survie-proches': typeof AuthenticatedDossiersIdSurvieProchesRoute
+  '/dossiers/$id/synthese': typeof AuthenticatedDossiersIdSyntheseRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdIndexRoute
 }
 export interface FileRoutesById {
@@ -127,6 +136,7 @@ export interface FileRoutesById {
   '/_authenticated/dossiers/$id/patrimoniaux-permanents': typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
   '/_authenticated/dossiers/$id/patrimoniaux-temporaires': typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   '/_authenticated/dossiers/$id/survie-proches': typeof AuthenticatedDossiersIdSurvieProchesRoute
+  '/_authenticated/dossiers/$id/synthese': typeof AuthenticatedDossiersIdSyntheseRoute
   '/_authenticated/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/dossiers/$id/patrimoniaux-permanents'
     | '/dossiers/$id/patrimoniaux-temporaires'
     | '/dossiers/$id/survie-proches'
+    | '/dossiers/$id/synthese'
     | '/dossiers/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/dossiers/$id/patrimoniaux-permanents'
     | '/dossiers/$id/patrimoniaux-temporaires'
     | '/dossiers/$id/survie-proches'
+    | '/dossiers/$id/synthese'
     | '/dossiers/$id'
   id:
     | '__root__'
@@ -168,6 +180,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dossiers/$id/patrimoniaux-permanents'
     | '/_authenticated/dossiers/$id/patrimoniaux-temporaires'
     | '/_authenticated/dossiers/$id/survie-proches'
+    | '/_authenticated/dossiers/$id/synthese'
     | '/_authenticated/dossiers/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -219,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/dossiers/$id/'
       preLoaderRoute: typeof AuthenticatedDossiersIdIndexRouteImport
+      parentRoute: typeof AuthenticatedDossiersIdRoute
+    }
+    '/_authenticated/dossiers/$id/synthese': {
+      id: '/_authenticated/dossiers/$id/synthese'
+      path: '/synthese'
+      fullPath: '/dossiers/$id/synthese'
+      preLoaderRoute: typeof AuthenticatedDossiersIdSyntheseRouteImport
       parentRoute: typeof AuthenticatedDossiersIdRoute
     }
     '/_authenticated/dossiers/$id/survie-proches': {
@@ -273,6 +293,7 @@ interface AuthenticatedDossiersIdRouteChildren {
   AuthenticatedDossiersIdPatrimoniauxPermanentsRoute: typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
   AuthenticatedDossiersIdPatrimoniauxTemporairesRoute: typeof AuthenticatedDossiersIdPatrimoniauxTemporairesRoute
   AuthenticatedDossiersIdSurvieProchesRoute: typeof AuthenticatedDossiersIdSurvieProchesRoute
+  AuthenticatedDossiersIdSyntheseRoute: typeof AuthenticatedDossiersIdSyntheseRoute
   AuthenticatedDossiersIdIndexRoute: typeof AuthenticatedDossiersIdIndexRoute
 }
 
@@ -289,6 +310,7 @@ const AuthenticatedDossiersIdRouteChildren: AuthenticatedDossiersIdRouteChildren
       AuthenticatedDossiersIdPatrimoniauxTemporairesRoute,
     AuthenticatedDossiersIdSurvieProchesRoute:
       AuthenticatedDossiersIdSurvieProchesRoute,
+    AuthenticatedDossiersIdSyntheseRoute: AuthenticatedDossiersIdSyntheseRoute,
     AuthenticatedDossiersIdIndexRoute: AuthenticatedDossiersIdIndexRoute,
   }
 
