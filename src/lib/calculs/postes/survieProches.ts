@@ -15,7 +15,7 @@ import type { BaremeType, Sexe } from "../types";
 import { perViager } from "../capitalisation";
 import { anneesRevolues } from "../dates";
 import type { FraisDivers } from "./deces";
-export type { FraisDivers } from "./deces";
+
 
 export interface ProcheSurvie {
   id: string;
