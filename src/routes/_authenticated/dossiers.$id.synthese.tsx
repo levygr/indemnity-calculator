@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Download, ExternalLink, Printer, Upload } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Download, ExternalLink, Printer, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
