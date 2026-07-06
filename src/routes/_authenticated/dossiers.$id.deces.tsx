@@ -88,7 +88,7 @@ function PageInner({
   const repObs = repartition(obseques, Math.max(0, pd.obsequesTP || 0), detteObs);
 
   const detteFoyer = detteResponsable(foyer.totalCapital, dossier.fFaute, dossier.fChance);
-  const repFoyer = repartition(foyer.totalCapital, 0, detteFoyer);
+  const repFoyer = repartition(foyer.totalCapital, foyer.totalTP, detteFoyer);
 
   const detteFrais = detteResponsable(frais.totalMontant, dossier.fFaute, dossier.fChance);
   const repFrais = repartition(frais.totalMontant, frais.totalTP, detteFrais);
