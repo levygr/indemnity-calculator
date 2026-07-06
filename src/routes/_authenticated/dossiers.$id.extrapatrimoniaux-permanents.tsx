@@ -16,6 +16,8 @@ import {
   type ForfaitPoste,
   type PostesPermanents,
 } from "@/lib/calculs";
+import { AIPP_META } from "@/data/bareme_aipp";
+import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/extrapatrimoniaux-permanents")({
   component: Page,
