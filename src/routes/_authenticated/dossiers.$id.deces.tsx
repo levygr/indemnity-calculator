@@ -64,7 +64,7 @@ function PageInner({
       proches: [...pd.proches, {
         id: uid(), lien, prenom: "", dateNaissance: null, sexe: "I",
         partFoyer: lien === "conjoint" || lien === "enfant" ? 1 : 0,
-        ageFinEtudes: 25, affection: 0,
+        ageFinEtudes: 25, affection: 0, pensionReversionAnnuelle: 0,
       }],
     });
   }
