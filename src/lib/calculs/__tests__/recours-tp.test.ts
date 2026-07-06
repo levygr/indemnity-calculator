@@ -9,7 +9,7 @@ describe("Recours des tiers payeurs", () => {
   it("ventilation cohérente avec le TP du poste : pas d'écart", () => {
     const d = defaultDossierData();
     d.postesTemp.dsaPonctuelles = [
-      { id: "1", date: "2024-01-01", libelle: "hôpital", depense: 1000, tiersPayeur: 400, modeRevalo: "aucune" },
+      { id: "1", date: "2024-01-01", libelle: "hôpital", depense: 1000, tiersPayeur: 400, modeRevalo: "non" },
     ];
     d.organismesTP = [{ id: "o1", nom: "CPAM 38", type: "cpam" }];
     d.creancesTP = [
@@ -24,7 +24,7 @@ describe("Recours des tiers payeurs", () => {
   it("écart > 1 € déclenche ECART_CREANCES_TP", () => {
     const d = defaultDossierData();
     d.postesTemp.dsaPonctuelles = [
-      { id: "1", date: "2024-01-01", libelle: "hôpital", depense: 1000, tiersPayeur: 400, modeRevalo: "aucune" },
+      { id: "1", date: "2024-01-01", libelle: "hôpital", depense: 1000, tiersPayeur: 400, modeRevalo: "non" },
     ];
     d.organismesTP = [{ id: "o1", nom: "CPAM", type: "cpam" }];
     d.creancesTP = [
