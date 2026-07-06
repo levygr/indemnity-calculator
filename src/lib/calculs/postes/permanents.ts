@@ -88,12 +88,18 @@ export interface ForfaitPoste {
   cotation: number; // 0..7 (indicatif)
 }
 
+export interface PSUData {
+  montant: number;
+  note: string;
+}
+
 export interface PostesPermanents {
   dsfPonctuelles: DSFPonctuelle[];
   dsfRecurrentes: DSFRecurrente[];
   atpPerm: ATPPermData;
   pgpf: PGPFData;
   ip: IPData;
+  psu: PSUData;
   logement: AdaptationLigne[];
   vehicule: AdaptationLigne[];
   dfp: DFPData;
@@ -101,7 +107,8 @@ export interface PostesPermanents {
   sexuel: ForfaitPoste;
   esthetiquePerm: ForfaitPoste;
   etablissement: ForfaitPoste;
-  pathologiesEvo: ForfaitPoste;
+  pathologiesEvolutives: ForfaitPoste;
+  permanentExceptionnel: ForfaitPoste;
 }
 
 export function defaultPostesPermanents(): PostesPermanents {
@@ -129,6 +136,7 @@ export function defaultPostesPermanents(): PostesPermanents {
       perteRetraiteAgeDebut: null,
       perteRetraiteTP: 0,
     },
+    psu: { montant: 0, note: "" },
     logement: [],
     vehicule: [],
     dfp: { methode: "point", valeurPointCustom: null, montantCapitalise: 0 },
@@ -136,7 +144,8 @@ export function defaultPostesPermanents(): PostesPermanents {
     sexuel: { montant: 0, cotation: 0 },
     esthetiquePerm: { montant: 0, cotation: 0 },
     etablissement: { montant: 0, cotation: 0 },
-    pathologiesEvo: { montant: 0, cotation: 0 },
+    pathologiesEvolutives: { montant: 0, cotation: 0 },
+    permanentExceptionnel: { montant: 0, cotation: 0 },
   };
 }
 
