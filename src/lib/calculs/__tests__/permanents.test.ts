@@ -29,8 +29,8 @@ describe("Permanents — capitalisation", () => {
     expect(perViager(30, "prospectif", "M")).toBeCloseTo(51.328, 3);
   });
 
-  it("PER viager F30 prospectif = 47.919 (contrôle JSON)", () => {
-    expect(perViager(30, "prospectif", "F")).toBeCloseTo(47.919, 3);
+  it("PER viager F30 stationnaire = 47.919 (contrôle JSON)", () => {
+    expect(perViager(30, "stationnaire", "F")).toBeCloseTo(47.919, 3);
   });
 
   it("PER temporaire : fin > 90 en prospectif retombe sur viager", () => {
@@ -93,11 +93,11 @@ describe("ATP perm et DSF", () => {
 });
 
 describe("DFP", () => {
-  it("DFP au point : montant = valeur point × taux", () => {
+  it("DFP au point : montant = valeur point × taux (H30, taux 20)", () => {
     const r = calculerDFP({ methode: "point", valeurPointCustom: null, montantCapitalise: 0 }, ctxProsp30M);
-    // Taux 20 → tranche 16-20 (i=3), âge 30 → tranche 21-30 (j=2), valeur = 2560
-    expect(r.valeurPoint).toBe(2560);
-    expect(r.montant).toBe(2560 * 20);
+    // Taux 20 → tranche 16-20 (i=3), âge 30 → tranche 21-30 (j=2), valeur = 2850
+    expect(r.valeurPoint).toBe(2850);
+    expect(r.montant).toBe(2850 * 20);
   });
 
   it("DFP capitalisé : renvoie le montant saisi", () => {
