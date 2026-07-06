@@ -99,6 +99,7 @@ export function hydraterDossier(raw: unknown): DossierData {
       proches: pickArray(srcPS.proches),
       fraisDivers: pickArray(srcPS.fraisDivers),
     },
+    provisions: pickArray(src.provisions),
   };
 
   return merged;
