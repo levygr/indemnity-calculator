@@ -134,6 +134,9 @@ import {
   defaultPostesPermanents,
   type PostesPermanents,
 } from "./postes/permanents";
+import { defaultPostesDeces, type PostesDeces } from "./postes/deces";
+import { defaultPostesSurvie, type PostesSurvie } from "./postes/survieProches";
+
 
 export interface DossierData {
   reference: string;
