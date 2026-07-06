@@ -505,11 +505,22 @@ export function calculerDFP(
 // Utilitaires
 // ============================================================
 
-function zeroCap() {
-  return { renteAnnuelle: 0, per: 0, capital: 0, capitalTP: 0, reste: 0 };
+function zeroEchus(): EchusResult { return { fractionAnnees: 0, montant: 0, tp: 0, reste: 0 }; }
+function zeroATPPerm(): ATPPermResult {
+  return {
+    renteAnnuelle: 0, per: 0, capital: 0, capitalTP: 0, reste: 0,
+    echus: zeroEchus(),
+    aEchoir: { renteAnnuelle: 0, per: 0, capital: 0, capitalTP: 0, reste: 0 },
+    total: { montant: 0, tp: 0, reste: 0 },
+  };
 }
-function zeroCap2() {
-  return { per: 0, capital: 0, capitalTP: 0, reste: 0 };
+function zeroPGPF(): PGPFResult {
+  return {
+    per: 0, capital: 0, capitalTP: 0, reste: 0,
+    echus: zeroEchus(),
+    aEchoir: { renteAnnuelle: 0, per: 0, capital: 0, capitalTP: 0, reste: 0 },
+    total: { montant: 0, tp: 0, reste: 0 },
+  };
 }
 
 export function buildContexte(d: {
