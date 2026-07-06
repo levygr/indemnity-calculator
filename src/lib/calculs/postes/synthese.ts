@@ -122,8 +122,9 @@ export function calculerSynthese(d: DossierData): Synthese {
   const dsaP = calculerDSAPonctuelles(d.postesTemp.dsaPonctuelles, d.dateLiquidation);
   const dsaR = calculerDSARecurrentes(d.postesTemp.dsaRecurrentes, d.dateLiquidation);
   lignes.push(ligne("DSA", "Dépenses de santé actuelles",
-    "PT", dsaP.totalRevalo + dsaR.totalRevalo + (dsaP.totalTP + dsaR.totalTP),
-    dsaP.totalTP + dsaR.totalTP, f, c));
+    "PT",
+    dsaP.totalDepenseRevalorisee + dsaR.totalDepenseRevalorisee,
+    dsaP.totalTpRevalorise + dsaR.totalTpRevalorise, f, c));
 
   const atpT = calculerATPTemp(d.postesTemp.atpTemp);
   lignes.push(ligne("ATP-T", "Assistance tierce personne (temporaire)", "PT", atpT.total, 0, f, c));
