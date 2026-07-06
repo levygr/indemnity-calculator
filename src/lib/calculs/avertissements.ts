@@ -13,6 +13,8 @@ import {
   buildContexte,
   perFromMode,
 } from "./postes/permanents";
+import { AIPP_META } from "@/data/bareme_aipp";
+import { REFERENTIEL } from "@/data/referentiel_evaluation";
 
 export type AvertissementCode =
   | "PER_NUL"
