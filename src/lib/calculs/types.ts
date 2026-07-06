@@ -134,6 +134,9 @@ import {
   defaultPostesPermanents,
   type PostesPermanents,
 } from "./postes/permanents";
+import { defaultPostesDeces, type PostesDeces } from "./postes/deces";
+import { defaultPostesSurvie, type PostesSurvie } from "./postes/survieProches";
+
 
 export interface DossierData {
   reference: string;
@@ -161,6 +164,8 @@ export interface DossierData {
 
   postesTemp: PostesTemporaires;
   postesPerm: PostesPermanents;
+  postesDeces: PostesDeces;
+  postesSurvie: PostesSurvie;
 }
 
 export function defaultDossierData(): DossierData {
@@ -185,6 +190,9 @@ export function defaultDossierData(): DossierData {
     periodesDFT: [],
     postesTemp: defaultPostesTemporaires(),
     postesPerm: defaultPostesPermanents(),
+    postesDeces: defaultPostesDeces(),
+    postesSurvie: defaultPostesSurvie(),
   };
 }
+
 

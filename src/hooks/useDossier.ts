@@ -51,7 +51,10 @@ export function useDossier(id: string) {
           etablissement: { ...base.postesPerm.etablissement, ...(raw.postesPerm?.etablissement ?? {}) },
           pathologiesEvo: { ...base.postesPerm.pathologiesEvo, ...(raw.postesPerm?.pathologiesEvo ?? {}) },
         },
+        postesDeces: { ...base.postesDeces, ...(raw.postesDeces ?? {}) },
+        postesSurvie: { ...base.postesSurvie, ...(raw.postesSurvie ?? {}) },
       };
+
       setLocal(merged);
     }
   }, [row, local]);

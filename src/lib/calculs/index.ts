@@ -11,3 +11,6 @@ export * from "./postes/atpTemp";
 export * from "./postes/pgpa";
 export * from "./postes/dft";
 export * from "./postes/permanents";
+export * from "./postes/deces";
+export * from "./postes/survieProches";
+
