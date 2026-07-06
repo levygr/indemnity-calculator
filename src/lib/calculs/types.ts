@@ -204,6 +204,8 @@ export interface DossierData {
   postesSurvie: PostesSurvie;
 
   provisions: Provision[];
+  organismesTP: OrganismeTP[];
+  creancesTP: CreanceTP[];
 }
 
 export function defaultDossierData(): DossierData {
