@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList } from "lucide-react";
+import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
   label: string;
-  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/synthese";
+  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese";
   icon: React.ComponentType<{ className?: string }>;
   phase?: string;
 }
@@ -18,6 +18,7 @@ const SECTIONS: Section[] = [
   { label: "Préj. extrapatrimoniaux permanents", to: "/dossiers/$id/extrapatrimoniaux-permanents", icon: User2 },
   { label: "Victimes indirectes - décès", to: "/dossiers/$id/deces", icon: Users },
   { label: "Victimes indirectes - survie", to: "/dossiers/$id/survie-proches", icon: Users },
+  { label: "Tiers payeurs", to: "/dossiers/$id/tiers-payeurs", icon: Landmark },
   { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList },
 ];
 

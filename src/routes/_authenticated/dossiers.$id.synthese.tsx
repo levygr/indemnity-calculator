@@ -218,6 +218,69 @@ function Page() {
         );
       })}
 
+      {synth.recoursTP.parOrganisme.length > 0 && (
+        <Section title="Recours des tiers payeurs" description="Ventilation des créances par organisme et par poste. Les créances ventilées ne remplacent pas les champs TP des postes : elles servent de contrôle et alimenteront l'export.">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Organisme</TableHead>
+                  <TableHead>Poste</TableHead>
+                  <TableHead className="text-right">Échu</TableHead>
+                  <TableHead className="text-right">À échoir</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {synth.recoursTP.parOrganisme.map((o) => {
+                  const codes = Object.keys(o.parPoste);
+                  return (
+                    <>
+                      {codes.length === 0 ? (
+                        <TableRow key={o.organisme.id} className="opacity-60">
+                          <TableCell>{o.organisme.nom || "(sans nom)"}</TableCell>
+                          <TableCell colSpan={4} className="text-muted-foreground">Aucune créance ventilée</TableCell>
+                        </TableRow>
+                      ) : codes.map((code, i) => {
+                        const cell = o.parPoste[code];
+                        return (
+                          <TableRow key={o.organisme.id + code}>
+                            {i === 0 ? (
+                              <TableCell rowSpan={codes.length + 1} className="align-top font-medium">
+                                {o.organisme.nom || "(sans nom)"}
+                              </TableCell>
+                            ) : null}
+                            <TableCell>{code}</TableCell>
+                            <TableCell className="text-right tabular-nums">{formatEuros(cell.echu)}</TableCell>
+                            <TableCell className="text-right tabular-nums">{formatEuros(cell.aEchoir)}</TableCell>
+                            <TableCell className="text-right tabular-nums">{formatEuros(cell.total)}</TableCell>
+                          </TableRow>
+                        );
+                      })}
+                      {codes.length > 0 && (
+                        <TableRow key={o.organisme.id + "-tot"} className="bg-muted/40 font-semibold">
+                          <TableCell>Sous-total</TableCell>
+                          <TableCell className="text-right tabular-nums">{formatEuros(o.totaux.echu)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{formatEuros(o.totaux.aEchoir)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{formatEuros(o.totaux.total)}</TableCell>
+                        </TableRow>
+                      )}
+                    </>
+                  );
+                })}
+                <TableRow className="font-semibold border-t-2">
+                  <TableCell colSpan={2}>Total général</TableCell>
+                  <TableCell className="text-right tabular-nums">{formatEuros(synth.recoursTP.totalGeneral.echu)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{formatEuros(synth.recoursTP.totalGeneral.aEchoir)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{formatEuros(synth.recoursTP.totalGeneral.total)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </Section>
+      )}
+
+
       <div className="text-xs text-muted-foreground text-center pt-4 print:pt-8">
         Cabinet Victimes &amp; Préjudices — Grenoble &amp; Annecy — victimesetprejudices.fr
       </div>

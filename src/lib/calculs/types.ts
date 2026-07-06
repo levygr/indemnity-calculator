@@ -157,6 +157,23 @@ export interface Provision {
   debiteur: string;
 }
 
+export type OrganismeTPType = "cpam" | "mutuelle" | "prevoyance" | "employeur" | "autre";
+
+export interface OrganismeTP {
+  id: string;
+  nom: string;
+  type: OrganismeTPType;
+}
+
+export interface CreanceTP {
+  id: string;
+  organismeId: string;
+  posteCode: string;
+  libelle: string;
+  montantEchu: number;
+  montantAEchoir: number;
+}
+
 export interface DossierData {
   reference: string;
   faitGenerateur: FaitGenerateur;
@@ -187,6 +204,8 @@ export interface DossierData {
   postesSurvie: PostesSurvie;
 
   provisions: Provision[];
+  organismesTP: OrganismeTP[];
+  creancesTP: CreanceTP[];
 }
 
 export function defaultDossierData(): DossierData {
@@ -214,6 +233,8 @@ export function defaultDossierData(): DossierData {
     postesDeces: defaultPostesDeces(),
     postesSurvie: defaultPostesSurvie(),
     provisions: [],
+    organismesTP: [],
+    creancesTP: [],
   };
 }
 

@@ -21,7 +21,8 @@ export type AvertissementCode =
   | "PERIODES_CHEVAUCHANTES"
   | "AIPP_HORS_BORNES"
   | "DONNEE_MANQUANTE"
-  | "PROVISIONS_SUPERIEURES";
+  | "PROVISIONS_SUPERIEURES"
+  | "ECART_CREANCES_TP";
 
 export interface AvertissementCalcul {
   code: AvertissementCode;
