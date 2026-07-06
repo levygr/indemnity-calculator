@@ -230,6 +230,8 @@ function PageInner({
                   <TableHead>Rente annuelle</TableHead>
                   <TableHead>PER</TableHead>
                   <TableHead>Capital</TableHead>
+                  <TableHead>Capital TP</TableHead>
+                  <TableHead>Reste</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -241,6 +243,8 @@ function PageInner({
                     <TableCell>{formatEuros(l.renteAnnuelle)}</TableCell>
                     <TableCell>{l.per.toFixed(3)}</TableCell>
                     <TableCell>{formatEuros(l.capital)}</TableCell>
+                    <TableCell>{formatEuros(l.capitalTP)}</TableCell>
+                    <TableCell className="font-medium">{formatEuros(l.reste)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -248,8 +252,9 @@ function PageInner({
           </div>
         )}
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <Recap label="Capital total" value={formatEuros(foyer.totalCapital)} />
+          <Recap label="Créance TP (réversion)" value={formatEuros(foyer.totalTP)} />
           <Recap label="Dette responsable" value={formatEuros(detteFoyer)} />
           <Recap label="Part victime (proches)" value={formatEuros(repFoyer.victime)} accent="victime" />
         </div>
