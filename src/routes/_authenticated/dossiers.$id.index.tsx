@@ -259,6 +259,7 @@ function DossierPage() {
               value={dossier.souffrancesEndurees}
               onChange={(e) => update({ souffrancesEndurees: Number(e.target.value) || 0 })}
             />
+            <FourchetteDegreHint poste="SE" degre={dossier.souffrancesEndurees} />
           </Field>
           <Field label="Préj. esthétique temporaire (/7)" htmlFor="pet">
             <Input
@@ -270,6 +271,7 @@ function DossierPage() {
               value={dossier.esthetiqueTemp}
               onChange={(e) => update({ esthetiqueTemp: Number(e.target.value) || 0 })}
             />
+            <FourchetteDegreHint poste="PET" degre={dossier.esthetiqueTemp} />
           </Field>
           <Field label="Préj. esthétique permanent (/7)" htmlFor="pep">
             <Input
@@ -281,9 +283,11 @@ function DossierPage() {
               value={dossier.esthetiquePerm}
               onChange={(e) => update({ esthetiquePerm: Number(e.target.value) || 0 })}
             />
+            <FourchetteDegreHint poste="PEP" degre={dossier.esthetiquePerm} />
           </Field>
         </div>
       </Section>
+
 
       <Section title="Fractions de réduction">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
