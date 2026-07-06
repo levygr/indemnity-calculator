@@ -27,6 +27,9 @@ export const Route = createFileRoute("/_authenticated/dossiers/$id/synthese")({
 
 const ORDRE: Categorie[] = ["PT", "EPT", "PP", "EPP", "DECES", "SURVIE"];
 
+function uid() { return Math.random().toString(36).slice(2, 10); }
+function num(v: string) { const x = Number(v); return isFinite(x) ? x : 0; }
+
 function Page() {
   const { id } = Route.useParams();
   const { dossier, update } = useDossier(id);
