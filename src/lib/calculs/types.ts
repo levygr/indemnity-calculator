@@ -98,9 +98,20 @@ export interface PETMontant {
   montant: number; // €
 }
 
+/** Frais divers de la victime directe (honoraires médecin-conseil, transports, etc.). */
+export interface FraisDiversVictime {
+  id: string;
+  date: string | null;
+  libelle: string;
+  montant: number;
+  tiersPayeur: number;
+  modeRevalo: ModeRevalo;
+}
+
 export interface PostesTemporaires {
   dsaPonctuelles: DSAPonctuelle[];
   dsaRecurrentes: DSARecurrente[];
+  fraisDivers: FraisDiversVictime[];
   atpTemp: ATPTempPeriode[];
   pgpa: PGPAData;
   dft: DFTMontant;
@@ -112,6 +123,7 @@ export function defaultPostesTemporaires(): PostesTemporaires {
   return {
     dsaPonctuelles: [],
     dsaRecurrentes: [],
+    fraisDivers: [],
     atpTemp: [],
     pgpa: {
       methode: "reference",
