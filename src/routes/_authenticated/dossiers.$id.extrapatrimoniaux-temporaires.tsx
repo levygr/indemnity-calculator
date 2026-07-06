@@ -73,6 +73,7 @@ function ExtraTempPageInner({
           </Field>
           <Recap label="Dette responsable" value={formatEuros(detteSE)} />
         </div>
+        <FourchetteDegreHint poste="SE" degre={dossier.souffrancesEndurees} />
       </Section>
 
       <Section
@@ -85,7 +86,9 @@ function ExtraTempPageInner({
           </Field>
           <Recap label="Dette responsable" value={formatEuros(dettePET)} />
         </div>
+        <FourchetteDegreHint poste="PET" degre={dossier.esthetiqueTemp} />
       </Section>
+
 
       <Section title="Total extrapatrimoniaux temporaires">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
