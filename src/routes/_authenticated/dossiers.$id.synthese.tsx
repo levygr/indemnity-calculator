@@ -89,6 +89,27 @@ function Page() {
         </div>
       </header>
 
+      {synth.avertissements.length > 0 ? (
+        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4">
+          <div className="flex items-center gap-2 text-destructive font-display font-semibold text-sm">
+            <AlertTriangle className="w-4 h-4" />
+            Contrôles de cohérence ({synth.avertissements.length})
+          </div>
+          <ul className="mt-2 space-y-1 text-sm">
+            {synth.avertissements.map((a, i) => (
+              <li key={i} className="text-destructive/90">
+                <span className="font-semibold">{a.poste} :</span> {a.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="rounded-md border border-success/40 bg-success/10 p-3 flex items-center gap-2 text-success text-sm font-display">
+          <CheckCircle2 className="w-4 h-4" />
+          Aucune incohérence détectée
+        </div>
+      )}
+
       <Section title="Totaux généraux">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Recap label="Montant total des postes" value={formatEuros(synth.totalMontant)} />
