@@ -13,9 +13,37 @@ import {
   perViager,
 } from "../capitalisation";
 import { annualiser, type Periodicite } from "../annualisation";
-import { anneesRevolues } from "../dates";
+import { anneesRevolues, joursEntre } from "../dates";
 import { valeurPointAIPP } from "@/data/bareme_aipp";
 import { esperanceVieAnnees } from "../esperance";
+
+// ============================================================
+// Arrérages échus (consolidation → liquidation)
+// ============================================================
+
+export interface EchusResult {
+  fractionAnnees: number;
+  montant: number;
+  tp: number;
+  reste: number;
+}
+
+export function calculerEchus(
+  renteAnnuelle: number,
+  tpAnnuel: number,
+  dateConsolidation: string | null,
+  dateLiquidation: string | null,
+): EchusResult {
+  const zero = { fractionAnnees: 0, montant: 0, tp: 0, reste: 0 };
+  if (!dateConsolidation || !dateLiquidation) return zero;
+  const jours = joursEntre(dateConsolidation, dateLiquidation);
+  if (jours == null || jours <= 0) return zero;
+  const fractionAnnees = jours / 365.25;
+  const montant = Math.max(0, renteAnnuelle) * fractionAnnees;
+  const tp = Math.max(0, tpAnnuel) * fractionAnnees;
+  const reste = Math.max(0, montant - tp);
+  return { fractionAnnees, montant, tp, reste };
+}
 
 // ============================================================
 // Types
