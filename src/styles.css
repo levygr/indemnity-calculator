@@ -150,3 +150,12 @@
     background-color: var(--color-muted);
   }
 }
+
+@media print {
+  aside, .print\:hidden { display: none !important; }
+  body { background: white !important; }
+  .vp-card { box-shadow: none !important; border: 1px solid #ddd !important; }
+  main, section { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  @page { margin: 15mm; size: A4; }
+}
