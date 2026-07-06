@@ -89,6 +89,8 @@ export interface Synthese {
   totalDette: number;
   totalVictime: number;
   totalTPRepartition: number;
+  totalProvisions: number;
+  soldeVictime: number;
   avertissements: AvertissementCalcul[];
 }
 
@@ -236,15 +238,32 @@ export function calculerSynthese(d: DossierData): Synthese {
     return s;
   });
 
+  const totalVictime = sum(lignes, "partVictime");
+  const totalProvisions = (d.provisions || []).reduce(
+    (a, p) => a + (isFinite(p.montant) && p.montant > 0 ? p.montant : 0),
+    0,
+  );
+
+  const avertissements = collecterAvertissements(d);
+  if (totalProvisions > totalVictime) {
+    avertissements.push({
+      code: "PROVISIONS_SUPERIEURES",
+      poste: "Provisions",
+      message: "Le total des provisions excède la part revenant à la victime.",
+    });
+  }
+
   return {
     lignes,
     sousTotaux,
     totalMontant: sum(lignes, "montant"),
     totalTP: sum(lignes, "tiersPayeur"),
     totalDette: sum(lignes, "dette"),
-    totalVictime: sum(lignes, "partVictime"),
+    totalVictime,
     totalTPRepartition: sum(lignes, "partTP"),
-    avertissements: collecterAvertissements(d),
+    totalProvisions,
+    soldeVictime: totalVictime - totalProvisions,
+    avertissements,
   };
 }
 

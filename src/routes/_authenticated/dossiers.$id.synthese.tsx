@@ -3,10 +3,11 @@ import { useMemo, useRef } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Note, Section } from "@/components/vp/Field";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { AlertTriangle, CheckCircle2, Download, ExternalLink, Printer, Upload } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Download, ExternalLink, Plus, Printer, Trash2, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
@@ -14,6 +15,7 @@ import {
   anneesRevolues,
   hydraterDossier,
   type Categorie,
+  type Provision,
 } from "@/lib/calculs";
 import { themiaLink } from "@/lib/themia";
 import { toast } from "sonner";
@@ -24,6 +26,9 @@ export const Route = createFileRoute("/_authenticated/dossiers/$id/synthese")({
 });
 
 const ORDRE: Categorie[] = ["PT", "EPT", "PP", "EPP", "DECES", "SURVIE"];
+
+function uid() { return Math.random().toString(36).slice(2, 10); }
+function num(v: string) { const x = Number(v); return isFinite(x) ? x : 0; }
 
 function Page() {
   const { id } = Route.useParams();
@@ -124,7 +129,29 @@ function Page() {
             <Note>Fractions de réduction appliquées : faute {(dossier.fFaute * 100).toFixed(0)} % × perte de chance {(dossier.fChance * 100).toFixed(0)} %.</Note>
           </div>
         )}
+        <div className="mt-4 rounded-md border border-primary/30 bg-primary/5 px-4 py-3 space-y-1">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Part victime (droit de préférence)</span>
+            <span className="tabular-nums font-medium">{formatEuros(synth.totalVictime)}</span>
+          </div>
+          <div className="flex justify-between text-sm text-destructive">
+            <span>Provisions versées</span>
+            <span className="tabular-nums">− {formatEuros(synth.totalProvisions)}</span>
+          </div>
+          <div className="flex justify-between items-baseline pt-2 border-t border-primary/20">
+            <span className="font-display font-semibold">Solde revenant à la victime</span>
+            <span className={`tabular-nums font-display font-semibold text-lg ${synth.soldeVictime < 0 ? "text-destructive" : "text-success"}`}>
+              {formatEuros(synth.soldeVictime)}
+            </span>
+          </div>
+        </div>
       </Section>
+
+      <ProvisionsSection
+        provisions={dossier.provisions}
+        onChange={(list) => update({ provisions: list })}
+        total={synth.totalProvisions}
+      />
 
       <Section title="Recherche de décisions comparables" description="Ouvre Themia dans un onglet séparé avec des critères pré-remplis (âge ± 5 ans, AIPP ± 5 points).">
         <div className="flex flex-wrap gap-2 print:hidden">
@@ -205,5 +232,59 @@ function Recap({ label, value, accent }: { label: string; value: string; accent?
       <div className="text-[11px] text-muted-foreground font-display">{label}</div>
       <div className={`mt-0.5 font-display font-semibold text-lg ${color}`}>{value}</div>
     </div>
+  );
+}
+
+function ProvisionsSection({ provisions, onChange, total }: {
+  provisions: Provision[];
+  onChange: (list: Provision[]) => void;
+  total: number;
+}) {
+  function add() {
+    onChange([...provisions, { id: uid(), date: null, montant: 0, debiteur: "" }]);
+  }
+  function patch(id: string, p: Partial<Provision>) {
+    onChange(provisions.map((x) => (x.id === id ? { ...x, ...p } : x)));
+  }
+  function del(id: string) { onChange(provisions.filter((x) => x.id !== id)); }
+  return (
+    <Section title="Provisions versées" description="Provisions et indemnités provisionnelles déjà versées à la victime. Elles s'imputent sur la part revenant à la victime pour déterminer le solde final.">
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-40">Date</TableHead>
+              <TableHead>Débiteur</TableHead>
+              <TableHead className="w-40 text-right">Montant (€)</TableHead>
+              <TableHead className="w-10"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {provisions.length === 0 && (
+              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune provision.</TableCell></TableRow>
+            )}
+            {provisions.map((p) => (
+              <TableRow key={p.id} className="vp-row-alt">
+                <TableCell><Input type="date" value={p.date ?? ""} onChange={(e) => patch(p.id, { date: e.target.value || null })} /></TableCell>
+                <TableCell><Input value={p.debiteur} placeholder="Assureur, FGAO…" onChange={(e) => patch(p.id, { debiteur: e.target.value })} /></TableCell>
+                <TableCell><Input type="number" min={0} step="0.01" className="text-right" value={p.montant} onChange={(e) => patch(p.id, { montant: num(e.target.value) })} /></TableCell>
+                <TableCell>
+                  <Button size="icon" variant="ghost" onClick={() => del(p.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="mt-3 flex justify-between items-center">
+        <Button size="sm" variant="outline" onClick={add}><Plus className="w-4 h-4 mr-2" />Ajouter une provision</Button>
+        <div className="text-sm font-display">
+          <span className="text-muted-foreground mr-2">Total provisions</span>
+          <span className="font-semibold text-primary">{formatEuros(total)}</span>
+        </div>
+      </div>
+    </Section>
   );
 }
