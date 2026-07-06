@@ -127,6 +127,10 @@ export function calculerSynthese(d: DossierData): Synthese {
     dsaP.totalDepenseRevalorisee + dsaR.totalDepenseRevalorisee,
     dsaP.totalTpRevalorise + dsaR.totalTpRevalorise, f, c));
 
+  const fdV = calculerFraisDiversVictime(d.postesTemp.fraisDivers, d.dateLiquidation);
+  lignes.push(ligne("FD", "Frais divers", "PT",
+    fdV.totalDepenseRevalorisee, fdV.totalTpRevalorise, f, c));
+
   const atpT = calculerATPTemp(d.postesTemp.atpTemp);
   lignes.push(ligne("ATP-T", "Assistance tierce personne (temporaire)", "PT", atpT.total, 0, f, c));
 
