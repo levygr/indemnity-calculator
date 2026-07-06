@@ -67,6 +67,8 @@ export interface LigneSynthese {
   dette: number;
   partVictime: number;
   partTP: number;
+  echus?: { montant: number; tp: number };
+  aEchoir?: { montant: number; tp: number };
 }
 
 export interface SousTotal {
