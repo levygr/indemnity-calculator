@@ -139,9 +139,11 @@ function PageInner({
               <Recap label="Dette responsable" value={formatEuros(dette)} />
               <Recap label="Part victime" value={formatEuros(rep.victime)} accent="victime" />
             </div>
+            {k === "esthetiquePerm" && <FourchetteDegreHint poste="PEP" degre={f.cotation} />}
           </Section>
         );
       })}
+
     </div>
   );
 }
