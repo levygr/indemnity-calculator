@@ -1,6 +1,9 @@
 /**
  * Dépenses de santé actuelles (DSA) — ponctuelles et récurrentes.
- * Chaque dépense est revalorisée à la date de liquidation puis nette du TP.
+ *
+ * Assiette homogène : la dépense totale ET la créance du tiers payeur sont
+ * revalorisées à la date de liquidation avec le MÊME mode de revalorisation,
+ * puis le reste à charge revalorisé est la différence.
  * Les lignes incomplètes (montant nul ou date manquante) sont ignorées.
  */
 
@@ -13,27 +16,49 @@ export interface LigneCalculee {
   id: string;
   libelle: string;
   depense: number;
+  depenseRevalorisee: number;
   tiersPayeur: number;
-  resteACharge: number;
-  revalorise: number; // reste revalorisé à la liquidation
+  tpRevalorise: number;
+  resteRevalorise: number;
+}
+
+export interface TotauxDSA {
+  lignes: LigneCalculee[];
+  totalDepense: number;
+  totalDepenseRevalorisee: number;
+  totalTP: number;
+  totalTpRevalorise: number;
+  totalResteRevalorise: number;
 }
 
 export function calculerDSAPonctuelles(
   lignes: DSAPonctuelle[],
   dateLiquidation: string | null,
-): { lignes: LigneCalculee[]; totalDepense: number; totalTP: number; totalRevalo: number } {
+): TotauxDSA {
   const out: LigneCalculee[] = [];
-  let tD = 0, tT = 0, tR = 0;
+  let tD = 0, tDR = 0, tTP = 0, tTPR = 0, tR = 0;
   for (const l of lignes) {
     if (!l.date || !isFinite(l.depense) || l.depense <= 0) continue;
     const depense = l.depense;
     const tp = Math.max(0, l.tiersPayeur || 0);
-    const reste = Math.max(0, depense - tp);
-    const rev = revaloriserReste(reste, l.date, dateLiquidation, l.modeRevalo);
-    out.push({ id: l.id, libelle: l.libelle, depense, tiersPayeur: tp, resteACharge: reste, revalorise: rev });
-    tD += depense; tT += tp; tR += rev;
+    const depenseRevalorisee = revaloriserReste(depense, l.date, dateLiquidation, l.modeRevalo);
+    const tpRevalorise = revaloriserReste(tp, l.date, dateLiquidation, l.modeRevalo);
+    const resteRevalorise = Math.max(0, depenseRevalorisee - tpRevalorise);
+    out.push({
+      id: l.id, libelle: l.libelle,
+      depense, depenseRevalorisee, tiersPayeur: tp, tpRevalorise, resteRevalorise,
+    });
+    tD += depense; tDR += depenseRevalorisee;
+    tTP += tp; tTPR += tpRevalorise; tR += resteRevalorise;
   }
-  return { lignes: out, totalDepense: tD, totalTP: tT, totalRevalo: tR };
+  return {
+    lignes: out,
+    totalDepense: tD,
+    totalDepenseRevalorisee: tDR,
+    totalTP: tTP,
+    totalTpRevalorise: tTPR,
+    totalResteRevalorise: tR,
+  };
 }
 
 /**
@@ -49,23 +74,35 @@ function dureeAnnees(debut: string | null, fin: string | null): number | null {
 export function calculerDSARecurrentes(
   lignes: DSARecurrente[],
   dateLiquidation: string | null,
-): { lignes: LigneCalculee[]; totalDepense: number; totalTP: number; totalRevalo: number } {
+): TotauxDSA {
   const out: LigneCalculee[] = [];
-  let tD = 0, tT = 0, tR = 0;
+  let tD = 0, tDR = 0, tTP = 0, tTPR = 0, tR = 0;
   for (const l of lignes) {
     const annees = dureeAnnees(l.debut, l.fin);
     if (annees == null || !isFinite(l.montant) || l.montant <= 0) continue;
     const annuel = annualiser(l.montant, l.periodicite as Periodicite);
     const depense = annuel * annees;
     const tp = Math.max(0, l.tiersPayeur || 0);
-    const reste = Math.max(0, depense - tp);
-    // Revalorisation prise du milieu de la période (approximation usuelle)
+    // Revalorisation depuis le milieu de la période (approximation usuelle)
     const milieu = milieuPeriode(l.debut!, l.fin!);
-    const rev = revaloriserReste(reste, milieu, dateLiquidation, l.modeRevalo);
-    out.push({ id: l.id, libelle: l.libelle, depense, tiersPayeur: tp, resteACharge: reste, revalorise: rev });
-    tD += depense; tT += tp; tR += rev;
+    const depenseRevalorisee = revaloriserReste(depense, milieu, dateLiquidation, l.modeRevalo);
+    const tpRevalorise = revaloriserReste(tp, milieu, dateLiquidation, l.modeRevalo);
+    const resteRevalorise = Math.max(0, depenseRevalorisee - tpRevalorise);
+    out.push({
+      id: l.id, libelle: l.libelle,
+      depense, depenseRevalorisee, tiersPayeur: tp, tpRevalorise, resteRevalorise,
+    });
+    tD += depense; tDR += depenseRevalorisee;
+    tTP += tp; tTPR += tpRevalorise; tR += resteRevalorise;
   }
-  return { lignes: out, totalDepense: tD, totalTP: tT, totalRevalo: tR };
+  return {
+    lignes: out,
+    totalDepense: tD,
+    totalDepenseRevalorisee: tDR,
+    totalTP: tTP,
+    totalTpRevalorise: tTPR,
+    totalResteRevalorise: tR,
+  };
 }
 
 function milieuPeriode(debutISO: string, finISO: string): string {

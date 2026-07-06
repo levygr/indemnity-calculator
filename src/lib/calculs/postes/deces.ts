@@ -36,6 +36,12 @@ export interface Proche {
   /** Âge de fin d'études (utilisé pour capitalisation temporaire des enfants). */
   ageFinEtudes: number; // 25 par défaut
   affection: number; // montant forfaitaire
+  /**
+   * Créance annuelle du tiers payeur versée à ce proche
+   * (pension de réversion, rente d'ayant droit AT/MP…). 0 par défaut.
+   * Imputée sur la perte de revenus du foyer (art. L. 376-1 CSS).
+   */
+  pensionReversionAnnuelle: number;
 }
 
 export interface FraisDivers {
@@ -95,6 +101,8 @@ export interface LigneProchePerte {
   renteAnnuelle: number;
   per: number;
   capital: number;
+  capitalTP: number;
+  reste: number;
 }
 
 export function calculerPerteRevenusFoyer(
@@ -105,6 +113,8 @@ export function calculerPerteRevenusFoyer(
   lignes: LigneProchePerte[];
   totalPartsUtiles: number;
   totalCapital: number;
+  totalTP: number;
+  totalReste: number;
 } {
   const revenu = Math.max(0, d.revenuAnnuelDefunt || 0);
   const partCons = Math.min(Math.max(0, d.partConsommeeDefunt || 0), 1);
@@ -117,8 +127,10 @@ export function calculerPerteRevenusFoyer(
 
   const lignes: LigneProchePerte[] = [];
   let totalCap = 0;
+  let totalTP = 0;
+  let totalReste = 0;
   if (revenuFoyer <= 0 || totalParts <= 0) {
-    return { revenuFoyer, lignes, totalPartsUtiles: totalParts, totalCapital: 0 };
+    return { revenuFoyer, lignes, totalPartsUtiles: totalParts, totalCapital: 0, totalTP: 0, totalReste: 0 };
   }
   for (const p of eligibles) {
     const age = anneesRevolues(p.dateNaissance, ctx.dateLiquidation);
@@ -132,6 +144,9 @@ export function calculerPerteRevenusFoyer(
       if (ageFin > age) per = perTemporaire(age, ageFin, ctx.bareme, p.sexe);
     }
     const capital = rente * per;
+    const pension = Math.max(0, p.pensionReversionAnnuelle || 0);
+    const capitalTP = pension * per;
+    const reste = Math.max(0, capital - capitalTP);
     lignes.push({
       procheId: p.id,
       prenom: p.prenom,
@@ -141,10 +156,14 @@ export function calculerPerteRevenusFoyer(
       renteAnnuelle: rente,
       per,
       capital,
+      capitalTP,
+      reste,
     });
     totalCap += capital;
+    totalTP += capitalTP;
+    totalReste += reste;
   }
-  return { revenuFoyer, lignes, totalPartsUtiles: totalParts, totalCapital: totalCap };
+  return { revenuFoyer, lignes, totalPartsUtiles: totalParts, totalCapital: totalCap, totalTP, totalReste };
 }
 
 export function calculerFraisDivers(lignes: FraisDivers[]): {

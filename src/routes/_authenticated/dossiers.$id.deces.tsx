@@ -64,7 +64,7 @@ function PageInner({
       proches: [...pd.proches, {
         id: uid(), lien, prenom: "", dateNaissance: null, sexe: "I",
         partFoyer: lien === "conjoint" || lien === "enfant" ? 1 : 0,
-        ageFinEtudes: 25, affection: 0,
+        ageFinEtudes: 25, affection: 0, pensionReversionAnnuelle: 0,
       }],
     });
   }
@@ -88,7 +88,7 @@ function PageInner({
   const repObs = repartition(obseques, Math.max(0, pd.obsequesTP || 0), detteObs);
 
   const detteFoyer = detteResponsable(foyer.totalCapital, dossier.fFaute, dossier.fChance);
-  const repFoyer = repartition(foyer.totalCapital, 0, detteFoyer);
+  const repFoyer = repartition(foyer.totalCapital, foyer.totalTP, detteFoyer);
 
   const detteFrais = detteResponsable(frais.totalMontant, dossier.fFaute, dossier.fChance);
   const repFrais = repartition(frais.totalMontant, frais.totalTP, detteFrais);
@@ -146,6 +146,7 @@ function PageInner({
                 <TableHead>Sexe</TableHead>
                 <TableHead>Part foyer</TableHead>
                 <TableHead>Fin études</TableHead>
+                <TableHead>Réversion (€/an)</TableHead>
                 <TableHead>Affection (€)</TableHead>
                 <TableHead></TableHead>
               </TableRow>
@@ -184,6 +185,12 @@ function PageInner({
                   </TableCell>
                   <TableCell>
                     <Input type="number" min={0} step="0.01" className="w-28"
+                      value={p.pensionReversionAnnuelle ?? 0}
+                      disabled={p.lien !== "conjoint" && p.lien !== "enfant"}
+                      onChange={(e) => patchProche(p.id, { pensionReversionAnnuelle: n(e.target.value) })} />
+                  </TableCell>
+                  <TableCell>
+                    <Input type="number" min={0} step="0.01" className="w-28"
                       value={p.affection}
                       onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
                   </TableCell>
@@ -195,6 +202,9 @@ function PageInner({
             </TableBody>
           </Table>
         )}
+        <div className="mt-3">
+          <Note>Pension de réversion ou rente d'ayant droit (annuelle, €) : créance de l'organisme social, imputée sur la perte de revenus du foyer (art. L. 376-1 CSS).</Note>
+        </div>
       </Section>
 
       {/* Perte revenus foyer */}
@@ -220,6 +230,8 @@ function PageInner({
                   <TableHead>Rente annuelle</TableHead>
                   <TableHead>PER</TableHead>
                   <TableHead>Capital</TableHead>
+                  <TableHead>Capital TP</TableHead>
+                  <TableHead>Reste</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -231,6 +243,8 @@ function PageInner({
                     <TableCell>{formatEuros(l.renteAnnuelle)}</TableCell>
                     <TableCell>{l.per.toFixed(3)}</TableCell>
                     <TableCell>{formatEuros(l.capital)}</TableCell>
+                    <TableCell>{formatEuros(l.capitalTP)}</TableCell>
+                    <TableCell className="font-medium">{formatEuros(l.reste)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -238,8 +252,9 @@ function PageInner({
           </div>
         )}
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <Recap label="Capital total" value={formatEuros(foyer.totalCapital)} />
+          <Recap label="Créance TP (réversion)" value={formatEuros(foyer.totalTP)} />
           <Recap label="Dette responsable" value={formatEuros(detteFoyer)} />
           <Recap label="Part victime (proches)" value={formatEuros(repFoyer.victime)} accent="victime" />
         </div>
