@@ -4,6 +4,7 @@ import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
 import { calculerDFT, formatEuros, detteResponsable } from "@/lib/calculs";
+import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires")({
   component: ExtraTempPage,
