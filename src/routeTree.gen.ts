@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedDossiersRouteImport } from './routes/_authenticated/dossiers'
+import { Route as AuthenticatedDossiersIndexRouteImport } from './routes/_authenticated/dossiers.index'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
 import { Route as AuthenticatedDossiersIdIndexRouteImport } from './routes/_authenticated/dossiers.$id.index'
 import { Route as AuthenticatedDossiersIdSyntheseRouteImport } from './routes/_authenticated/dossiers.$id.synthese'
@@ -37,15 +37,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedDossiersRoute = AuthenticatedDossiersRouteImport.update({
-  id: '/dossiers',
-  path: '/dossiers',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
+const AuthenticatedDossiersIndexRoute =
+  AuthenticatedDossiersIndexRouteImport.update({
+    id: '/dossiers/',
+    path: '/dossiers/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDossiersIdRoute = AuthenticatedDossiersIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AuthenticatedDossiersRoute,
+  id: '/dossiers/$id',
+  path: '/dossiers/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDossiersIdIndexRoute =
   AuthenticatedDossiersIdIndexRouteImport.update({
@@ -99,8 +100,8 @@ const AuthenticatedDossiersIdDecesRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/dossiers': typeof AuthenticatedDossiersRouteWithChildren
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -113,7 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/dossiers': typeof AuthenticatedDossiersRouteWithChildren
+  '/dossiers': typeof AuthenticatedDossiersIndexRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -128,8 +129,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/_authenticated/dossiers': typeof AuthenticatedDossiersRouteWithChildren
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/_authenticated/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/_authenticated/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -144,8 +145,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/dossiers'
     | '/dossiers/$id'
+    | '/dossiers/'
     | '/dossiers/$id/deces'
     | '/dossiers/$id/extrapatrimoniaux-permanents'
     | '/dossiers/$id/extrapatrimoniaux-temporaires'
@@ -172,8 +173,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/_authenticated/dossiers'
     | '/_authenticated/dossiers/$id'
+    | '/_authenticated/dossiers/'
     | '/_authenticated/dossiers/$id/deces'
     | '/_authenticated/dossiers/$id/extrapatrimoniaux-permanents'
     | '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires'
@@ -213,19 +214,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/dossiers': {
-      id: '/_authenticated/dossiers'
+    '/_authenticated/dossiers/': {
+      id: '/_authenticated/dossiers/'
       path: '/dossiers'
-      fullPath: '/dossiers'
-      preLoaderRoute: typeof AuthenticatedDossiersRouteImport
+      fullPath: '/dossiers/'
+      preLoaderRoute: typeof AuthenticatedDossiersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dossiers/$id': {
       id: '/_authenticated/dossiers/$id'
-      path: '/$id'
+      path: '/dossiers/$id'
       fullPath: '/dossiers/$id'
       preLoaderRoute: typeof AuthenticatedDossiersIdRouteImport
-      parentRoute: typeof AuthenticatedDossiersRoute
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dossiers/$id/': {
       id: '/_authenticated/dossiers/$id/'
@@ -319,25 +320,14 @@ const AuthenticatedDossiersIdRouteWithChildren =
     AuthenticatedDossiersIdRouteChildren,
   )
 
-interface AuthenticatedDossiersRouteChildren {
-  AuthenticatedDossiersIdRoute: typeof AuthenticatedDossiersIdRouteWithChildren
-}
-
-const AuthenticatedDossiersRouteChildren: AuthenticatedDossiersRouteChildren = {
-  AuthenticatedDossiersIdRoute: AuthenticatedDossiersIdRouteWithChildren,
-}
-
-const AuthenticatedDossiersRouteWithChildren =
-  AuthenticatedDossiersRoute._addFileChildren(
-    AuthenticatedDossiersRouteChildren,
-  )
-
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDossiersRoute: typeof AuthenticatedDossiersRouteWithChildren
+  AuthenticatedDossiersIdRoute: typeof AuthenticatedDossiersIdRouteWithChildren
+  AuthenticatedDossiersIndexRoute: typeof AuthenticatedDossiersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedDossiersRoute: AuthenticatedDossiersRouteWithChildren,
+  AuthenticatedDossiersIdRoute: AuthenticatedDossiersIdRouteWithChildren,
+  AuthenticatedDossiersIndexRoute: AuthenticatedDossiersIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
