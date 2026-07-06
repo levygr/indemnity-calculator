@@ -184,6 +184,8 @@ export function defaultPostesPermanents(): PostesPermanents {
 export interface CapitalisationContexte {
   ageLiquidation: number | null; // années révolues au jour de la liquidation
   ageConsolidation: number | null;
+  dateConsolidation: string | null;
+  dateLiquidation: string | null;
   bareme: BaremeType;
   sexe: Sexe;
   methodeRente: MethodeRente;
