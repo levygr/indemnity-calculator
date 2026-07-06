@@ -272,6 +272,7 @@ function PageInner({
           <Recap label="Capital TP" value={formatEuros(pgpf.capitalTP)} accent="tiers" />
           <Recap label="Part victime" value={formatEuros(repPGPF.victime)} accent="victime" />
         </div>
+        <EchusInfo echus={{ montant: pgpf.echus.montant, tp: pgpf.echus.tp }} aEchoirLabel={`Capital à échoir : rente ${formatEuros(pgpf.aEchoir.renteAnnuelle)} × PER ${pgpf.aEchoir.per.toFixed(3)}`} aEchoir={{ montant: pgpf.aEchoir.capital, tp: pgpf.aEchoir.capitalTP }} />
       </Section>
 
       {/* -------- IP -------- */}
