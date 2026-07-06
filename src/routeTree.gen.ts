@@ -19,6 +19,7 @@ import { Route as AuthenticatedDossiersIdPatrimoniauxTemporairesRouteImport } fr
 import { Route as AuthenticatedDossiersIdPatrimoniauxPermanentsRouteImport } from './routes/_authenticated/dossiers.$id.patrimoniaux-permanents'
 import { Route as AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-temporaires'
 import { Route as AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-permanents'
+import { Route as AuthenticatedDossiersIdDecesRouteImport } from './routes/_authenticated/dossiers.$id.deces'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -74,12 +75,19 @@ const AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute =
     path: '/extrapatrimoniaux-permanents',
     getParentRoute: () => AuthenticatedDossiersIdRoute,
   } as any)
+const AuthenticatedDossiersIdDecesRoute =
+  AuthenticatedDossiersIdDecesRouteImport.update({
+    id: '/deces',
+    path: '/deces',
+    getParentRoute: () => AuthenticatedDossiersIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dossiers': typeof AuthenticatedDossiersRouteWithChildren
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
   '/dossiers/$id/patrimoniaux-permanents': typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dossiers': typeof AuthenticatedDossiersRouteWithChildren
+  '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
   '/dossiers/$id/patrimoniaux-permanents': typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
@@ -103,6 +112,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dossiers': typeof AuthenticatedDossiersRouteWithChildren
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/_authenticated/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/_authenticated/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
   '/_authenticated/dossiers/$id/patrimoniaux-permanents': typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dossiers'
     | '/dossiers/$id'
+    | '/dossiers/$id/deces'
     | '/dossiers/$id/extrapatrimoniaux-permanents'
     | '/dossiers/$id/extrapatrimoniaux-temporaires'
     | '/dossiers/$id/patrimoniaux-permanents'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dossiers'
+    | '/dossiers/$id/deces'
     | '/dossiers/$id/extrapatrimoniaux-permanents'
     | '/dossiers/$id/extrapatrimoniaux-temporaires'
     | '/dossiers/$id/patrimoniaux-permanents'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dossiers'
     | '/_authenticated/dossiers/$id'
+    | '/_authenticated/dossiers/$id/deces'
     | '/_authenticated/dossiers/$id/extrapatrimoniaux-permanents'
     | '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires'
     | '/_authenticated/dossiers/$id/patrimoniaux-permanents'
@@ -223,10 +236,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRouteImport
       parentRoute: typeof AuthenticatedDossiersIdRoute
     }
+    '/_authenticated/dossiers/$id/deces': {
+      id: '/_authenticated/dossiers/$id/deces'
+      path: '/deces'
+      fullPath: '/dossiers/$id/deces'
+      preLoaderRoute: typeof AuthenticatedDossiersIdDecesRouteImport
+      parentRoute: typeof AuthenticatedDossiersIdRoute
+    }
   }
 }
 
 interface AuthenticatedDossiersIdRouteChildren {
+  AuthenticatedDossiersIdDecesRoute: typeof AuthenticatedDossiersIdDecesRoute
   AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
   AuthenticatedDossiersIdPatrimoniauxPermanentsRoute: typeof AuthenticatedDossiersIdPatrimoniauxPermanentsRoute
@@ -236,6 +257,7 @@ interface AuthenticatedDossiersIdRouteChildren {
 
 const AuthenticatedDossiersIdRouteChildren: AuthenticatedDossiersIdRouteChildren =
   {
+    AuthenticatedDossiersIdDecesRoute: AuthenticatedDossiersIdDecesRoute,
     AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute:
       AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute,
     AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute:
