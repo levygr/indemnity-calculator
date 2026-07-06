@@ -255,7 +255,8 @@ export function calculerSynthese(d: DossierData): Synthese {
     });
   }
 
-  return {
+  // Recours des tiers payeurs par organisme × poste + contrôles de cohérence.
+  const syntheseSansRecours: Synthese = {
     lignes,
     sousTotaux,
     totalMontant: sum(lignes, "montant"),
@@ -266,7 +267,18 @@ export function calculerSynthese(d: DossierData): Synthese {
     totalProvisions,
     soldeVictime: totalVictime - totalProvisions,
     avertissements,
+    recoursTP: { parOrganisme: [], parPoste: [], totalGeneral: { echu: 0, aEchoir: 0, total: 0 }, ecarts: [] },
   };
+  const recoursTP = calculerRecoursTP(d, syntheseSansRecours);
+  for (const e of recoursTP.ecarts) {
+    avertissements.push({
+      code: "ECART_CREANCES_TP",
+      poste: e.posteCode,
+      message: `Créances ventilées (${e.ventile.toFixed(2)} €) ≠ TP retenu dans la synthèse (${e.tpSynthese.toFixed(2)} €) pour ${e.libelle}.`,
+    });
+  }
+
+  return { ...syntheseSansRecours, recoursTP };
 }
 
 function sum<T>(arr: T[], key: keyof T): number {
