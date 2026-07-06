@@ -1,68 +1,58 @@
+# Correction des erreurs de navigation dans le dossier
 
-# Compléter le calculateur — Phases 3, 4 et 5
+## Diagnostic
 
-Le moteur est déjà en place (dates, revalorisation, capitalisation PER stationnaire/prospectif, fractions, tests 26/26 verts) et les pages 1 à 3 fonctionnent. Il reste à ajouter les postes viagers (permanents), les victimes indirectes, et la synthèse/exports.
+Chaque page interne d'un dossier (postes temporaires, permanents, décès, survie) crashe avec :
 
-## Ce qui va être ajouté au moteur (`src/lib/calculs/postes/`)
+> `Rendered more hooks than during the previous render.`
 
-- `dsf.ts` — Dépenses de santé futures : lignes ponctuelles et récurrentes (capitalisées viager ou temporaire).
-- `atpPerm.ts` — Assistance tierce personne permanente : capitalisation PER viager ou différée (méthode habituelle / exacte selon le dossier).
-- `pgpf.ts` — Perte de gains professionnels futurs : méthode capitalisée (rente annuelle × PER) + reliquat éventuel d'IJ/pension.
-- `ip.ts` — Incidence professionnelle (dévalorisation, pénibilité, perte de retraite capitalisée).
-- `dfp.ts` — Déficit fonctionnel permanent : valeur du point (barème AIPP déjà fourni dans `src/data/bareme_aipp.ts`, interpolé par âge et taux).
-- `agrement.ts` / `sexuel.ts` / `esthetiquePerm.ts` / `etablissement.ts` — postes forfaitaires avec cotation → montant.
-- `pathologiesEvo.ts` — préjudice d'anxiété / pathologies évolutives (forfait).
-- `logementVehicule.ts` — adaptation logement (ponctuel + récurrent capitalisé) et véhicule.
-- `deces.ts` — obsèques, perte de revenus du foyer (méthode conjoint + enfants avec parts, capitalisation viagère), frais divers, accompagnement, préjudice d'affection (2 méthodes : cotation ou barème).
-- `survieProches.ts` — perte de revenus du conjoint survivant, frais divers, affection, préjudice extrapatrimonial exceptionnel.
-- `synthese.ts` — agrégation transversale par poste, sous-totaux par catégorie (patrimoniaux/extrapatrimoniaux × temporaires/permanents + victimes indirectes), totaux généraux dette / TP / victime avec droit de préférence.
+Toutes ces pages suivent le même anti-pattern React :
 
-Chaque module reste une fonction pure testée (une suite Vitest par poste : valeurs limites, lignes incomplètes ignorées, capitalisation viager vs différée).
+```tsx
+const { dossier, update } = useDossier(id);
+if (!dossier) return null;      // ← early return AVANT les hooks
 
-## Extension du type `DossierData`
+const ctx = useMemo(...);       // ← ces hooks ne sont pas appelés au 1er render
+const dsaP = useMemo(...);
+// ...
+```
 
-Ajout d'une sous-structure `postesPerm`, `postesDeces`, `postesSurvie` en jsonb, initialisées vides. Aucun changement de schéma DB (tout tient dans la colonne `data`). Hydratation deep-merge déjà en place dans `useDossier` — il suffit d'étendre le merge.
+Au premier rendu `dossier` est `undefined` → la fonction retourne `null` avant d'atteindre les `useMemo`. Au rendu suivant, `dossier` arrive → les `useMemo` s'exécutent → React voit plus de hooks qu'au rendu précédent et fait tomber le composant dans l'`errorComponent`. C'est pourquoi *tout* clic sur un item du menu affiche une erreur.
 
-## Pages et navigation
+La page `synthese.tsx` fait déjà correctement : `useMemo` d'abord (avec garde `dossier ? ... : null`), puis `if (!dossier) return null;`.
 
-Nouvelles routes sous `_authenticated/dossiers.$id.` :
+## Fichiers à corriger (même pattern dans tous)
 
-- `patrimoniaux-permanents.tsx` — DSF, adaptation logement/véhicule, ATP perm, PGPF, IP, PSU.
-- `extrapatrimoniaux-permanents.tsx` — DFP (point AIPP), agrément, PEP, PSE, établissement, pathologies évolutives.
-- `deces.tsx` — obsèques, perte revenus foyer, frais divers, accompagnement, affection.
-- `survie-proches.tsx` — perte revenus conjoint, frais divers, affection, PEP.
-- `synthese.tsx` — tableau récap par poste, sous-totaux, totaux généraux, avec surlignage victime / tiers payeur.
+- `src/routes/_authenticated/dossiers.$id.patrimoniaux-temporaires.tsx`
+- `src/routes/_authenticated/dossiers.$id.extrapatrimoniaux-temporaires.tsx`
+- `src/routes/_authenticated/dossiers.$id.patrimoniaux-permanents.tsx`
+- `src/routes/_authenticated/dossiers.$id.extrapatrimoniaux-permanents.tsx`
+- `src/routes/_authenticated/dossiers.$id.deces.tsx`
+- `src/routes/_authenticated/dossiers.$id.survie-proches.tsx`
 
-La sidebar bascule ces entrées de « Phase X » à actives. Chaque page suit le même patron que les pages 2/3 (Section + Field + Table + auto-save).
+## Correction
 
-## Exports (page synthèse)
+Dans chaque `Page()` :
 
-- Export JSON du dossier (bouton `Télécharger le dossier`).
-- Import JSON (upload → validation Zod → écrasement contrôlé).
-- Export PDF charté V&P via `@react-pdf/renderer` (à installer). Composant `<DossierPDF>` reprenant la synthèse + détail par poste. Sortie A4 avec en-tête cabinet.
+1. Déplacer le `if (!dossier) return null;` **après** tous les `useMemo`.
+2. Rendre chaque `useMemo` tolérant à `dossier === undefined` : lire les sous‑objets via optional chaining et retourner une valeur neutre quand le dossier n'est pas encore chargé, par exemple :
 
-## Liens Themia (page synthèse et fiches postes)
+```tsx
+const { dossier, update } = useDossier(id);
+const pt = dossier?.postesPT;
+const ctx = useMemo(() => (dossier ? buildContexte(dossier) : null), [dossier]);
+const dsaPCalc = useMemo(
+  () => (pt ? calculerDSAPonctuelles(pt.dsaPonctuelles) : null),
+  [pt],
+);
+// ... tous les autres useMemo suivent le même schéma
+if (!dossier || !ctx) return null;
+```
 
-Helper `themiaLink(poste, params)` → construit une URL de recherche vers Themia avec les critères contextuels (cotation ± 1 point, âge ± 5 ans, taux AIPP ± 5 points, mots-clés fait générateur). Rendu en bouton discret « Rechercher des décisions similaires ».
+Ainsi la liste et l'ordre des hooks appelés restent identiques entre les rendus, ce qui supprime l'erreur React et permet l'affichage normal de chaque page.
 
-## Découpage en tours
+## Vérification
 
-Vu le volume (≈ 12 modules moteur + 5 pages + synthèse + exports), je propose de livrer en 3 tours :
-
-1. **Ce tour** : moteur permanents (DSF, ATP perm, PGPF, IP, DFP, agrément, PEP, PSE, étab., pathologies, logement/véhicule) + pages 4 et 5 (Patrimoniaux/Extrapatrimoniaux permanents) + tests. Sidebar Phase 3 activée.
-2. **Tour suivant** : victimes indirectes (décès + survie proches), moteur et pages 6/7. Sidebar Phase 4 activée.
-3. **Dernier tour** : synthèse, exports PDF/JSON, liens Themia. Sidebar Phase 5 activée. App complète.
-
-## Points techniques importants (rappels du prompt)
-
-- Aucun arrondi intermédiaire : `number` JS, arrondi à l'affichage uniquement.
-- Capitalisation viager = `perViager(âgeLiquidation, bareme, sexe)`. Rente différée = `perRenteDifferee(...)` avec méthode `habituelle` ou `exacte` selon le dossier. Prospectif > 90 ans → retombe sur viager (déjà géré et testé).
-- DFP capitalisé (au jour) = valeur du point × jours restants / EV ; DFP au point = valeur point × taux AIPP (interpolée par âge).
-- Répartition victime / tiers payeur toujours via `fractions.repartition` (droit de préférence).
-- Perte de revenus du foyer : parts conjoint / enfants, méthode arithmétique, capitalisation viagère par tête sur EV commune.
-- Lignes incomplètes ignorées, jamais de NaN affiché.
-- Aucune valeur inventée : uniquement les barèmes et indices déjà présents dans `src/data/`. Les valeurs monétaires (point DFP hors table AIPP, SE, PET, affection, agrément forfait) restent saisies par l'utilisateur.
-
-## Livraison de ce tour
-
-Je démarre immédiatement le tour 1 (permanents) : moteur + tests + 2 pages + activation sidebar. Puis je vous laisse tester, avant de continuer avec les victimes indirectes et la synthèse.
+- Recharger le dossier, cliquer successivement sur chaque item du menu latéral.
+- Chaque page doit s'afficher sans tomber dans l'`errorComponent`.
+- Aucune régression fonctionnelle attendue : les calculs restent inchangés une fois le dossier chargé.
