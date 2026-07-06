@@ -17,7 +17,7 @@ const SECTIONS: Section[] = [
   { label: "Préj. extrapatrimoniaux permanents", to: "/dossiers/$id/extrapatrimoniaux-permanents", icon: User2 },
   { label: "Victimes indirectes — décès", to: "/dossiers/$id/deces", icon: Users },
   { label: "Victimes indirectes — survie", to: "/dossiers/$id/survie-proches", icon: Users },
-  { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList, phase: "Phase 5" },
+  { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList },
 ];
 
 
