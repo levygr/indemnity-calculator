@@ -130,7 +130,25 @@ function PatrimoniauxTempPageInner({
   }
   function delDSAR(idL: string) {
     patchPT({ dsaRecurrentes: pt.dsaRecurrentes.filter((l) => l.id !== idL) });
+
+  // --- Frais divers helpers ----------------------------------------------
+  function addFD() {
+    patchPT({
+      fraisDivers: [
+        ...pt.fraisDivers,
+        { id: uid(), date: null, libelle: "", montant: 0, tiersPayeur: 0, modeRevalo: "annuel" },
+      ],
+    });
   }
+  function patchFD(idL: string, patch: Partial<FraisDiversVictime>) {
+    patchPT({
+      fraisDivers: pt.fraisDivers.map((l) => (l.id === idL ? { ...l, ...patch } : l)),
+    });
+  }
+  function delFD(idL: string) {
+    patchPT({ fraisDivers: pt.fraisDivers.filter((l) => l.id !== idL) });
+  }
+
   function addATP() {
     patchPT({
       atpTemp: [
