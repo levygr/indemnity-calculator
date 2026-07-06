@@ -60,6 +60,30 @@ describe("Décès — perte de revenus du foyer", () => {
     const r = calculerPerteRevenusFoyer(d, ctx);
     expect(r.revenuFoyer).toBe(0);
   });
+
+  it("PRF avec pension de réversion : capital, capitalTP et reste", () => {
+    const d: PostesDeces = {
+      ...defaultPostesDeces(),
+      revenuAnnuelDefunt: 40000,
+      partConsommeeDefunt: 0.3,
+      proches: [
+        {
+          id: "c", lien: "conjoint", prenom: "A",
+          dateNaissance: "1985-01-01", sexe: "F",
+          partFoyer: 1, ageFinEtudes: 25, affection: 0,
+          pensionReversionAnnuelle: 5000,
+        },
+      ],
+    };
+    const r = calculerPerteRevenusFoyer(d, ctx);
+    const per = perViager(40, "prospectif", "F");
+    expect(r.lignes[0].capital).toBeCloseTo(28000 * per, 3);
+    expect(r.lignes[0].capitalTP).toBeCloseTo(5000 * per, 3);
+    expect(r.lignes[0].reste).toBeCloseTo(23000 * per, 3);
+    expect(r.totalCapital).toBeCloseTo(28000 * per, 3);
+    expect(r.totalTP).toBeCloseTo(5000 * per, 3);
+    expect(r.totalReste).toBeCloseTo(23000 * per, 3);
+  });
 });
 
 describe("Survie proches — perte de revenus", () => {
