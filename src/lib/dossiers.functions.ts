@@ -16,21 +16,25 @@ export interface DossierRow {
   updated_at: string;
 }
 
+// La colonne `data` est un jsonb côté DB. Le moteur de calcul est la source de
+// vérité de la forme ; on cast à la lecture et à l'écriture.
+type Jsonish = Parameters<typeof JSON.stringify>[0];
+
 export const listDossiers = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<DossierRow[]> => {
+  .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("dossiers")
       .select("id, reference, data, created_at, updated_at")
       .order("updated_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return (data ?? []) as DossierRow[];
+    return (data ?? []) as unknown as DossierRow[];
   });
 
 export const getDossier = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }): Promise<DossierRow> => {
+  .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("dossiers")
       .select("id, reference, data, created_at, updated_at")
@@ -38,7 +42,7 @@ export const getDossier = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) throw new Error("Dossier introuvable");
-    return row as DossierRow;
+    return row as unknown as DossierRow;
   });
 
 export const createDossier = createServerFn({ method: "POST" })
@@ -46,7 +50,7 @@ export const createDossier = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     z.object({ reference: z.string().min(1).max(200).optional() }).parse(input),
   )
-  .handler(async ({ data, context }): Promise<DossierRow> => {
+  .handler(async ({ data, context }) => {
     const initial = defaultDossierData();
     if (data.reference) initial.reference = data.reference;
     const { data: row, error } = await context.supabase
@@ -54,12 +58,12 @@ export const createDossier = createServerFn({ method: "POST" })
       .insert({
         user_id: context.userId,
         reference: initial.reference,
-        data: initial as unknown as Record<string, unknown>,
+        data: initial as unknown as Jsonish,
       })
       .select("id, reference, data, created_at, updated_at")
       .single();
     if (error) throw new Error(error.message);
-    return row as DossierRow;
+    return row as unknown as DossierRow;
   });
 
 export const updateDossier = createServerFn({ method: "POST" })
@@ -74,30 +78,30 @@ export const updateDossier = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data, context }): Promise<DossierRow> => {
+  .handler(async ({ data, context }) => {
     const { data: row, error } = await context.supabase
       .from("dossiers")
-      .update({ reference: data.reference, data: data.data })
+      .update({ reference: data.reference, data: data.data as unknown as Jsonish })
       .eq("id", data.id)
       .select("id, reference, data, created_at, updated_at")
       .single();
     if (error) throw new Error(error.message);
-    return row as DossierRow;
+    return row as unknown as DossierRow;
   });
 
 export const deleteDossier = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }): Promise<{ ok: true }> => {
+  .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("dossiers").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
-    return { ok: true };
+    return { ok: true as const };
   });
 
 export const duplicateDossier = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data, context }): Promise<DossierRow> => {
+  .handler(async ({ data, context }) => {
     const { data: source, error } = await context.supabase
       .from("dossiers")
       .select("reference, data")
@@ -116,5 +120,5 @@ export const duplicateDossier = createServerFn({ method: "POST" })
       .select("id, reference, data, created_at, updated_at")
       .single();
     if (insErr) throw new Error(insErr.message);
-    return row as DossierRow;
+    return row as unknown as DossierRow;
   });
