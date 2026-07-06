@@ -429,6 +429,8 @@ export function buildContexte(d: {
   return {
     ageLiquidation: anneesRevolues(d.dateNaissance, d.dateLiquidation),
     ageConsolidation: anneesRevolues(d.dateNaissance, d.dateConsolidation),
+    dateConsolidation: d.dateConsolidation,
+    dateLiquidation: d.dateLiquidation,
     bareme: d.bareme,
     sexe: d.sexe,
     methodeRente: d.methodeRente,
