@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authenticated/taux-legal")({
 
 function TauxLegalPage() {
   const qc = useQueryClient();
-  const nav = useNav();
+  const nav = useNavigate();
   const fetchList = useServerFn(listTauxLegal);
   const fetchAdd = useServerFn(addNextSemestreTauxLegal);
 
