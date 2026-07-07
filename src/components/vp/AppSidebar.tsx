@@ -5,7 +5,7 @@ import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
   label: string;
-  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur" | "/dossiers/$id/interets";
+  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur" | "/dossiers/$id/interets" | "/dossiers/$id/activite";
   icon: React.ComponentType<{ className?: string }>;
   phase?: string;
 }
@@ -22,7 +22,9 @@ const SECTIONS: Section[] = [
   { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList },
   { label: "Comparateur", to: "/dossiers/$id/comparateur", icon: GitCompareArrows },
   { label: "Intérêts", to: "/dossiers/$id/interets", icon: Percent },
+  { label: "Activité", to: "/dossiers/$id/activite", icon: History },
 ];
+
 
 
 
