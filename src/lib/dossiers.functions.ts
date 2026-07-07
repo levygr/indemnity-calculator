@@ -349,18 +349,15 @@ export const listDossierEvents = createServerFn({ method: "GET" })
     if (userIds.length > 0) {
       try {
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { data: users } = await supabaseAdmin
-          .schema("auth")
-          .from("users")
-          .select("id, email")
-          .in("id", userIds);
-        for (const u of users ?? []) {
-          if (u.email) emails.set(u.id as string, u.email as string);
+        for (const uid of userIds) {
+          const { data: u } = await supabaseAdmin.auth.admin.getUserById(uid);
+          if (u?.user?.email) emails.set(uid, u.user.email);
         }
       } catch {
         // ignore
       }
     }
+
     return (rows ?? []).map((r) => ({
       ...(r as unknown as DossierEventRow),
       user_email: r.user_id ? emails.get(r.user_id) ?? null : null,
