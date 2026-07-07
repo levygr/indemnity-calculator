@@ -238,6 +238,7 @@ export function defaultDossierData(): DossierData {
     provisions: [],
     organismesTP: [],
     creancesTP: [],
+    lignesInterets: [],
   };
 }
 
