@@ -7,6 +7,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { defaultDossierData, type DossierData } from "@/lib/calculs/types";
+import { calculerSynthese } from "@/lib/calculs";
+import type { Synthese } from "@/lib/calculs/postes/synthese";
+import { hydraterDossier } from "@/lib/calculs/hydratation";
 
 export interface DossierRow {
   id: string;
@@ -14,6 +17,15 @@ export interface DossierRow {
   data: DossierData;
   created_at: string;
   updated_at: string;
+}
+
+export interface SnapshotRow {
+  id: string;
+  dossier_id: string;
+  nom: string;
+  created_at: string;
+  data: DossierData;
+  synthese: Synthese;
 }
 
 // La colonne `data` est un jsonb côté DB. Le moteur de calcul est la source de
