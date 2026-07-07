@@ -219,7 +219,7 @@ export function buildReclamationDocx(opts: BuildOptions): BuildResult {
         new TextRun({
           text:
             `Capitalisation : barème Gazette du Palais 2025, taux 0,5 %, table ${TABLE_LABEL[dossier.tableMortalite]}. ` +
-            `Valeur du point AIPP : ${AIPP_META.nom}, édition ${AIPP_META.edition ?? "non renseignée"}. ` +
+            `Valeur du point AIPP : ${AIPP_META.source}, édition ${AIPP_META.edition ?? "non renseignée"}. ` +
             `Fourchettes indicatives : ${REFERENTIEL.nom}, édition ${REFERENTIEL.edition ?? "non renseignée"}. ` +
             `Chiffrage établi le ${formatDateFR(dateEdition)}. ` +
             `Document de travail établi sous réserve de l'évolution du dossier.`,
