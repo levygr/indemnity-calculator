@@ -213,6 +213,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_organisation: {
+        Args: { _nom: string }
+        Returns: {
+          created_at: string
+          id: string
+          nom: string
+        }[]
+      }
       has_org_role: {
         Args: { _org: string; _roles: string[]; _user: string }
         Returns: boolean
