@@ -211,7 +211,7 @@ function Page() {
                   const catNonNulle = sousTotaux.some((v) => v !== 0);
                   if (!catNonNulle) return null;
                   return (
-                    <>
+                    <Fragment key={cat}>
                       <TableRow key={`cat-${cat}`} className="bg-muted/60">
                         <TableCell
                           colSpan={1 + colonnes.length + (colonnes.length - 1) * 2}
