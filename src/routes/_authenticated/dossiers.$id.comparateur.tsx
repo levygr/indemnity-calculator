@@ -54,13 +54,12 @@ function Page() {
     [sel],
   );
 
-  const snapshotQueries = selectedIds.map((sid) => ({
-    sid,
-    q: useQuery({
+  const snapshotQueries = useQueries({
+    queries: selectedIds.map((sid) => ({
       queryKey: ["snapshot", sid],
       queryFn: () => get({ data: { id: sid } }),
-    }),
-  }));
+    })),
+  });
 
   const colonnes: Colonne[] = useMemo(() => {
     const res: Colonne[] = [];
@@ -70,7 +69,8 @@ function Page() {
         if (syntheseCourante) res.push({ key: COURANT, label: "Chiffrage courant", synth: syntheseCourante });
       } else {
         const snap = snapshots.find((x) => x.id === s);
-        const full = snapshotQueries.find((q) => q.sid === s)?.q.data;
+        const idx = selectedIds.indexOf(s);
+        const full = idx >= 0 ? snapshotQueries[idx]?.data : undefined;
         if (full) {
           res.push({
             key: s,
@@ -81,8 +81,7 @@ function Page() {
       }
     }
     return res;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sel, syntheseCourante, snapshots, snapshotQueries.map((q) => q.q.data).join("|")]);
+  }, [sel, syntheseCourante, snapshots, selectedIds, snapshotQueries]);
 
   if (!dossier || !syntheseCourante) return null;
 
