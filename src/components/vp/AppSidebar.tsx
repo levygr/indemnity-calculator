@@ -21,6 +21,7 @@ const SECTIONS: Section[] = [
   { label: "Tiers payeurs", to: "/dossiers/$id/tiers-payeurs", icon: Landmark },
   { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList },
   { label: "Comparateur", to: "/dossiers/$id/comparateur", icon: GitCompareArrows },
+  { label: "Intérêts", to: "/dossiers/$id/interets", icon: Percent },
 ];
 
 
