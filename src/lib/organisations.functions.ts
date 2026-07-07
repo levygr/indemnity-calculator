@@ -58,34 +58,13 @@ export const createOrganisation = createServerFn({ method: "POST" })
     z.object({ nom: z.string().min(1).max(200) }).parse(input),
   )
   .handler(async ({ data, context }) => {
-    // Interdire la création d'une seconde organisation par le même utilisateur.
-    const { data: existing } = await context.supabase
-      .from("organisation_membres")
-      .select("organisation_id")
-      .eq("user_id", context.userId)
-      .limit(1)
-      .maybeSingle();
-    if (existing) throw new Error("Vous appartenez déjà à un cabinet");
-
-    const { data: org, error } = await context.supabase
-      .from("organisations")
-      .insert({ nom: data.nom })
-      .select("id, nom, created_at")
-      .single();
-    if (error) throw new Error(error.message);
-
-    // Bootstrap : premier membre = admin (autorisé par la RLS d'insertion).
-    const { error: mErr } = await context.supabase.from("organisation_membres").insert({
-      organisation_id: org.id,
-      user_id: context.userId,
-      role: "admin",
+    const { data: rows, error } = await context.supabase.rpc("create_organisation", {
+      _nom: data.nom,
     });
-    if (mErr) {
-      // Rollback : supprimer l'org (admin sur elle-même) — sinon orpheline.
-      await context.supabase.from("organisations").delete().eq("id", org.id);
-      throw new Error(mErr.message);
-    }
-    return org as OrganisationRow;
+    if (error) throw new Error(error.message);
+    const row = Array.isArray(rows) ? rows[0] : rows;
+    if (!row) throw new Error("Création du cabinet impossible");
+    return row as OrganisationRow;
   });
 
 export const listMembers = createServerFn({ method: "GET" })
