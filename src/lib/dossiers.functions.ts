@@ -36,9 +36,10 @@ export interface DossierEventRow {
   dossier_id: string;
   user_id: string | null;
   action: string;
-  details: unknown;
+  details: Record<string, unknown> | null;
   created_at: string;
 }
+
 
 type Jsonish = Parameters<typeof JSON.stringify>[0];
 
