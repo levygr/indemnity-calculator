@@ -29,6 +29,8 @@ import {
 import { themiaLink } from "@/lib/themia";
 
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
+import { regimePour } from "@/lib/regimes";
+import { RegimeVigilance } from "@/components/vp/RegimeVigilance";
 import { toast } from "sonner";
 import { createSnapshot, deleteSnapshot, listSnapshots, logDossierAction } from "@/lib/dossiers.functions";
 
