@@ -51,7 +51,7 @@ function ExtraTempPageInner({
         description="Le nombre de jours et les taux sont saisis sur la page 1. On applique ici le taux journalier retenu."
       >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Field label="Taux journalier (€/jour à 100 %)" hint="Valeur usuelle Cour de cassation : 25 à 30 €/jour.">
+          <Field label="Taux journalier (€/jour à 100 %)" hint={REFERENTIEL.dftIndicatif.note}>
             <Input type="number" min={0} step="0.5" value={pt.dft.tauxJournalier} onChange={(e) => patchPT("dft", { tauxJournalier: Number(e.target.value) || 0 })} />
           </Field>
           <Recap label="Jours totaux" value={String(dft.joursTotaux)} />
