@@ -61,7 +61,7 @@ function PageInner({
   function addProche() {
     patch({
       proches: [...ps.proches, {
-        id: uid(), prenom: "", lien: "conjoint", dateNaissance: null, sexe: "I",
+        id: uid(), prenom: "", lien: "conjoint", lienReferentiel: "", dateNaissance: null, sexe: "I",
         perteRevenusAnnuelle: 0, perteRevenusTP: 0, affection: 0, pep: 0,
       }],
     });
