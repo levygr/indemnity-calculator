@@ -25,7 +25,8 @@ export type AvertissementCode =
   | "DONNEE_MANQUANTE"
   | "PROVISIONS_SUPERIEURES"
   | "ECART_CREANCES_TP"
-  | "REFERENTIEL_NON_VERSIONNE";
+  | "REFERENTIEL_NON_VERSIONNE"
+  | "PART_CONSOMMEE_SUSPECTE";
 
 export interface AvertissementCalcul {
   code: AvertissementCode;
