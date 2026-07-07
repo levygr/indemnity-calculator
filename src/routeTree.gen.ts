@@ -23,6 +23,7 @@ import { Route as AuthenticatedDossiersIdPatrimoniauxPermanentsRouteImport } fro
 import { Route as AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-temporaires'
 import { Route as AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-permanents'
 import { Route as AuthenticatedDossiersIdDecesRouteImport } from './routes/_authenticated/dossiers.$id.deces'
+import { Route as AuthenticatedDossiersIdComparateurRouteImport } from './routes/_authenticated/dossiers.$id.comparateur'
 import { Route as AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport } from './routes/_authenticated/dossiers.$id.snapshots.$snapshotId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -104,6 +105,12 @@ const AuthenticatedDossiersIdDecesRoute =
     path: '/deces',
     getParentRoute: () => AuthenticatedDossiersIdRoute,
   } as any)
+const AuthenticatedDossiersIdComparateurRoute =
+  AuthenticatedDossiersIdComparateurRouteImport.update({
+    id: '/comparateur',
+    path: '/comparateur',
+    getParentRoute: () => AuthenticatedDossiersIdRoute,
+  } as any)
 const AuthenticatedDossiersIdSnapshotsSnapshotIdRoute =
   AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport.update({
     id: '/snapshots/$snapshotId',
@@ -116,6 +123,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/dossiers/': typeof AuthenticatedDossiersIndexRoute
+  '/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -131,6 +139,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dossiers': typeof AuthenticatedDossiersIndexRoute
+  '/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -149,6 +158,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
+  '/_authenticated/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/_authenticated/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
   '/_authenticated/dossiers/$id/extrapatrimoniaux-permanents': typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires': typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/dossiers/$id'
     | '/dossiers/'
+    | '/dossiers/$id/comparateur'
     | '/dossiers/$id/deces'
     | '/dossiers/$id/extrapatrimoniaux-permanents'
     | '/dossiers/$id/extrapatrimoniaux-temporaires'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/dossiers'
+    | '/dossiers/$id/comparateur'
     | '/dossiers/$id/deces'
     | '/dossiers/$id/extrapatrimoniaux-permanents'
     | '/dossiers/$id/extrapatrimoniaux-temporaires'
@@ -199,6 +211,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dossiers/$id'
     | '/_authenticated/dossiers/'
+    | '/_authenticated/dossiers/$id/comparateur'
     | '/_authenticated/dossiers/$id/deces'
     | '/_authenticated/dossiers/$id/extrapatrimoniaux-permanents'
     | '/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires'
@@ -317,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDossiersIdDecesRouteImport
       parentRoute: typeof AuthenticatedDossiersIdRoute
     }
+    '/_authenticated/dossiers/$id/comparateur': {
+      id: '/_authenticated/dossiers/$id/comparateur'
+      path: '/comparateur'
+      fullPath: '/dossiers/$id/comparateur'
+      preLoaderRoute: typeof AuthenticatedDossiersIdComparateurRouteImport
+      parentRoute: typeof AuthenticatedDossiersIdRoute
+    }
     '/_authenticated/dossiers/$id/snapshots/$snapshotId': {
       id: '/_authenticated/dossiers/$id/snapshots/$snapshotId'
       path: '/snapshots/$snapshotId'
@@ -328,6 +348,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedDossiersIdRouteChildren {
+  AuthenticatedDossiersIdComparateurRoute: typeof AuthenticatedDossiersIdComparateurRoute
   AuthenticatedDossiersIdDecesRoute: typeof AuthenticatedDossiersIdDecesRoute
   AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute
   AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute: typeof AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRoute
@@ -342,6 +363,8 @@ interface AuthenticatedDossiersIdRouteChildren {
 
 const AuthenticatedDossiersIdRouteChildren: AuthenticatedDossiersIdRouteChildren =
   {
+    AuthenticatedDossiersIdComparateurRoute:
+      AuthenticatedDossiersIdComparateurRoute,
     AuthenticatedDossiersIdDecesRoute: AuthenticatedDossiersIdDecesRoute,
     AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute:
       AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRoute,
