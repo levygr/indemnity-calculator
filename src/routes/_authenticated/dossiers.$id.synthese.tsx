@@ -79,6 +79,8 @@ function Page() {
       const { document } = buildReclamationDocx({ dossier, synthese: synth, logo });
       await downloadDocx(document, buildFilename(dossier.reference));
       toast.success("Document Word généré");
+      logDossierAction({ data: { dossierId: id, action: "export_word" } }).catch(() => {});
+
     } catch (e) {
       toast.error(`Échec de la génération : ${(e as Error).message}`);
     } finally {
