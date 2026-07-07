@@ -1,0 +1,174 @@
+{
+  "source": "Arrêtés semestriels fixant le taux de l'intérêt légal (publication Banque de France / Journal officiel)",
+  "note": "Le taux de l'intérêt légal est fixé chaque semestre par arrêté. Deux taux coexistent : celui applicable aux créances des personnes physiques n'agissant pas pour des besoins professionnels, et celui applicable à tous les autres cas. À compléter et vérifier à chaque semestre depuis l'écran Taux légal de l'application.",
+  "taux": [
+    {
+      "debut": "2015-01-01",
+      "fin": "2015-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2015-07-01",
+      "fin": "2015-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2016-01-01",
+      "fin": "2016-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2016-07-01",
+      "fin": "2016-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2017-01-01",
+      "fin": "2017-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2017-07-01",
+      "fin": "2017-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2018-01-01",
+      "fin": "2018-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2018-07-01",
+      "fin": "2018-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2019-01-01",
+      "fin": "2019-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2019-07-01",
+      "fin": "2019-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2020-01-01",
+      "fin": "2020-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2020-07-01",
+      "fin": "2020-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2021-01-01",
+      "fin": "2021-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2021-07-01",
+      "fin": "2021-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2022-01-01",
+      "fin": "2022-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2022-07-01",
+      "fin": "2022-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2023-01-01",
+      "fin": "2023-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2023-07-01",
+      "fin": "2023-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2024-01-01",
+      "fin": "2024-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2024-07-01",
+      "fin": "2024-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2025-01-01",
+      "fin": "2025-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2025-07-01",
+      "fin": "2025-12-31",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2026-01-01",
+      "fin": "2026-06-30",
+      "tauxParticulier": null,
+      "tauxAutres": null,
+      "reference": null
+    },
+    {
+      "debut": "2026-07-01",
+      "fin": "2026-12-31",
+      "tauxParticulier": 6.84,
+      "tauxAutres": 2.75,
+      "reference": "Arrêté du 26 juin 2026 relatif à la fixation du taux de l'intérêt légal"
+    }
+  ]
+}
