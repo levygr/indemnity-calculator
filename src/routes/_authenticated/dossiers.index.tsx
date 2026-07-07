@@ -8,8 +8,10 @@ import {
   createDossier,
   deleteDossier,
   duplicateDossier,
+  attachDossierToOrganisation,
   type DossierRow,
 } from "@/lib/dossiers.functions";
+import { getMyOrganisation } from "@/lib/organisations.functions";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -23,9 +25,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatDateFR } from "@/lib/calculs/format";
-import { Copy, Plus, Trash2, LogOut, FileText } from "lucide-react";
+import { Copy, Plus, Trash2, LogOut, FileText, Building2, User2, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
+
 
 export const Route = createFileRoute("/_authenticated/dossiers/")({
   component: DossiersList,
