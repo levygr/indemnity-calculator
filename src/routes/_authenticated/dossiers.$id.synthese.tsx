@@ -99,6 +99,9 @@ function Page() {
           <Button size="sm" variant="outline" onClick={exportJSON}>
             <Download className="w-4 h-4 mr-1" /> Exporter JSON
           </Button>
+          <Button size="sm" variant="outline" onClick={exportWord} disabled={exporting}>
+            <Download className="w-4 h-4 mr-1" /> {exporting ? "Génération…" : "Exporter en Word"}
+          </Button>
           <Button size="sm" onClick={() => window.print()}>
             <Printer className="w-4 h-4 mr-1" /> Imprimer / PDF
           </Button>
