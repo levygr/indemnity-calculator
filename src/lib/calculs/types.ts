@@ -206,7 +206,10 @@ export interface DossierData {
   provisions: Provision[];
   organismesTP: OrganismeTP[];
   creancesTP: CreanceTP[];
+
+  lignesInterets: import("./interets").LigneInterets[];
 }
+
 
 export function defaultDossierData(): DossierData {
   return {
