@@ -103,7 +103,7 @@ export function AppSidebar({ id, reference, nbAvertissements = 0 }: { id: string
       </nav>
 
       <div className="p-4 text-[11px] text-sidebar-foreground/50 border-t border-sidebar-border">
-        Version bta 0.7 — Barèmes 2025, taux 0,5&nbsp;%.
+        Version beta 0.7
       </div>
     </aside>
   );
