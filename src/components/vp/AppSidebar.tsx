@@ -42,6 +42,10 @@ export function AppSidebar({ id, reference, nbAvertissements = 0 }: { id: string
           <Home className="w-4 h-4" />
           Retour aux dossiers
         </Link>
+        <Link to="/taux-legal" className="mt-2 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
+          <Scale className="w-4 h-4" />
+          Taux légal
+        </Link>
       </div>
 
       <div className="p-5 border-b border-sidebar-border">
