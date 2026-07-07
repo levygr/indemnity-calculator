@@ -166,6 +166,7 @@ function DossierPage() {
             </Select>
           </Field>
         </div>
+        <RegimeVigilance faitGenerateur={dossier.faitGenerateur} id="regime-vigilance" />
         {dossier.sexe === "I" && (
           <div className="mt-4">
             <Note>
