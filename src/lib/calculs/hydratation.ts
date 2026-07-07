@@ -106,6 +106,24 @@ export function hydraterDossier(raw: unknown): DossierData {
     provisions: pickArray(src.provisions),
     organismesTP: pickArray(src.organismesTP),
     creancesTP: pickArray(src.creancesTP),
+    lignesInterets: pickArray<Partial<DossierData["lignesInterets"][number]>>(
+      src.lignesInterets,
+    ).map((l) => ({
+      id: l.id ?? crypto.randomUUID(),
+      libelle: l.libelle ?? "",
+      base: typeof l.base === "number" ? l.base : 0,
+      categorieCreancier: l.categorieCreancier ?? "particulier",
+      regime: l.regime ?? "taux_legal",
+      dateDebut: l.dateDebut ?? null,
+      dateFin: l.dateFin ?? null,
+      anatocisme: !!l.anatocisme,
+      dateAnatocisme: l.dateAnatocisme ?? null,
+      dateDecision: l.dateDecision ?? null,
+      dateExecutoire: l.dateExecutoire ?? null,
+      delaiMajorationMois: typeof l.delaiMajorationMois === "number" ? l.delaiMajorationMois : 2,
+      delaiBadinter1Mois: typeof l.delaiBadinter1Mois === "number" ? l.delaiBadinter1Mois : 2,
+      delaiBadinter2Mois: typeof l.delaiBadinter2Mois === "number" ? l.delaiBadinter2Mois : 4,
+    })) as DossierData["lignesInterets"],
   };
 
   return merged;
