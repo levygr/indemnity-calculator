@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useDossier } from "@/hooks/useDossier";
 import { Note, Section } from "@/components/vp/Field";
 import { Button } from "@/components/ui/button";
@@ -7,7 +9,14 @@ import { Input } from "@/components/ui/input";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { AlertTriangle, CheckCircle2, Download, ExternalLink, Plus, Printer, Trash2, Upload } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertTriangle, Camera, CheckCircle2, Download, ExternalLink, Eye, Plus, Printer, Trash2, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
@@ -21,6 +30,8 @@ import { themiaLink } from "@/lib/themia";
 import { AIPP_META } from "@/data/bareme_aipp";
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { toast } from "sonner";
+import { createSnapshot, deleteSnapshot, listSnapshots } from "@/lib/dossiers.functions";
+
 
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/synthese")({
