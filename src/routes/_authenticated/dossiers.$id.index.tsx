@@ -28,6 +28,7 @@ import type {
   TableMortalite,
 } from "@/lib/calculs/types";
 import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
+import { RegimeVigilance } from "@/components/vp/RegimeVigilance";
 import {
   ajouterJours,
   anneesRevolues,
