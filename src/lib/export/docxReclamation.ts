@@ -398,7 +398,7 @@ function labelFaitGenerateur(fg: string): string {
   return fg.replace(/_/g, " ");
 }
 
-function headerCell(text: string, widthDxa: number, align: AlignmentType = AlignmentType.LEFT): TableCell {
+function headerCell(text: string, widthDxa: number, align: (typeof AlignmentType)[keyof typeof AlignmentType] = AlignmentType.LEFT): TableCell {
   return new TableCell({
     borders: CELL_BORDERS,
     width: { size: widthDxa, type: WidthType.DXA },
@@ -417,7 +417,7 @@ function headerCell(text: string, widthDxa: number, align: AlignmentType = Align
 function textCell(
   text: string,
   widthDxa: number,
-  align: AlignmentType = AlignmentType.LEFT,
+  align: (typeof AlignmentType)[keyof typeof AlignmentType] = AlignmentType.LEFT,
   bold = false,
 ): TableCell {
   return new TableCell({
@@ -651,7 +651,7 @@ function buildRecapitulatifTable(synthese: Synthese, dossier: DossierData): Tabl
         cantSplit: true,
         children: [
           textCell(
-            `Provision${p.date ? ` du ${formatDateFR(p.date)}` : ""}${p.libelle ? ` — ${p.libelle}` : ""}`,
+            `Provision${p.date ? ` du ${formatDateFR(p.date)}` : ""}${p.debiteur ? ` — ${p.debiteur}` : ""}`,
             wLib,
           ),
           textCell(`− ${formatEurosDocx(p.montant)}`, wVal, AlignmentType.RIGHT),
