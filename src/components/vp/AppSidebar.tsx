@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark, GitCompareArrows } from "lucide-react";
+import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark, GitCompareArrows, Percent, Scale } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
   label: string;
-  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur";
+  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur" | "/dossiers/$id/interets";
   icon: React.ComponentType<{ className?: string }>;
   phase?: string;
 }
@@ -21,6 +21,7 @@ const SECTIONS: Section[] = [
   { label: "Tiers payeurs", to: "/dossiers/$id/tiers-payeurs", icon: Landmark },
   { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList },
   { label: "Comparateur", to: "/dossiers/$id/comparateur", icon: GitCompareArrows },
+  { label: "Intérêts", to: "/dossiers/$id/interets", icon: Percent },
 ];
 
 
@@ -40,6 +41,10 @@ export function AppSidebar({ id, reference, nbAvertissements = 0 }: { id: string
         <Link to="/dossiers" className="mt-3 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
           <Home className="w-4 h-4" />
           Retour aux dossiers
+        </Link>
+        <Link to="/taux-legal" className="mt-2 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
+          <Scale className="w-4 h-4" />
+          Taux légal
         </Link>
       </div>
 
