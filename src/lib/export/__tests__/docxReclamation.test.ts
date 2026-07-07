@@ -85,14 +85,14 @@ describe("buildReclamationDocx — structure", () => {
     const d = dossierAvecPostes();
     const s = calculerSynthese(d);
     const r = buildReclamationDocx({ dossier: d, synthese: s, dateEdition: "2026-07-15" });
-    // PT (DSA) et PP (ATP-P) au minimum
-    expect(r.categoriesRendues).toContain("PT");
+    // EPT (SE) et PP (ATP-P) au minimum
+    expect(r.categoriesRendues).toContain("EPT");
     expect(r.categoriesRendues).toContain("PP");
     // Chaque poste capitalisé non nul déclenche un encadré de démonstration.
     // ATP-P est capitalisable et présent avec un montant > 0.
     expect(r.demonstrationCodes).toContain("ATP-P");
-    // La DSA n'est pas capitalisée : pas de bloc de démonstration pour elle.
-    expect(r.demonstrationCodes).not.toContain("DSA");
+    // Les postes non capitalisables (SE) n'ont pas d'encadré.
+    expect(r.demonstrationCodes).not.toContain("SE");
   });
 
   it("la page Points de vigilance n'apparaît que si des avertissements existent", () => {
