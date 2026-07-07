@@ -83,8 +83,6 @@ function Page() {
     return res;
   }, [sel, syntheseCourante, snapshots, selectedIds, snapshotQueries]);
 
-  if (!dossier || !syntheseCourante) return null;
-
   // Ordonnancement des lignes : préserver l'ordre de la première colonne, puis ajouter
   // les codes présents dans les autres colonnes non encore vus.
   const lignesParCategorie = useMemo(() => {
@@ -101,6 +99,8 @@ function Page() {
     }
     return map;
   }, [colonnes]);
+
+  if (!dossier || !syntheseCourante) return null;
 
   function ligneOf(col: Colonne, code: string): LigneSynthese | undefined {
     return col.synth.lignes.find((l) => l.code === code);
