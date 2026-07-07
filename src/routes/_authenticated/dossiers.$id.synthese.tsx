@@ -214,24 +214,7 @@ function Page() {
 
 
 
-      <Section title="Recherche de décisions comparables" description="Ouvre Themia dans un onglet séparé avec des critères pré-remplis (âge ± 5 ans, AIPP ± 5 points).">
-        <div className="flex flex-wrap gap-2 print:hidden">
-          {(["DFP", "PGPF", "ATP-P", "PA", "PSex"] as const).map((code) => {
-            const ageLiq = anneesRevolues(dossier.dateNaissance, dossier.dateLiquidation);
-            const url = themiaLink(code, {
-              faitGenerateur: dossier.faitGenerateur,
-              age: ageLiq,
-              tauxAIPP: dossier.tauxAIPP,
-            });
-            return (
-              <a key={code} href={url} target="_blank" rel="noreferrer noopener"
-                 className="inline-flex items-center gap-1.5 text-xs rounded-md border border-border px-3 py-1.5 hover:bg-muted/60">
-                {code} <ExternalLink className="w-3 h-3" />
-              </a>
-            );
-          })}
-        </div>
-      </Section>
+
 
 
       {ORDRE.map((cat) => {
