@@ -28,7 +28,7 @@ export interface Proche {
   id: string;
   lien: LienProche;
   /** Code de lien dans le référentiel Mornet (aide à la saisie, n'entre dans aucun calcul). */
-  lienReferentiel: string;
+  lienReferentiel?: string;
   prenom: string;
   dateNaissance: string | null;
   sexe: Sexe;
