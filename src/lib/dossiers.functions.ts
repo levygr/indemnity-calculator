@@ -134,3 +134,100 @@ export const duplicateDossier = createServerFn({ method: "POST" })
     if (insErr) throw new Error(insErr.message);
     return row as unknown as DossierRow;
   });
+
+// ============================================================================
+// Snapshots — chiffrages figés datés
+// ============================================================================
+
+async function assertOwnsDossier(
+  supabase: import("@supabase/supabase-js").SupabaseClient,
+  dossierId: string,
+  userId: string,
+): Promise<void> {
+  const { data, error } = await supabase
+    .from("dossiers")
+    .select("id")
+    .eq("id", dossierId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) throw new Error("Dossier introuvable");
+}
+
+export const createSnapshot = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        dossierId: z.string().uuid(),
+        nom: z.string().min(1).max(200),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertOwnsDossier(context.supabase, data.dossierId, context.userId);
+    const { data: dossierRow, error: dErr } = await context.supabase
+      .from("dossiers")
+      .select("data")
+      .eq("id", data.dossierId)
+      .single();
+    if (dErr) throw new Error(dErr.message);
+    const dossier = hydraterDossier((dossierRow.data ?? {}) as Record<string, unknown>);
+    const synthese = calculerSynthese(dossier);
+    const { data: row, error } = await context.supabase
+      .from("dossier_snapshots")
+      .insert({
+        dossier_id: data.dossierId,
+        user_id: context.userId,
+        nom: data.nom,
+        data: dossier as unknown as Jsonish,
+        synthese: synthese as unknown as Jsonish,
+      })
+      .select("id, dossier_id, nom, created_at, data, synthese")
+      .single();
+    if (error) throw new Error(error.message);
+    return row as unknown as SnapshotRow;
+  });
+
+export const listSnapshots = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) =>
+    z.object({ dossierId: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: rows, error } = await context.supabase
+      .from("dossier_snapshots")
+      .select("id, dossier_id, nom, created_at, synthese")
+      .eq("dossier_id", data.dossierId)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return (rows ?? []) as unknown as Array<
+      Pick<SnapshotRow, "id" | "dossier_id" | "nom" | "created_at" | "synthese">
+    >;
+  });
+
+export const getSnapshot = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { data: row, error } = await context.supabase
+      .from("dossier_snapshots")
+      .select("id, dossier_id, nom, created_at, data, synthese")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("Chiffrage figé introuvable");
+    return row as unknown as SnapshotRow;
+  });
+
+export const deleteSnapshot = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    const { error } = await context.supabase
+      .from("dossier_snapshots")
+      .delete()
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true as const };
+  });
