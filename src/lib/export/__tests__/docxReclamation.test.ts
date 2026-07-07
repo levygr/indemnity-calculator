@@ -26,7 +26,7 @@ describe("formatEurosDocx", () => {
 describe("buildFilename", () => {
   it("assemble reclamation-{ref}-{date}.docx", () => {
     expect(buildFilename("Dupont c. AXA", "2026-07-15")).toBe(
-      "reclamation-Dupont_c._AXA-2026-07-15.docx",
+      "reclamation-Dupont_c_AXA-2026-07-15.docx",
     );
   });
 });
