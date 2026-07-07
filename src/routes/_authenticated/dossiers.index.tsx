@@ -156,6 +156,7 @@ function DossiersList() {
               <thead className="bg-muted text-left font-display">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Référence</th>
+                  <th className="px-4 py-3 font-semibold w-32">Portée</th>
                   <th className="px-4 py-3 font-semibold">Fait générateur</th>
                   <th className="px-4 py-3 font-semibold">Créé le</th>
                   <th className="px-4 py-3 font-semibold">Modifié le</th>
@@ -167,8 +168,13 @@ function DossiersList() {
                   <DossierLine
                     key={r.id}
                     row={r}
+                    myOrgId={myOrg?.organisation.id ?? null}
+                    myOrgName={myOrg?.organisation.nom ?? null}
                     onDelete={() => mDelete.mutate(r.id)}
                     onDuplicate={() => mDup.mutate(r.id)}
+                    onShare={(organisationId) =>
+                      mShare.mutate({ dossierId: r.id, organisationId })
+                    }
                   />
                 ))}
               </tbody>
@@ -179,6 +185,7 @@ function DossiersList() {
     </div>
   );
 }
+
 
 function DossierLine({
   row,
