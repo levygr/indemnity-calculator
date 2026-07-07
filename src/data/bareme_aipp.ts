@@ -1,20 +1,29 @@
 /**
- * Référentiel Intercours — valeur du point d'AIPP.
+ * Valeur du point de déficit fonctionnel permanent (AIPP).
+ *
+ * Source : Référentiel indicatif de l'indemnisation du préjudice corporel
+ * des cours d'appel (référentiel Mornet), édition de septembre 2025.
+ * La grille chiffrée relève d'un consensus jurisprudentiel élaboré en 2020,
+ * reprise à l'identique dans l'édition de septembre 2025. Elle n'a qu'une
+ * valeur strictement indicative.
+ *
+ * Grille vérifiée valeur par valeur contre l'édition officielle, y compris
+ * l'exemple de contrôle publié : homme de 25 ans, DFP de 32 %,
+ * valeur du point 3 740 €, soit 3 740 × 32 = 119 680 €.
+ *
  * Lignes : tranches de taux (%). Colonnes : tranches d'âge à la consolidation.
- * Intégré en dur (petit tableau, non versionné dans les JSON).
  */
 
-/**
- * Métadonnées du barème AIPP. L'édition doit être renseignée avant tout
- * usage juridique : sans édition, les valeurs du point ne peuvent pas être
- * réputées à jour.
- */
-export const AIPP_META: { source: string; edition: string | null; note: string } = {
-  source: "Référentiel Intercours",
-  edition: null,
-  note: "Vérifier l'édition en vigueur du référentiel avant tout usage. Ne jamais utiliser les valeurs sans avoir confirmé l'édition applicable.",
-};
-
+export const AIPP_META = {
+  source:
+    "Référentiel indicatif de l'indemnisation du préjudice corporel des cours d'appel (référentiel Mornet)",
+  edition: "septembre 2025",
+  note:
+    "Grille issue d'un consensus jurisprudentiel de 2020, reprise dans l'édition de septembre 2025. " +
+    "Valeur strictement indicative ; l'indemnité doit être majorée lorsque l'expertise n'a pas pris en " +
+    "compte les douleurs permanentes, et les troubles dans les conditions d'existence s'apprécient " +
+    "au vu des éléments apportés par la victime.",
+} as const;
 
 export const AIPP_TRANCHES_TAUX: Array<{ min: number; max: number; label: string }> = [
   { min: 1, max: 5, label: "1-5" },
@@ -51,7 +60,6 @@ export const AIPP_TRANCHES_AGE: Array<{ min: number; max: number; label: string 
   { min: 81, max: 200, label: "81+" },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const AIPP_VALEURS_POINT: number[][] = [
   [2310, 2150, 1960, 1770, 1580, 1400, 1210, 1050, 880],
   [2670, 2475, 2255, 2035, 1800, 1560, 1320, 1130, 935],

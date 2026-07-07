@@ -21,6 +21,8 @@ export interface ProcheSurvie {
   id: string;
   prenom: string;
   lien: string;
+  /** Code de lien dans le référentiel Mornet (aide à la saisie, n'entre dans aucun calcul). */
+  lienReferentiel: string;
   dateNaissance: string | null;
   sexe: Sexe;
   perteRevenusAnnuelle: number;

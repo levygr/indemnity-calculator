@@ -1,55 +1,58 @@
-import { REFERENTIEL, fourchetteDegre, fourchetteAffection } from "@/data/referentiel_evaluation";
+import {
+  REFERENTIEL,
+  fourchettePourDegre,
+  fourchetteAffection,
+} from "@/data/referentiel_evaluation";
 import { formatEuros } from "@/lib/calculs";
 
-function baseText(): string | null {
-  if (!REFERENTIEL.edition) return null;
-  return `${REFERENTIEL.nom}, éd. ${REFERENTIEL.edition}`;
+const BASE = `référentiel Mornet, éd. ${REFERENTIEL.edition}`;
+
+function formatBornes(min: number | null, max: number | null): string {
+  if (min == null && max != null) return `jusqu'à ${formatEuros(max)}`;
+  if (min != null && max == null) return `${formatEuros(min)} et plus`;
+  if (min != null && max != null) return `${formatEuros(min)} à ${formatEuros(max)}`;
+  return "non publiée";
 }
 
-export function FourchetteDegreHint({ poste, degre }: { poste: "SE" | "PET" | "PEP"; degre: number }) {
-  const base = baseText();
-  if (!base) {
+export function FourchetteDegreHint({
+  poste,
+  degre,
+}: {
+  poste: "SE" | "PET" | "PEP";
+  degre: number;
+}) {
+  if (poste === "PET") {
     return (
       <p className="mt-1 text-[11px] text-muted-foreground italic">
-        Fourchette indicative non renseignée (compléter src/data/referentiel_evaluation.ts).
+        Le référentiel Mornet ne publie pas de grille pour ce poste : appréciation
+        in concreto (photos, durée, exposition au regard des tiers).
       </p>
     );
   }
-  const f = fourchetteDegre(poste, degre);
-  if (!f) {
-    return (
-      <p className="mt-1 text-[11px] text-muted-foreground italic">
-        Fourchette indicative non renseignée (compléter src/data/referentiel_evaluation.ts).
-      </p>
-    );
-  }
+  if (!(degre > 0)) return null;
+  const f = fourchettePourDegre(poste, degre);
+  if (!f) return null;
+  const bornes = formatBornes(f.min, f.max);
+  const approx = f.approximation
+    ? ` (encadrement des degrés ${Math.floor(degre)} et ${Math.ceil(Math.min(degre, 8))})`
+    : "";
   return (
     <p className="mt-1 text-[11px] text-muted-foreground">
-      Fourchette indicative ({base}) : {formatEuros(f.min ?? 0)} – {formatEuros(f.max ?? 0)}
+      Fourchette indicative ({BASE}) : {bornes}
+      {approx}
     </p>
   );
 }
 
-export function FourchetteAffectionHint({ lien }: { lien: string }) {
-  const base = baseText();
-  if (!base) {
-    return (
-      <span className="text-[11px] text-muted-foreground italic">
-        Fourchette indicative non renseignée
-      </span>
-    );
-  }
-  const f = fourchetteAffection(lien);
-  if (!f) {
-    return (
-      <span className="text-[11px] text-muted-foreground italic">
-        Fourchette indicative non renseignée
-      </span>
-    );
-  }
+export function FourchetteAffectionHint({ code }: { code: string }) {
+  if (!code) return null;
+  const f = fourchetteAffection(code);
+  if (!f) return null;
+  const bornes = formatBornes(f.min, f.max);
   return (
-    <span className="text-[11px] text-muted-foreground">
-      Fourchette ({base}) : {formatEuros(f.min ?? 0)} – {formatEuros(f.max ?? 0)}
+    <span className="block text-[11px] text-muted-foreground">
+      Fourchette ({BASE}) : {bornes}
+      {f.note ? <span className="block italic mt-0.5">{f.note}</span> : null}
     </span>
   );
 }

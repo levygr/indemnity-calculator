@@ -27,6 +27,8 @@ export type LienProche = "conjoint" | "enfant" | "parent" | "fratrie" | "autre";
 export interface Proche {
   id: string;
   lien: LienProche;
+  /** Code de lien dans le référentiel Mornet (aide à la saisie, n'entre dans aucun calcul). */
+  lienReferentiel: string;
   prenom: string;
   dateNaissance: string | null;
   sexe: Sexe;

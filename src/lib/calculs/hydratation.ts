@@ -90,13 +90,17 @@ export function hydraterDossier(raw: unknown): DossierData {
       fraisDivers: pickArray(srcPD.fraisDivers),
       proches: pickArray<Partial<Proche>>(srcPD.proches).map((p) => ({
         pensionReversionAnnuelle: 0,
+        lienReferentiel: "",
         ...p,
       })) as Proche[],
     },
     postesSurvie: {
       ...base.postesSurvie,
       ...(srcPS as Partial<DossierData["postesSurvie"]>),
-      proches: pickArray(srcPS.proches),
+      proches: pickArray<Partial<DossierData["postesSurvie"]["proches"][number]>>(srcPS.proches).map((p) => ({
+        lienReferentiel: "",
+        ...p,
+      })) as DossierData["postesSurvie"]["proches"],
       fraisDivers: pickArray(srcPS.fraisDivers),
     },
     provisions: pickArray(src.provisions),
