@@ -29,6 +29,8 @@ import {
 import { themiaLink } from "@/lib/themia";
 
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
+import { regimePour } from "@/lib/regimes";
+import { RegimeVigilance } from "@/components/vp/RegimeVigilance";
 import { toast } from "sonner";
 import { createSnapshot, deleteSnapshot, listSnapshots, logDossierAction } from "@/lib/dossiers.functions";
 
@@ -155,6 +157,19 @@ function Page() {
           Aucune incohérence détectée
         </div>
       )}
+
+      <div className="flex items-center justify-between rounded-md border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+        <span>
+          Régime&nbsp;: <span className="font-medium text-foreground">{regimePour(dossier.faitGenerateur).libelle}</span>
+        </span>
+        <a href="#regime-vigilance-synthese" className="text-primary hover:underline">
+          Voir les points de vigilance
+        </a>
+      </div>
+
+      <div id="regime-vigilance-synthese">
+        <RegimeVigilance faitGenerateur={dossier.faitGenerateur} />
+      </div>
 
       <Section title="Totaux généraux">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
