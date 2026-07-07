@@ -298,11 +298,14 @@ function Page() {
       )}
 
 
-      <div className="mt-6 rounded-md border border-border bg-muted/30 px-4 py-3 text-[11px] text-muted-foreground space-y-1">
-        <div className="font-display font-semibold text-foreground text-xs">Référentiels retenus</div>
-        <div>Capitalisation : Gazette du Palais 2025 (taux 0,5 %), table {dossier.tableMortalite}.</div>
-        <div>Valeur du point AIPP et fourchettes indicatives : référentiel Mornet, édition {REFERENTIEL.edition}.</div>
-        <div>Date du chiffrage : {new Date().toLocaleDateString("fr-FR")}.</div>
+      <div className="mt-6 rounded-md border border-primary/30 bg-primary/5 px-4 py-3 space-y-2">
+        <div className="font-display font-semibold text-foreground text-sm">Référentiels retenus</div>
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
+          <span>Capitalisation : <span className="text-foreground font-medium">Gazette du Palais 2025</span> (taux 0,5 %), table <span className="text-foreground font-medium">{dossier.tableMortalite}</span>.</span>
+          <span>Valeur du point AIPP : <span className="text-foreground font-medium">Référentiel Mornet, édition septembre 2025</span>.</span>
+          <span>Fourchettes indicatives : <span className="text-foreground font-medium">Référentiel Mornet, édition septembre 2025</span>.</span>
+          <span>Date du chiffrage : <span className="text-foreground font-medium">{new Date().toLocaleDateString("fr-FR")}</span>.</span>
+        </div>
       </div>
 
       <div className="text-xs text-muted-foreground text-center pt-4 print:pt-8">
