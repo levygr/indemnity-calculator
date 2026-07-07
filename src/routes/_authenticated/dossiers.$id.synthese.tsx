@@ -47,6 +47,7 @@ function Page() {
   const { id } = Route.useParams();
   const { dossier, update } = useDossier(id);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [exporting, setExporting] = useState(false);
 
   const synth = useMemo(() => (dossier ? calculerSynthese(dossier) : null), [dossier]);
   if (!dossier || !synth) return null;
@@ -61,7 +62,7 @@ function Page() {
     URL.revokeObjectURL(url);
   }
 
-  const [exporting, setExporting] = useState(false);
+
   async function exportWord() {
     if (!dossier || !synth) return;
     setExporting(true);
