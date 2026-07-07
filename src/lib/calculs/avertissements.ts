@@ -257,14 +257,19 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
   }
 
   // ---- e) REFERENTIEL_NON_VERSIONNE ----
-  if (AIPP_META.edition == null) {
+  // Les éditions de AIPP_META et REFERENTIEL sont désormais renseignées
+  // (édition septembre 2025). Le contrôle reste ici pour documenter
+  // l'invariant ; il ne se déclenche qu'en cas de régression future.
+  const aippEdition: string | null | undefined = AIPP_META.edition;
+  const refEdition: string | null | undefined = REFERENTIEL.edition;
+  if (!aippEdition) {
     out.push({
       code: "REFERENTIEL_NON_VERSIONNE",
       poste: "Référentiels",
       message: `Édition du barème AIPP (${AIPP_META.source}) non renseignée : compléter src/data/bareme_aipp.ts avant tout usage juridique.`,
     });
   }
-  if (REFERENTIEL.edition == null) {
+  if (!refEdition) {
     out.push({
       code: "REFERENTIEL_NON_VERSIONNE",
       poste: "Référentiels",

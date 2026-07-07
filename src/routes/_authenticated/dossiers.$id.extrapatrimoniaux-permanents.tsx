@@ -77,7 +77,7 @@ function PageInner({
       </header>
 
       {/* -------- DFP -------- */}
-      <Section title="Déficit fonctionnel permanent (DFP)" description="Deux méthodes : valeur du point d'AIPP (barème Intercours) ou montant capitalisé au jour d'espérance de vie.">
+      <Section title="Déficit fonctionnel permanent (DFP)" description="Deux méthodes : valeur du point d'AIPP (référentiel Mornet) ou montant capitalisé au jour d'espérance de vie.">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Field label="Méthode">
             <Select value={pp.dfp.methode} onValueChange={(v) => patchDFP({ methode: v as DFPData["methode"] })}>
@@ -94,7 +94,7 @@ function PageInner({
               <Field label="Taux AIPP (%)" hint="Défini page Dossier">
                 <Input type="number" value={dossier.tauxAIPP} readOnly className="bg-muted/40" />
               </Field>
-              <Field label="Valeur du point personnalisée (€)" hint="Laisser vide pour utiliser le barème Intercours">
+              <Field label="Valeur du point personnalisée (€)" hint="Laisser vide pour utiliser le référentiel Mornet">
                 <Input type="number" min={0} step="0.01" value={pp.dfp.valeurPointCustom ?? ""} onChange={(e) => patchDFP({ valeurPointCustom: nOrNull(e.target.value) })} />
               </Field>
               <Field label="Valeur du point retenue">
@@ -113,7 +113,7 @@ function PageInner({
           <Recap label="Part victime" value={formatEuros(repDFP.victime)} accent="victime" />
         </div>
         <p className="mt-2 text-[11px] text-muted-foreground">
-          Valeur du point : {AIPP_META.source}, édition {AIPP_META.edition ?? "non renseignée"}.
+          Valeur du point : {AIPP_META.source}, édition {AIPP_META.edition}.
         </p>
         {ctx.tauxAIPP <= 0 && pp.dfp.methode === "point" && (
           <div className="mt-3"><Note variant="warning">Renseignez un taux d'AIPP sur la page Dossier pour calculer la valeur du point.</Note></div>
