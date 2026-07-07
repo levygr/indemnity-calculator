@@ -79,6 +79,42 @@ export type Database = {
         }
         Relationships: []
       }
+      taux_legal: {
+        Row: {
+          created_at: string
+          debut: string
+          fin: string
+          id: string
+          reference: string | null
+          taux_autres: number | null
+          taux_particulier: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          debut: string
+          fin: string
+          id?: string
+          reference?: string | null
+          taux_autres?: number | null
+          taux_particulier?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          debut?: string
+          fin?: string
+          id?: string
+          reference?: string | null
+          taux_autres?: number | null
+          taux_particulier?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
