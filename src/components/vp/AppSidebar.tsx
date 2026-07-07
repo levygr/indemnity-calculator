@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark, GitCompareArrows } from "lucide-react";
+import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark, GitCompareArrows, Percent, Scale } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
