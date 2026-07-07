@@ -42,9 +42,16 @@ function DossiersList() {
   const fetchDelete = useServerFn(deleteDossier);
   const fetchDup = useServerFn(duplicateDossier);
 
+  const fetchMyOrg = useServerFn(getMyOrganisation);
+  const fetchAttach = useServerFn(attachDossierToOrganisation);
+
   const { data: rows, isLoading } = useQuery({
     queryKey: ["dossiers"],
     queryFn: () => fetchList(),
+  });
+  const { data: myOrg } = useQuery({
+    queryKey: ["my-organisation"],
+    queryFn: () => fetchMyOrg(),
   });
 
   const mCreate = useMutation({
@@ -68,6 +75,16 @@ function DossiersList() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["dossiers"] }),
     onError: (e: Error) => toast.error(e.message),
   });
+  const mShare = useMutation({
+    mutationFn: (p: { dossierId: string; organisationId: string | null }) =>
+      fetchAttach({ data: p }),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ["dossiers"] });
+      toast.success(vars.organisationId ? "Dossier partagé avec le cabinet" : "Dossier repassé en personnel");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   return (
     <div className="min-h-screen bg-background">
