@@ -61,6 +61,30 @@ function Page() {
     URL.revokeObjectURL(url);
   }
 
+  const [exporting, setExporting] = useState(false);
+  async function exportWord() {
+    if (!dossier || !synth) return;
+    setExporting(true);
+    try {
+      const { buildReclamationDocx, downloadDocx, buildFilename, loadLogoAsset } =
+        await import("@/lib/export/docxReclamation");
+      const logoAsset = (await import("@/assets/logo-vp.png.asset.json")).default;
+      let logo: { data: Uint8Array; type: "png" } | null = null;
+      try {
+        logo = await loadLogoAsset(logoAsset.url);
+      } catch {
+        logo = null;
+      }
+      const { document } = buildReclamationDocx({ dossier, synthese: synth, logo });
+      await downloadDocx(document, buildFilename(dossier.reference));
+      toast.success("Document Word généré");
+    } catch (e) {
+      toast.error(`Échec de la génération : ${(e as Error).message}`);
+    } finally {
+      setExporting(false);
+    }
+  }
+
   function onImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -98,6 +122,9 @@ function Page() {
           </Button>
           <Button size="sm" variant="outline" onClick={exportJSON}>
             <Download className="w-4 h-4 mr-1" /> Exporter JSON
+          </Button>
+          <Button size="sm" variant="outline" onClick={exportWord} disabled={exporting}>
+            <Download className="w-4 h-4 mr-1" /> {exporting ? "Génération…" : "Exporter en Word"}
           </Button>
           <Button size="sm" onClick={() => window.print()}>
             <Printer className="w-4 h-4 mr-1" /> Imprimer / PDF
