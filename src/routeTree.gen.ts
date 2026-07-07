@@ -23,6 +23,7 @@ import { Route as AuthenticatedDossiersIdPatrimoniauxPermanentsRouteImport } fro
 import { Route as AuthenticatedDossiersIdExtrapatrimoniauxTemporairesRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-temporaires'
 import { Route as AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRouteImport } from './routes/_authenticated/dossiers.$id.extrapatrimoniaux-permanents'
 import { Route as AuthenticatedDossiersIdDecesRouteImport } from './routes/_authenticated/dossiers.$id.deces'
+import { Route as AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport } from './routes/_authenticated/dossiers.$id.snapshots.$snapshotId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -103,6 +104,12 @@ const AuthenticatedDossiersIdDecesRoute =
     path: '/deces',
     getParentRoute: () => AuthenticatedDossiersIdRoute,
   } as any)
+const AuthenticatedDossiersIdSnapshotsSnapshotIdRoute =
+  AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport.update({
+    id: '/snapshots/$snapshotId',
+    path: '/snapshots/$snapshotId',
+    getParentRoute: () => AuthenticatedDossiersIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/dossiers/$id/synthese': typeof AuthenticatedDossiersIdSyntheseRoute
   '/dossiers/$id/tiers-payeurs': typeof AuthenticatedDossiersIdTiersPayeursRoute
   '/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
+  '/dossiers/$id/snapshots/$snapshotId': typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -132,6 +140,7 @@ export interface FileRoutesByTo {
   '/dossiers/$id/synthese': typeof AuthenticatedDossiersIdSyntheseRoute
   '/dossiers/$id/tiers-payeurs': typeof AuthenticatedDossiersIdTiersPayeursRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdIndexRoute
+  '/dossiers/$id/snapshots/$snapshotId': typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,6 +158,7 @@ export interface FileRoutesById {
   '/_authenticated/dossiers/$id/synthese': typeof AuthenticatedDossiersIdSyntheseRoute
   '/_authenticated/dossiers/$id/tiers-payeurs': typeof AuthenticatedDossiersIdTiersPayeursRoute
   '/_authenticated/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
+  '/_authenticated/dossiers/$id/snapshots/$snapshotId': typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/dossiers/$id/synthese'
     | '/dossiers/$id/tiers-payeurs'
     | '/dossiers/$id/'
+    | '/dossiers/$id/snapshots/$snapshotId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/dossiers/$id/synthese'
     | '/dossiers/$id/tiers-payeurs'
     | '/dossiers/$id'
+    | '/dossiers/$id/snapshots/$snapshotId'
   id:
     | '__root__'
     | '/'
@@ -196,6 +208,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dossiers/$id/synthese'
     | '/_authenticated/dossiers/$id/tiers-payeurs'
     | '/_authenticated/dossiers/$id/'
+    | '/_authenticated/dossiers/$id/snapshots/$snapshotId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDossiersIdDecesRouteImport
       parentRoute: typeof AuthenticatedDossiersIdRoute
     }
+    '/_authenticated/dossiers/$id/snapshots/$snapshotId': {
+      id: '/_authenticated/dossiers/$id/snapshots/$snapshotId'
+      path: '/snapshots/$snapshotId'
+      fullPath: '/dossiers/$id/snapshots/$snapshotId'
+      preLoaderRoute: typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport
+      parentRoute: typeof AuthenticatedDossiersIdRoute
+    }
   }
 }
 
@@ -317,6 +337,7 @@ interface AuthenticatedDossiersIdRouteChildren {
   AuthenticatedDossiersIdSyntheseRoute: typeof AuthenticatedDossiersIdSyntheseRoute
   AuthenticatedDossiersIdTiersPayeursRoute: typeof AuthenticatedDossiersIdTiersPayeursRoute
   AuthenticatedDossiersIdIndexRoute: typeof AuthenticatedDossiersIdIndexRoute
+  AuthenticatedDossiersIdSnapshotsSnapshotIdRoute: typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
 }
 
 const AuthenticatedDossiersIdRouteChildren: AuthenticatedDossiersIdRouteChildren =
@@ -336,6 +357,8 @@ const AuthenticatedDossiersIdRouteChildren: AuthenticatedDossiersIdRouteChildren
     AuthenticatedDossiersIdTiersPayeursRoute:
       AuthenticatedDossiersIdTiersPayeursRoute,
     AuthenticatedDossiersIdIndexRoute: AuthenticatedDossiersIdIndexRoute,
+    AuthenticatedDossiersIdSnapshotsSnapshotIdRoute:
+      AuthenticatedDossiersIdSnapshotsSnapshotIdRoute,
   }
 
 const AuthenticatedDossiersIdRouteWithChildren =

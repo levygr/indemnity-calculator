@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useDossier } from "@/hooks/useDossier";
 import { Note, Section } from "@/components/vp/Field";
 import { Button } from "@/components/ui/button";
@@ -7,7 +9,14 @@ import { Input } from "@/components/ui/input";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { AlertTriangle, CheckCircle2, Download, ExternalLink, Plus, Printer, Trash2, Upload } from "lucide-react";
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { AlertTriangle, Camera, CheckCircle2, Download, ExternalLink, Eye, Plus, Printer, Trash2, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
@@ -21,6 +30,8 @@ import { themiaLink } from "@/lib/themia";
 import { AIPP_META } from "@/data/bareme_aipp";
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { toast } from "sonner";
+import { createSnapshot, deleteSnapshot, listSnapshots } from "@/lib/dossiers.functions";
+
 
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/synthese")({
@@ -154,6 +165,10 @@ function Page() {
         onChange={(list) => update({ provisions: list })}
         total={synth.totalProvisions}
       />
+
+      <SnapshotsSection dossierId={id} totalVictimeCourant={synth.totalVictime} />
+
+
 
       <Section title="Recherche de décisions comparables" description="Ouvre Themia dans un onglet séparé avec des critères pré-remplis (âge ± 5 ans, AIPP ± 5 points).">
         <div className="flex flex-wrap gap-2 print:hidden">
@@ -359,6 +374,148 @@ function ProvisionsSection({ provisions, onChange, total }: {
           <span className="font-semibold text-primary">{formatEuros(total)}</span>
         </div>
       </div>
+    </Section>
+  );
+}
+
+function SnapshotsSection({ dossierId, totalVictimeCourant }: { dossierId: string; totalVictimeCourant: number }) {
+  const qc = useQueryClient();
+  const list = useServerFn(listSnapshots);
+  const create = useServerFn(createSnapshot);
+  const del = useServerFn(deleteSnapshot);
+  const [open, setOpen] = useState(false);
+  const suggestion = `Chiffrage du ${new Date().toLocaleDateString("fr-FR")}`;
+  const [nom, setNom] = useState(suggestion);
+
+  const { data: snapshots = [] } = useQuery({
+    queryKey: ["snapshots", dossierId],
+    queryFn: () => list({ data: { dossierId } }),
+  });
+
+  const mCreate = useMutation({
+    mutationFn: (n: string) => create({ data: { dossierId, nom: n } }),
+    onSuccess: () => {
+      toast.success("Chiffrage figé");
+      qc.invalidateQueries({ queryKey: ["snapshots", dossierId] });
+      setOpen(false);
+      setNom(`Chiffrage du ${new Date().toLocaleDateString("fr-FR")}`);
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erreur"),
+  });
+
+  const mDelete = useMutation({
+    mutationFn: (id: string) => del({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Chiffrage figé supprimé");
+      qc.invalidateQueries({ queryKey: ["snapshots", dossierId] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Erreur"),
+  });
+
+  return (
+    <Section
+      title="Chiffrages figés"
+      description="Enregistrer un instantané daté du dossier (réclamation, offre adverse, conclusions). Ces chiffrages restent consultables en lecture seule même après modification du dossier."
+    >
+      <div className="flex justify-between items-center mb-3 print:hidden">
+        <div className="text-sm text-muted-foreground">
+          Part victime courante : <span className="font-medium tabular-nums text-foreground">{formatEuros(totalVictimeCourant)}</span>
+        </div>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button size="sm"><Camera className="w-4 h-4 mr-2" />Figer ce chiffrage</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Figer le chiffrage actuel</DialogTitle>
+              <DialogDescription>
+                Enregistre l'état complet du dossier et le résultat des calculs. Ce chiffrage ne sera pas modifié lorsque vous continuerez à travailler sur le dossier.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="snapshot-nom">Nom du chiffrage</label>
+              <Input
+                id="snapshot-nom"
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                placeholder={suggestion}
+                autoFocus
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setOpen(false)}>Annuler</Button>
+              <Button
+                disabled={!nom.trim() || mCreate.isPending}
+                onClick={() => mCreate.mutate(nom.trim())}
+              >
+                {mCreate.isPending ? "Enregistrement…" : "Enregistrer"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nom</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead className="text-right">Part victime</TableHead>
+            <TableHead className="w-32 text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {snapshots.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+                Aucun chiffrage figé pour ce dossier.
+              </TableCell>
+            </TableRow>
+          )}
+          {snapshots.map((s) => {
+            const synth = s.synthese as unknown as { totalVictime?: number };
+            return (
+              <TableRow key={s.id}>
+                <TableCell className="font-medium">{s.nom}</TableCell>
+                <TableCell>{new Date(s.created_at).toLocaleString("fr-FR")}</TableCell>
+                <TableCell className="text-right tabular-nums">
+                  {typeof synth.totalVictime === "number" ? formatEuros(synth.totalVictime) : "—"}
+                </TableCell>
+                <TableCell className="text-right">
+                  <Link
+                    to="/dossiers/$id/snapshots/$snapshotId"
+                    params={{ id: dossierId, snapshotId: s.id }}
+                    className="inline-flex items-center gap-1 text-xs rounded-md border border-border px-2.5 py-1 hover:bg-muted/60 mr-1"
+                  >
+                    <Eye className="w-3.5 h-3.5" /> Consulter
+                  </Link>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Supprimer ce chiffrage figé ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          « {s.nom} » sera définitivement supprimé. Cette action est irréversible.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => mDelete.mutate(s.id)}>
+                          Supprimer
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
     </Section>
   );
 }

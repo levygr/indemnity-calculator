@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      dossier_snapshots: {
+        Row: {
+          created_at: string
+          data: Json
+          dossier_id: string
+          id: string
+          nom: string
+          synthese: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          dossier_id: string
+          id?: string
+          nom: string
+          synthese: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          dossier_id?: string
+          id?: string
+          nom?: string
+          synthese?: Json
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossier_snapshots_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dossiers: {
         Row: {
           created_at: string
