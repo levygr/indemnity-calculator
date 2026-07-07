@@ -14,6 +14,41 @@ export type Database = {
   }
   public: {
     Tables: {
+      dossier_events: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          dossier_id: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          dossier_id: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          dossier_id?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossier_events_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dossier_snapshots: {
         Row: {
           created_at: string
@@ -57,6 +92,7 @@ export type Database = {
           created_at: string
           data: Json
           id: string
+          organisation_id: string | null
           reference: string
           updated_at: string
           user_id: string
@@ -65,6 +101,7 @@ export type Database = {
           created_at?: string
           data?: Json
           id?: string
+          organisation_id?: string | null
           reference?: string
           updated_at?: string
           user_id: string
@@ -73,9 +110,65 @@ export type Database = {
           created_at?: string
           data?: Json
           id?: string
+          organisation_id?: string | null
           reference?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossiers_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisation_membres: {
+        Row: {
+          created_at: string
+          organisation_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          organisation_id: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          organisation_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organisation_membres_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organisations: {
+        Row: {
+          created_at: string
+          id: string
+          nom: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nom: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nom?: string
         }
         Relationships: []
       }
@@ -120,7 +213,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_org_role: {
+        Args: { _org: string; _roles: string[]; _user: string }
+        Returns: boolean
+      }
+      is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
