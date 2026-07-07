@@ -30,7 +30,7 @@ import { themiaLink } from "@/lib/themia";
 
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { toast } from "sonner";
-import { createSnapshot, deleteSnapshot, listSnapshots } from "@/lib/dossiers.functions";
+import { createSnapshot, deleteSnapshot, listSnapshots, logDossierAction } from "@/lib/dossiers.functions";
 
 
 
