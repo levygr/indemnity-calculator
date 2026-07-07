@@ -5,7 +5,7 @@ import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
   label: string;
-  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur";
+  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur" | "/dossiers/$id/interets";
   icon: React.ComponentType<{ className?: string }>;
   phase?: string;
 }
