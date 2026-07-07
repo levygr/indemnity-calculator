@@ -48,6 +48,11 @@ export function AppSidebar({ id, reference, nbAvertissements = 0 }: { id: string
           <Scale className="w-4 h-4" />
           Taux légal
         </Link>
+        <Link to="/cabinet" className="mt-2 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
+          <Building2 className="w-4 h-4" />
+          Cabinet
+        </Link>
+
       </div>
 
       <div className="p-5 border-b border-sidebar-border">
