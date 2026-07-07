@@ -189,15 +189,23 @@ function DossiersList() {
 
 function DossierLine({
   row,
+  myOrgId,
+  myOrgName,
   onDelete,
   onDuplicate,
+  onShare,
 }: {
   row: DossierRow;
+  myOrgId: string | null;
+  myOrgName: string | null;
   onDelete: () => void;
   onDuplicate: () => void;
+  onShare: (organisationId: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
   const fg = (row.data as { faitGenerateur?: string })?.faitGenerateur ?? "—";
+  const isShared = !!row.organisation_id;
+  const canToggleShare = !!myOrgId;
   return (
     <tr className="border-t hover:bg-muted/40">
       <td className="px-4 py-3">
@@ -209,6 +217,22 @@ function DossierLine({
           {row.reference}
         </Link>
       </td>
+      <td className="px-4 py-3">
+        {isShared ? (
+          <span
+            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-display"
+            title={myOrgName ?? undefined}
+          >
+            <Building2 className="w-3 h-3" />
+            Cabinet
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-display">
+            <User2 className="w-3 h-3" />
+            Personnel
+          </span>
+        )}
+      </td>
       <td className="px-4 py-3 text-muted-foreground capitalize">
         {fg.replace(/_/g, " ")}
       </td>
@@ -219,6 +243,16 @@ function DossierLine({
         {formatDateFR(row.updated_at.slice(0, 10))}
       </td>
       <td className="px-4 py-3 text-right whitespace-nowrap">
+        {canToggleShare && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onShare(isShared ? null : myOrgId)}
+            title={isShared ? "Repasser en personnel" : "Partager avec le cabinet"}
+          >
+            <Share2 className={`w-4 h-4 ${isShared ? "text-primary" : ""}`} />
+          </Button>
+        )}
         <Button variant="ghost" size="sm" onClick={onDuplicate} title="Dupliquer">
           <Copy className="w-4 h-4" />
         </Button>
@@ -254,3 +288,4 @@ function DossierLine({
     </tr>
   );
 }
+
