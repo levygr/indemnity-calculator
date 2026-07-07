@@ -25,6 +25,7 @@ import {
   type Sexe,
 } from "@/lib/calculs";
 import { FourchetteAffectionHint } from "@/components/vp/FourchetteHint";
+import { REFERENTIEL } from "@/data/referentiel_evaluation";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/survie-proches")({
   component: Page,
@@ -143,8 +144,17 @@ function PageInner({
                   <TableCell><Input type="number" min={0} step="0.01" className="w-32" value={p.perteRevenusAnnuelle} onChange={(e) => patchProche(p.id, { perteRevenusAnnuelle: n(e.target.value) })} /></TableCell>
                   <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.perteRevenusTP} onChange={(e) => patchProche(p.id, { perteRevenusTP: n(e.target.value) })} /></TableCell>
                   <TableCell>
-                    <Input type="number" min={0} step="0.01" className="w-28" value={p.affection} onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
-                    <div className="mt-1"><FourchetteAffectionHint lien={p.lien} /></div>
+                    <Select value={p.lienReferentiel || "__none"} onValueChange={(v) => patchProche(p.id, { lienReferentiel: v === "__none" ? "" : v })}>
+                      <SelectTrigger className="w-56"><SelectValue placeholder="Lien (référentiel)" /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="__none">— non renseigné —</SelectItem>
+                        {REFERENTIEL.affectionDeces.map((f) => (
+                          <SelectItem key={f.code} value={f.code}>{f.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Input type="number" min={0} step="0.01" className="w-28 mt-1" value={p.affection} onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
+                    <div className="mt-1"><FourchetteAffectionHint code={p.lienReferentiel ?? ""} /></div>
                   </TableCell>
                   <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.pep} onChange={(e) => patchProche(p.id, { pep: n(e.target.value) })} /></TableCell>
                   <TableCell><Button variant="ghost" size="icon" onClick={() => delProche(p.id)}><Trash2 className="w-4 h-4" /></Button></TableCell>
