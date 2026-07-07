@@ -5,6 +5,7 @@ import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
 import { calculerDFT, formatEuros, detteResponsable } from "@/lib/calculs";
 import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
+import { REFERENTIEL } from "@/data/referentiel_evaluation";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/extrapatrimoniaux-temporaires")({
   component: ExtraTempPage,
