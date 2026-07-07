@@ -16,17 +16,16 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AlertTriangle, Camera, CheckCircle2, Download, ExternalLink, Eye, Plus, Printer, Trash2, Upload } from "lucide-react";
+import { AlertTriangle, Camera, CheckCircle2, Download, Eye, Plus, Printer, Trash2, Upload } from "lucide-react";
 import {
   CATEGORIE_LABEL,
   calculerSynthese,
   formatEuros,
-  anneesRevolues,
   hydraterDossier,
   type Categorie,
   type Provision,
 } from "@/lib/calculs";
-import { themiaLink } from "@/lib/themia";
+
 
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { regimePour } from "@/lib/regimes";
