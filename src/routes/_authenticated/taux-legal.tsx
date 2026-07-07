@@ -15,7 +15,6 @@ import { formatDateFR } from "@/lib/calculs/format";
 import { ArrowLeft, Plus, Check, AlertTriangle, Save } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate as useNav } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/taux-legal")({
   component: TauxLegalPage,
