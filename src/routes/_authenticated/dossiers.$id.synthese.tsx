@@ -166,6 +166,10 @@ function Page() {
         total={synth.totalProvisions}
       />
 
+      <SnapshotsSection dossierId={id} totalVictimeCourant={synth.totalVictime} />
+
+
+
       <Section title="Recherche de décisions comparables" description="Ouvre Themia dans un onglet séparé avec des critères pré-remplis (âge ± 5 ans, AIPP ± 5 points).">
         <div className="flex flex-wrap gap-2 print:hidden">
           {(["DFP", "PGPF", "ATP-P", "PA", "PSex"] as const).map((code) => {
