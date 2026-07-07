@@ -195,12 +195,10 @@ function Page() {
                   {colonnes.map((c) => (
                     <TableHead key={`h-${c.key}`}></TableHead>
                   ))}
-                  {colonnes.slice(1).map((c) => (
-                    <>
-                      <TableHead key={`eu-${c.key}`} className="text-right text-[11px] text-muted-foreground">€</TableHead>
-                      <TableHead key={`pc-${c.key}`} className="text-right text-[11px] text-muted-foreground">%</TableHead>
-                    </>
-                  ))}
+                  {colonnes.slice(1).flatMap((c) => [
+                    <TableHead key={`eu-${c.key}`} className="text-right text-[11px] text-muted-foreground">€</TableHead>,
+                    <TableHead key={`pc-${c.key}`} className="text-right text-[11px] text-muted-foreground">%</TableHead>,
+                  ])}
                 </TableRow>
               </TableHeader>
               <TableBody>
