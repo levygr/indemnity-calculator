@@ -101,8 +101,15 @@ function DossiersList() {
           </div>
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm">
+              <Link to="/cabinet">
+                <Building2 className="w-4 h-4 mr-2" />
+                Cabinet
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
               <Link to="/taux-legal">Taux légal</Link>
             </Button>
+
             <Button
               variant="ghost"
               size="sm"
