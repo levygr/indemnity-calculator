@@ -1,11 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark, GitCompareArrows, Percent, Scale } from "lucide-react";
+import { FileText, Home, Receipt, HeartPulse, TrendingUp, Users, User2, ClipboardList, Landmark, GitCompareArrows, Percent, Scale, Building2, History } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 
 interface Section {
   label: string;
-  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur" | "/dossiers/$id/interets";
+  to: "/dossiers/$id" | "/dossiers/$id/patrimoniaux-temporaires" | "/dossiers/$id/extrapatrimoniaux-temporaires" | "/dossiers/$id/patrimoniaux-permanents" | "/dossiers/$id/extrapatrimoniaux-permanents" | "/dossiers/$id/deces" | "/dossiers/$id/survie-proches" | "/dossiers/$id/tiers-payeurs" | "/dossiers/$id/synthese" | "/dossiers/$id/comparateur" | "/dossiers/$id/interets" | "/dossiers/$id/activite";
   icon: React.ComponentType<{ className?: string }>;
   phase?: string;
 }
@@ -22,7 +22,9 @@ const SECTIONS: Section[] = [
   { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList },
   { label: "Comparateur", to: "/dossiers/$id/comparateur", icon: GitCompareArrows },
   { label: "Intérêts", to: "/dossiers/$id/interets", icon: Percent },
+  { label: "Activité", to: "/dossiers/$id/activite", icon: History },
 ];
+
 
 
 
@@ -46,6 +48,11 @@ export function AppSidebar({ id, reference, nbAvertissements = 0 }: { id: string
           <Scale className="w-4 h-4" />
           Taux légal
         </Link>
+        <Link to="/cabinet" className="mt-2 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground">
+          <Building2 className="w-4 h-4" />
+          Cabinet
+        </Link>
+
       </div>
 
       <div className="p-5 border-b border-sidebar-border">

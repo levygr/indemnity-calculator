@@ -8,8 +8,10 @@ import {
   createDossier,
   deleteDossier,
   duplicateDossier,
+  attachDossierToOrganisation,
   type DossierRow,
 } from "@/lib/dossiers.functions";
+import { getMyOrganisation } from "@/lib/organisations.functions";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -23,9 +25,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatDateFR } from "@/lib/calculs/format";
-import { Copy, Plus, Trash2, LogOut, FileText } from "lucide-react";
+import { Copy, Plus, Trash2, LogOut, FileText, Building2, User2, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
+
 
 export const Route = createFileRoute("/_authenticated/dossiers/")({
   component: DossiersList,
@@ -39,9 +42,16 @@ function DossiersList() {
   const fetchDelete = useServerFn(deleteDossier);
   const fetchDup = useServerFn(duplicateDossier);
 
+  const fetchMyOrg = useServerFn(getMyOrganisation);
+  const fetchAttach = useServerFn(attachDossierToOrganisation);
+
   const { data: rows, isLoading } = useQuery({
     queryKey: ["dossiers"],
     queryFn: () => fetchList(),
+  });
+  const { data: myOrg } = useQuery({
+    queryKey: ["my-organisation"],
+    queryFn: () => fetchMyOrg(),
   });
 
   const mCreate = useMutation({
@@ -65,6 +75,16 @@ function DossiersList() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["dossiers"] }),
     onError: (e: Error) => toast.error(e.message),
   });
+  const mShare = useMutation({
+    mutationFn: (p: { dossierId: string; organisationId: string | null }) =>
+      fetchAttach({ data: p }),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ["dossiers"] });
+      toast.success(vars.organisationId ? "Dossier partagé avec le cabinet" : "Dossier repassé en personnel");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,8 +101,15 @@ function DossiersList() {
           </div>
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm">
+              <Link to="/cabinet">
+                <Building2 className="w-4 h-4 mr-2" />
+                Cabinet
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" size="sm">
               <Link to="/taux-legal">Taux légal</Link>
             </Button>
+
             <Button
               variant="ghost"
               size="sm"
@@ -129,6 +156,7 @@ function DossiersList() {
               <thead className="bg-muted text-left font-display">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Référence</th>
+                  <th className="px-4 py-3 font-semibold w-32">Portée</th>
                   <th className="px-4 py-3 font-semibold">Fait générateur</th>
                   <th className="px-4 py-3 font-semibold">Créé le</th>
                   <th className="px-4 py-3 font-semibold">Modifié le</th>
@@ -140,8 +168,13 @@ function DossiersList() {
                   <DossierLine
                     key={r.id}
                     row={r}
+                    myOrgId={myOrg?.organisation.id ?? null}
+                    myOrgName={myOrg?.organisation.nom ?? null}
                     onDelete={() => mDelete.mutate(r.id)}
                     onDuplicate={() => mDup.mutate(r.id)}
+                    onShare={(organisationId) =>
+                      mShare.mutate({ dossierId: r.id, organisationId })
+                    }
                   />
                 ))}
               </tbody>
@@ -153,17 +186,26 @@ function DossiersList() {
   );
 }
 
+
 function DossierLine({
   row,
+  myOrgId,
+  myOrgName,
   onDelete,
   onDuplicate,
+  onShare,
 }: {
   row: DossierRow;
+  myOrgId: string | null;
+  myOrgName: string | null;
   onDelete: () => void;
   onDuplicate: () => void;
+  onShare: (organisationId: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
   const fg = (row.data as { faitGenerateur?: string })?.faitGenerateur ?? "—";
+  const isShared = !!row.organisation_id;
+  const canToggleShare = !!myOrgId;
   return (
     <tr className="border-t hover:bg-muted/40">
       <td className="px-4 py-3">
@@ -175,6 +217,22 @@ function DossierLine({
           {row.reference}
         </Link>
       </td>
+      <td className="px-4 py-3">
+        {isShared ? (
+          <span
+            className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-display"
+            title={myOrgName ?? undefined}
+          >
+            <Building2 className="w-3 h-3" />
+            Cabinet
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-display">
+            <User2 className="w-3 h-3" />
+            Personnel
+          </span>
+        )}
+      </td>
       <td className="px-4 py-3 text-muted-foreground capitalize">
         {fg.replace(/_/g, " ")}
       </td>
@@ -185,6 +243,16 @@ function DossierLine({
         {formatDateFR(row.updated_at.slice(0, 10))}
       </td>
       <td className="px-4 py-3 text-right whitespace-nowrap">
+        {canToggleShare && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onShare(isShared ? null : myOrgId)}
+            title={isShared ? "Repasser en personnel" : "Partager avec le cabinet"}
+          >
+            <Share2 className={`w-4 h-4 ${isShared ? "text-primary" : ""}`} />
+          </Button>
+        )}
         <Button variant="ghost" size="sm" onClick={onDuplicate} title="Dupliquer">
           <Copy className="w-4 h-4" />
         </Button>
@@ -220,3 +288,4 @@ function DossierLine({
     </tr>
   );
 }
+

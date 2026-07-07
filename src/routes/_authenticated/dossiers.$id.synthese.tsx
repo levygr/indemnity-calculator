@@ -30,7 +30,7 @@ import { themiaLink } from "@/lib/themia";
 
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
 import { toast } from "sonner";
-import { createSnapshot, deleteSnapshot, listSnapshots } from "@/lib/dossiers.functions";
+import { createSnapshot, deleteSnapshot, listSnapshots, logDossierAction } from "@/lib/dossiers.functions";
 
 
 
@@ -79,6 +79,8 @@ function Page() {
       const { document } = buildReclamationDocx({ dossier, synthese: synth, logo });
       await downloadDocx(document, buildFilename(dossier.reference));
       toast.success("Document Word généré");
+      logDossierAction({ data: { dossierId: id, action: "export_word" } }).catch(() => {});
+
     } catch (e) {
       toast.error(`Échec de la génération : ${(e as Error).message}`);
     } finally {
