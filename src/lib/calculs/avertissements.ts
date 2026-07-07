@@ -25,7 +25,8 @@ export type AvertissementCode =
   | "DONNEE_MANQUANTE"
   | "PROVISIONS_SUPERIEURES"
   | "ECART_CREANCES_TP"
-  | "REFERENTIEL_NON_VERSIONNE";
+  | "REFERENTIEL_NON_VERSIONNE"
+  | "PART_CONSOMMEE_SUSPECTE";
 
 export interface AvertissementCalcul {
   code: AvertissementCode;
@@ -137,10 +138,19 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
   // Perte de revenus du foyer (décès)
   {
     const pd = d.postesDeces;
-    const revenu = Math.max(0, pd.revenuAnnuelDefunt || 0);
+    const revenuD = Math.max(0, pd.revenuAnnuelDefunt || 0);
+    const revenuC = Math.max(0, pd.revenuAnnuelConjoint || 0);
     const partCons = Math.min(Math.max(0, pd.partConsommeeDefunt || 0), 1);
-    const revenuFoyer = revenu * (1 - partCons);
-    if (revenuFoyer > 0) {
+    const perteFoyer = Math.max(0, (revenuD + revenuC) * (1 - partCons) - revenuC);
+    if (revenuD > 0 && perteFoyer === 0) {
+      out.push({
+        code: "PART_CONSOMMEE_SUSPECTE",
+        poste: "Perte de revenus du foyer",
+        message:
+          "Perte annuelle du foyer nulle malgré un revenu du défunt : vérifiez la part d'autoconsommation et le revenu maintenu du conjoint.",
+      });
+    }
+    if (perteFoyer > 0) {
       const eligibles = pd.proches.filter(
         (p) => (p.lien === "conjoint" || p.lien === "enfant") && p.partFoyer > 0,
       );
@@ -160,7 +170,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
           const mode: "viager" | "temporaire" = p.lien === "conjoint" ? "viager" : "temporaire";
           const ageFin = mode === "temporaire" ? (p.ageFinEtudes > 0 ? p.ageFinEtudes : 25) : null;
           const per = perFromMode(mode, ctxP, ageFin, null);
-          const rente = revenuFoyer * (p.partFoyer / totalParts);
+          const rente = perteFoyer * (p.partFoyer / totalParts);
           if (rente > 0 && per <= 0) {
             out.push(perNul("Perte de revenus du foyer", `part de ${p.prenom || "proche"}`));
           }
@@ -168,6 +178,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       }
     }
   }
+
 
   // Perte de revenus des proches (survie)
   for (const p of d.postesSurvie.proches) {

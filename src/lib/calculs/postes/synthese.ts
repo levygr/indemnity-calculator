@@ -203,8 +203,8 @@ export function calculerSynthese(d: DossierData): Synthese {
   const pd = d.postesDeces;
   lignes.push(ligne("OBS", "Frais d'obsèques", "DECES", Math.max(0, pd.obsequesMontant || 0), Math.max(0, pd.obsequesTP || 0), f, c));
 
-  const foyer = calculerPerteRevenusFoyer(pd, { dateLiquidation: d.dateLiquidation, bareme: d.bareme });
-  lignes.push(ligne("PRF", "Perte de revenus du foyer", "DECES", foyer.totalCapital, 0, f, c));
+  const foyer = calculerPerteRevenusFoyer(pd, { dateLiquidation: d.dateLiquidation, bareme: d.bareme, methodeRente: d.methodeRente });
+  lignes.push(ligne("PRF", "Perte de revenus du foyer", "DECES", foyer.totalCapital, foyer.totalTP, f, c));
 
   const fraisD = calculerFraisDivers(pd.fraisDivers);
   lignes.push(ligne("FD-D", "Frais divers des proches", "DECES", fraisD.totalMontant, fraisD.totalTP, f, c));

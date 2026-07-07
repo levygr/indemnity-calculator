@@ -48,9 +48,9 @@ function PageInner({
   update: ReturnType<typeof useDossier>["update"];
 }) {
   const pd = dossier.postesDeces;
-  const ctx = { dateLiquidation: dossier.dateLiquidation, bareme: dossier.bareme };
+  const ctx = { dateLiquidation: dossier.dateLiquidation, bareme: dossier.bareme, methodeRente: dossier.methodeRente };
 
-  const foyer = useMemo(() => calculerPerteRevenusFoyer(pd, ctx), [pd, ctx.dateLiquidation, ctx.bareme]);
+  const foyer = useMemo(() => calculerPerteRevenusFoyer(pd, ctx), [pd, ctx.dateLiquidation, ctx.bareme, ctx.methodeRente]);
   const frais = useMemo(() => calculerFraisDivers(pd.fraisDivers), [pd.fraisDivers]);
   const affection = useMemo(() => totalAffection(pd.proches), [pd.proches]);
 
@@ -210,27 +210,76 @@ function PageInner({
       </Section>
 
       {/* Perte revenus foyer */}
-      <Section title="Perte de revenus du foyer" description="Revenu annuel net du défunt × (1 − part consommée), réparti entre conjoint et enfants selon les parts, capitalisé par tête.">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <Section
+        title="Perte de revenus du foyer"
+        description="Perte annuelle du foyer = (revenus cumulés défunt + conjoint) × (1 − part consommée par le défunt) − revenus maintenus du conjoint. Calcul séquencé par périodes selon la sortie progressive des enfants."
+      >
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Field label="Revenu annuel net du défunt (€)">
             <Input type="number" min={0} step="0.01" value={pd.revenuAnnuelDefunt} onChange={(e) => patch({ revenuAnnuelDefunt: n(e.target.value) })} />
+          </Field>
+          <Field label="Revenu annuel net du conjoint survivant (€)">
+            <Input type="number" min={0} step="0.01" value={pd.revenuAnnuelConjoint} onChange={(e) => patch({ revenuAnnuelConjoint: n(e.target.value) })} />
           </Field>
           <Field label="Part consommée par le défunt (0..1)" hint="Typiquement 0,3 pour couple + 2 enfants.">
             <Input type="number" min={0} max={1} step="0.05" value={pd.partConsommeeDefunt} onChange={(e) => patch({ partConsommeeDefunt: n(e.target.value) })} />
           </Field>
-          <Recap label="Revenu foyer (annuel)" value={formatEuros(foyer.revenuFoyer)} />
+          <Recap label="Perte annuelle du foyer" value={formatEuros(foyer.perteAnnuelleFoyer)} />
         </div>
+
+        {pd.revenuAnnuelDefunt > 0 && foyer.perteAnnuelleFoyer === 0 && (
+          <div className="mt-3">
+            <Note variant="warning">
+              La perte annuelle du foyer est nulle malgré un revenu du défunt renseigné : vérifiez la part d'autoconsommation et le revenu maintenu du conjoint.
+            </Note>
+          </div>
+        )}
+
+        {foyer.periodes.length > 0 && (
+          <div className="mt-4">
+            <div className="text-xs font-display font-semibold text-muted-foreground mb-1">Détail par période</div>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>#</TableHead>
+                  <TableHead>Bornes (années depuis liquidation)</TableHead>
+                  <TableHead>Âge conjoint</TableHead>
+                  <TableHead>Membres présents</TableHead>
+                  <TableHead>Capital période</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {foyer.periodes.map((p) => (
+                  <TableRow key={p.index}>
+                    <TableCell>{p.index}</TableCell>
+                    <TableCell>{p.debut} → {p.fin == null ? "viager" : p.fin}</TableCell>
+                    <TableCell>{p.ageConjointDebut ?? "—"}{p.ageConjointFin != null ? ` → ${p.ageConjointFin}` : (p.fin == null && p.ageConjointDebut != null ? " → ∞" : "")}</TableCell>
+                    <TableCell className="text-xs">
+                      {p.membres.map((m) => (
+                        <div key={m.procheId}>
+                          {(m.prenom || m.lien)} — part {(m.part * 100).toFixed(1)} %, rente {formatEuros(m.renteAnnuelle)}, PER {m.per.toFixed(3)}, cap {formatEuros(m.capital)}
+                        </div>
+                      ))}
+                    </TableCell>
+                    <TableCell className="font-medium">{formatEuros(p.totalCapital)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
 
         {foyer.lignes.length > 0 && (
           <div className="mt-4">
+            <div className="text-xs font-display font-semibold text-muted-foreground mb-1">Récapitulatif par proche</div>
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Proche</TableHead>
-                  <TableHead>Âge</TableHead>
-                  <TableHead>Part</TableHead>
-                  <TableHead>Rente annuelle</TableHead>
-                  <TableHead>PER</TableHead>
+                  <TableHead>Âge (liq.)</TableHead>
+                  <TableHead>Part P1</TableHead>
+                  <TableHead>Rente P1</TableHead>
+                  <TableHead>PER cumulé</TableHead>
                   <TableHead>Capital</TableHead>
                   <TableHead>Capital TP</TableHead>
                   <TableHead>Reste</TableHead>
@@ -264,6 +313,7 @@ function PageInner({
           <div className="mt-3"><Note variant="warning">Renseignez la date de liquidation sur la page Dossier pour capitaliser.</Note></div>
         )}
       </Section>
+
 
       {/* Frais divers */}
       <Section title="Frais divers des proches" description="Frais exposés en lien avec le décès (voyages, hébergement, formalités…).">
