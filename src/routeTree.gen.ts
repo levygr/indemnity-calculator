@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTauxLegalRouteImport } from './routes/_authenticated/taux-legal'
 import { Route as AuthenticatedDossiersIndexRouteImport } from './routes/_authenticated/dossiers.index'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
 import { Route as AuthenticatedDossiersIdIndexRouteImport } from './routes/_authenticated/dossiers.$id.index'
@@ -39,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedTauxLegalRoute = AuthenticatedTauxLegalRouteImport.update({
+  id: '/taux-legal',
+  path: '/taux-legal',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDossiersIndexRoute =
   AuthenticatedDossiersIndexRouteImport.update({
@@ -121,6 +127,7 @@ const AuthenticatedDossiersIdSnapshotsSnapshotIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers': typeof AuthenticatedDossiersIndexRoute
   '/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/_authenticated/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/taux-legal'
     | '/dossiers/$id'
     | '/dossiers/'
     | '/dossiers/$id/comparateur'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/taux-legal'
     | '/dossiers'
     | '/dossiers/$id/comparateur'
     | '/dossiers/$id/deces'
@@ -209,6 +220,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/taux-legal'
     | '/_authenticated/dossiers/$id'
     | '/_authenticated/dossiers/'
     | '/_authenticated/dossiers/$id/comparateur'
@@ -252,6 +264,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/taux-legal': {
+      id: '/_authenticated/taux-legal'
+      path: '/taux-legal'
+      fullPath: '/taux-legal'
+      preLoaderRoute: typeof AuthenticatedTauxLegalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dossiers/': {
       id: '/_authenticated/dossiers/'
@@ -390,11 +409,13 @@ const AuthenticatedDossiersIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedTauxLegalRoute: typeof AuthenticatedTauxLegalRoute
   AuthenticatedDossiersIdRoute: typeof AuthenticatedDossiersIdRouteWithChildren
   AuthenticatedDossiersIndexRoute: typeof AuthenticatedDossiersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedTauxLegalRoute: AuthenticatedTauxLegalRoute,
   AuthenticatedDossiersIdRoute: AuthenticatedDossiersIdRouteWithChildren,
   AuthenticatedDossiersIndexRoute: AuthenticatedDossiersIndexRoute,
 }
