@@ -247,7 +247,7 @@ function Page() {
                           <EcartCells key={`est-${i}`} ref={sousTotaux[0]} val={v} />
                         ))}
                       </TableRow>
-                    </>
+                    </Fragment>
                   );
                 })}
 
