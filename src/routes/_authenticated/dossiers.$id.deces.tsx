@@ -48,9 +48,9 @@ function PageInner({
   update: ReturnType<typeof useDossier>["update"];
 }) {
   const pd = dossier.postesDeces;
-  const ctx = { dateLiquidation: dossier.dateLiquidation, bareme: dossier.bareme };
+  const ctx = { dateLiquidation: dossier.dateLiquidation, bareme: dossier.bareme, methodeRente: dossier.methodeRente };
 
-  const foyer = useMemo(() => calculerPerteRevenusFoyer(pd, ctx), [pd, ctx.dateLiquidation, ctx.bareme]);
+  const foyer = useMemo(() => calculerPerteRevenusFoyer(pd, ctx), [pd, ctx.dateLiquidation, ctx.bareme, ctx.methodeRente]);
   const frais = useMemo(() => calculerFraisDivers(pd.fraisDivers), [pd.fraisDivers]);
   const affection = useMemo(() => totalAffection(pd.proches), [pd.proches]);
 
