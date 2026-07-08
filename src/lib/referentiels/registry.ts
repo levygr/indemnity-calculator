@@ -147,23 +147,35 @@ export const REF_INDICES: ReferentielDefinition<IndicesPayload> = {
   description:
     "Indice des prix à la consommation et SMIC horaire brut, publiés annuellement. Utilisés pour l'actualisation des postes de préjudice.",
   payload: indicesActualisation as IndicesPayload,
-  toRows: (payload) =>
-    payload.indices_annuels.map((ligne) => ({
-      cle: { annee: ligne.annee },
+  toRows: (payload) => {
+    const annuels: ReferentielRow[] = payload.indices_annuels.map((ligne) => ({
+      cle: { type: "annuel", annee: ligne.annee },
       valeur: { ipc: ligne.ipc, smic_horaire_brut: ligne.smic_horaire_brut },
-    })),
+    }));
+    const mensuels: ReferentielRow[] = payload.indices_mensuels.map((ligne) => ({
+      cle: { type: "mensuel", annee: ligne.annee, mois: ligne.mois },
+      valeur: { ipc_mensuel: ligne.ipc_mensuel },
+    }));
+    return [...annuels, ...mensuels];
+  },
   fromRows: (rows) => {
-    const lignes = rows
+    const annuels = rows
+      .filter((r) => (r.cle as { type?: string }).type === "annuel")
       .map((r) => {
+        const c = r.cle as { annee: number };
         const v = r.valeur as { ipc: number; smic_horaire_brut: number };
-        return {
-          annee: (r.cle as { annee: number }).annee,
-          ipc: v.ipc,
-          smic_horaire_brut: v.smic_horaire_brut,
-        };
+        return { annee: c.annee, ipc: v.ipc, smic_horaire_brut: v.smic_horaire_brut };
       })
       .sort((a, b) => a.annee - b.annee);
-    return { indices_annuels: lignes } as IndicesPayload;
+    const mensuels = rows
+      .filter((r) => (r.cle as { type?: string }).type === "mensuel")
+      .map((r) => {
+        const c = r.cle as { annee: number; mois: string };
+        const v = r.valeur as { ipc_mensuel: number };
+        return { annee: c.annee, mois: c.mois, ipc_mensuel: v.ipc_mensuel };
+      });
+    // Conserver l'ordre du fichier source (annee croissante, mois dans l'ordre publié)
+    return { indices_annuels: annuels, indices_mensuels: mensuels } as IndicesPayload;
   },
 };
 
