@@ -30,6 +30,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { ReferentielTables, hasStructuredView } from "@/components/vp/ReferentielTables";
+import type { EditionRowItem } from "@/lib/referentiels/editions.functions";
 
 export const Route = createFileRoute("/_authenticated/referentiels/$code")({
   head: ({ params }) => ({
@@ -70,9 +72,7 @@ function ReferentielDetailPage() {
               Référentiels
             </Link>
           </Button>
-          <h1 className="font-display font-semibold text-lg truncate">
-            {ref?.libelle || code}
-          </h1>
+          <h1 className="font-display font-semibold text-lg truncate">{ref?.libelle || code}</h1>
         </div>
       </header>
 
@@ -83,9 +83,7 @@ function ReferentielDetailPage() {
             <AlertTriangle className="w-4 h-4" />
             <AlertTitle>Erreur</AlertTitle>
             <AlertDescription>
-              {query.error instanceof Error
-                ? query.error.message
-                : "Impossible de charger le référentiel."}
+              {query.error instanceof Error ? query.error.message : "Impossible de charger le référentiel."}
             </AlertDescription>
           </Alert>
         )}
@@ -93,8 +91,8 @@ function ReferentielDetailPage() {
           <Alert>
             <AlertTitle>Référentiel introuvable</AlertTitle>
             <AlertDescription>
-              Le code « {code} » n'est pas présent en base. Vérifiez que le seed
-              initial a bien été exécuté depuis la page des référentiels.
+              Le code « {code} » n'est pas présent en base. Vérifiez que le seed initial a bien été exécuté depuis la
+              page des référentiels.
             </AlertDescription>
           </Alert>
         )}
@@ -106,8 +104,7 @@ function ReferentielDetailPage() {
               </CardHeader>
               <CardContent className="text-sm space-y-2">
                 <div>
-                  <span className="font-medium">Libellé :</span>{" "}
-                  {ref.editionLibelle ?? "aucune"}
+                  <span className="font-medium">Libellé :</span> {ref.editionLibelle ?? "aucune"}
                 </div>
                 {ref.editionActivatedAt && (
                   <div>
@@ -118,20 +115,13 @@ function ReferentielDetailPage() {
                   </div>
                 )}
                 <div>
-                  <span className="font-medium">Source :</span>{" "}
-                  {ref.source || "—"}
+                  <span className="font-medium">Source :</span> {ref.source || "—"}
                 </div>
                 <div>
                   <span className="font-medium">Type :</span>{" "}
-                  {ref.kind === "incremental"
-                    ? "incrémental (ajouts de périodes)"
-                    : "monolithique (bloc figé)"}
+                  {ref.kind === "incremental" ? "incrémental (ajouts de périodes)" : "monolithique (bloc figé)"}
                 </div>
-                {ref.description && (
-                  <p className="text-muted-foreground pt-2 border-t">
-                    {ref.description}
-                  </p>
-                )}
+                {ref.description && <p className="text-muted-foreground pt-2 border-t">{ref.description}</p>}
               </CardContent>
             </Card>
 
@@ -151,15 +141,42 @@ function ReferentielDetailPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Lecture seule. Pour modifier, créez un brouillon dans le
-                  panneau ci-dessus.
+                  Lecture seule. Pour modifier, créez un brouillon dans le panneau ci-dessus.
                 </p>
-                <RowsTable rows={ref.rows.slice(0, 500)} />
-                {ref.rows.length > 500 && (
-                  <div className="p-3 text-xs text-muted-foreground text-center">
-                    {ref.rows.length - 500} ligne(s) supplémentaire(s) non
-                    affichée(s).
-                  </div>
+
+                {hasStructuredView(code) ? (
+                  <ReferentielTables
+                    code={code}
+                    rows={asEditionRows(ref.rows)}
+                    editable={false}
+                    saving={false}
+                    onSaveRow={() => {}}
+                  />
+                ) : (
+                  <>
+                    <RowsTable rows={ref.rows.slice(0, 500)} />
+                    {ref.rows.length > 500 && (
+                      <div className="p-3 text-xs text-muted-foreground text-center">
+                        {ref.rows.length - 500} ligne(s) supplémentaire(s) non affichée(s).
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {hasStructuredView(code) && (
+                  <details className="mt-4">
+                    <summary className="cursor-pointer text-sm text-muted-foreground select-none py-1">
+                      Vue avancée — lignes brutes ({ref.rows.length})
+                    </summary>
+                    <div className="mt-2">
+                      <RowsTable rows={ref.rows.slice(0, 500)} />
+                      {ref.rows.length > 500 && (
+                        <div className="p-3 text-xs text-muted-foreground text-center">
+                          {ref.rows.length - 500} ligne(s) supplémentaire(s) non affichée(s).
+                        </div>
+                      )}
+                    </div>
+                  </details>
                 )}
               </CardContent>
             </Card>
@@ -170,11 +187,23 @@ function ReferentielDetailPage() {
   );
 }
 
+/**
+ * Les lignes de l'aperçu (`ref.rows`) n'ont que `cle`/`valeur`/`commentaire`.
+ * `ReferentielTables` attend en plus un `id` stable (clé React). On le dérive
+ * de la clé, de façon déterministe, sans rien modifier des valeurs affichées.
+ */
+function asEditionRows(rows: { cle: unknown; valeur: unknown; commentaire?: string | null }[]): EditionRowItem[] {
+  return rows.map((r, i) => ({
+    id: `${i}-${JSON.stringify(r.cle)}`,
+    cle: r.cle as EditionRowItem["cle"],
+    valeur: r.valeur as EditionRowItem["valeur"],
+    commentaire: r.commentaire ?? null,
+  }));
+}
+
 function statutBadge(statut: string) {
-  if (statut === "actif")
-    return <Badge className="bg-emerald-600 hover:bg-emerald-600">Actif</Badge>;
-  if (statut === "brouillon")
-    return <Badge variant="secondary">Brouillon</Badge>;
+  if (statut === "actif") return <Badge className="bg-emerald-600 hover:bg-emerald-600">Actif</Badge>;
+  if (statut === "brouillon") return <Badge variant="secondary">Brouillon</Badge>;
   return <Badge variant="outline">Archivé</Badge>;
 }
 
@@ -221,8 +250,7 @@ function EditionsPanel({
       setDraftSource("");
       invalidate();
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de la création."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de la création."),
   });
 
   const activateMutation = useMutation({
@@ -231,8 +259,7 @@ function EditionsPanel({
       toast.success("Édition activée. L'édition précédente a été archivée.");
       invalidate();
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de l'activation."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de l'activation."),
   });
 
   const archiveMutation = useMutation({
@@ -241,8 +268,7 @@ function EditionsPanel({
       toast.success("Édition archivée.");
       invalidate();
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de l'archivage."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de l'archivage."),
   });
 
   const deleteMutation = useMutation({
@@ -251,8 +277,7 @@ function EditionsPanel({
       toast.success("Brouillon supprimé.");
       invalidate();
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de la suppression."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de la suppression."),
   });
 
   return (
@@ -271,8 +296,8 @@ function EditionsPanel({
               <DialogHeader>
                 <DialogTitle>Créer une édition brouillon</DialogTitle>
                 <DialogDescription>
-                  Les lignes de l'édition actuellement active seront copiées
-                  dans le brouillon. Vous pourrez les modifier avant activation.
+                  Les lignes de l'édition actuellement active seront copiées dans le brouillon. Vous pourrez les
+                  modifier avant activation.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-3">
@@ -319,25 +344,20 @@ function EditionsPanel({
         {isLoading && <div className="text-muted-foreground text-sm">Chargement…</div>}
         {!isLoading && editions.length === 0 && (
           <div className="text-sm text-muted-foreground">
-            Aucune édition. Lancez le seed initial depuis la page des
-            référentiels.
+            Aucune édition. Lancez le seed initial depuis la page des référentiels.
           </div>
         )}
         {editions.length > 0 && (
           <div className="border rounded-md divide-y">
             {editions.map((ed) => (
-              <div
-                key={ed.id}
-                className="flex flex-wrap items-center gap-3 p-3 text-sm"
-              >
+              <div key={ed.id} className="flex flex-wrap items-center gap-3 p-3 text-sm">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-medium truncate">{ed.libelle}</span>
                     {statutBadge(ed.statut)}
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
-                    Créée le{" "}
-                    {format(new Date(ed.created_at), "d MMM yyyy", { locale: fr })}
+                    Créée le {format(new Date(ed.created_at), "d MMM yyyy", { locale: fr })}
                     {ed.activated_at && (
                       <>
                         {" · "}activée le{" "}
@@ -351,15 +371,8 @@ function EditionsPanel({
                 </div>
                 {isAdmin && ed.statut === "brouillon" && (
                   <>
-                    <Button
-                      asChild
-                      size="sm"
-                      variant="outline"
-                    >
-                      <Link
-                        to="/referentiels/$code/editions/$editionId"
-                        params={{ code, editionId: ed.id }}
-                      >
+                    <Button asChild size="sm" variant="outline">
+                      <Link to="/referentiels/$code/editions/$editionId" params={{ code, editionId: ed.id }}>
                         <Pencil className="w-3.5 h-3.5 mr-1" />
                         Éditer
                       </Link>
@@ -376,11 +389,7 @@ function EditionsPanel({
                       size="sm"
                       variant="ghost"
                       onClick={() => {
-                        if (
-                          confirm(
-                            `Supprimer le brouillon « ${ed.libelle} » ? Cette action est irréversible.`,
-                          )
-                        )
+                        if (confirm(`Supprimer le brouillon « ${ed.libelle} » ? Cette action est irréversible.`))
                           deleteMutation.mutate(ed.id);
                       }}
                       disabled={deleteMutation.isPending}
@@ -390,9 +399,7 @@ function EditionsPanel({
                   </>
                 )}
                 {isAdmin && ed.statut === "archive" && (
-                  <span className="text-xs text-muted-foreground">
-                    Archivée — lecture seule
-                  </span>
+                  <span className="text-xs text-muted-foreground">Archivée — lecture seule</span>
                 )}
                 {isAdmin && ed.statut === "actif" && (
                   <Button
@@ -400,9 +407,7 @@ function EditionsPanel({
                     variant="outline"
                     onClick={() => {
                       if (
-                        confirm(
-                          "Archiver l'édition active nécessite d'activer d'abord une autre édition. Continuer ?",
-                        )
+                        confirm("Archiver l'édition active nécessite d'activer d'abord une autre édition. Continuer ?")
                       )
                         archiveMutation.mutate(ed.id);
                     }}
@@ -421,11 +426,7 @@ function EditionsPanel({
   );
 }
 
-function RowsTable({
-  rows,
-}: {
-  rows: { cle: unknown; valeur: unknown }[];
-}) {
+function RowsTable({ rows }: { rows: { cle: unknown; valeur: unknown }[] }) {
   const sorted = useMemo(() => rows, [rows]);
   return (
     <div className="max-h-[600px] overflow-auto border rounded-md">
@@ -461,9 +462,7 @@ function ValeurPreview({ value }: { value: unknown }) {
       <summary className="cursor-pointer text-muted-foreground">
         {s.slice(0, 160)}… <span className="text-primary">(déplier)</span>
       </summary>
-      <pre className="whitespace-pre-wrap text-xs mt-2">
-        {JSON.stringify(value, null, 2)}
-      </pre>
+      <pre className="whitespace-pre-wrap text-xs mt-2">{JSON.stringify(value, null, 2)}</pre>
     </details>
   );
 }
