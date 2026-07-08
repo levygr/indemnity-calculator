@@ -132,6 +132,12 @@ function DossiersList() {
             <Button asChild variant="ghost" size="sm" className="min-h-11 hidden sm:inline-flex">
               <Link to="/taux-legal">Taux légal</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm" className="min-h-11 hidden sm:inline-flex">
+              <Link to="/referentiels">
+                <Library className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Référentiels</span>
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               size="icon"
