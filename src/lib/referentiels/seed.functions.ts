@@ -103,10 +103,11 @@ export const seedReferentiels = createServerFn({ method: "POST" })
       // 4) insertion des lignes
       const rows = def.toRows(def.payload);
       if (rows.length > 0) {
+        type Json = import("@/integrations/supabase/types").Json;
         const payload = rows.map((r) => ({
           edition_id: editionId,
-          cle: r.cle,
-          valeur: r.valeur as unknown as object,
+          cle: r.cle as unknown as Json,
+          valeur: r.valeur as unknown as Json,
           commentaire: r.commentaire ?? null,
         }));
         const { error: valErr } = await supabase.from("valeurs").insert(payload);
