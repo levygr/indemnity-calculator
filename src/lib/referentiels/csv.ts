@@ -146,7 +146,6 @@ export function perFromCsv(csv: string, reference: PerPayload): PerPayload {
   const expectedHeader = [
     "age_liquidation",
     ...reference.ages_fin_de_rente.map((a) => String(a)),
-    "viagere",
   ];
   if (header.length !== expectedHeader.length) {
     throw new Error(
