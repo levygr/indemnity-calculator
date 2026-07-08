@@ -50,13 +50,13 @@ function AuthPage() {
     setLoading(false);
     if (error) toast.error(error.message);
     else toast.success("Compte créé. Vous pouvez vous connecter.");
+  }
+
   async function handleReset() {
     if (!email) {
       toast.error("Saisissez votre email d'abord");
       return;
-  }
-
-
+    }
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
@@ -65,6 +65,7 @@ function AuthPage() {
     if (error) toast.error(error.message);
     else toast.success("Email de réinitialisation envoyé.");
   }
+
 
   return (
 
