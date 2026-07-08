@@ -370,3 +370,97 @@ function DossierLine({
   );
 }
 
+function DossierCard({
+  row,
+  myOrgId,
+  onDelete,
+  onDuplicate,
+  onShare,
+}: {
+  row: DossierRow;
+  myOrgId: string | null;
+  onDelete: () => void;
+  onDuplicate: () => void;
+  onShare: (organisationId: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const fg = (row.data as { faitGenerateur?: string })?.faitGenerateur ?? "—";
+  const isShared = !!row.organisation_id;
+  const canToggleShare = !!myOrgId;
+  return (
+    <div className="vp-card p-4">
+      <div className="flex items-start justify-between gap-3">
+        <Link
+          to="/dossiers/$id"
+          params={{ id: row.id }}
+          className="font-display font-semibold text-foreground hover:text-primary min-w-0 flex-1 truncate"
+        >
+          {row.reference}
+        </Link>
+        {isShared ? (
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-display shrink-0">
+            <Building2 className="w-3 h-3" />
+            Cabinet
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-display shrink-0">
+            <User2 className="w-3 h-3" />
+            Perso
+          </span>
+        )}
+      </div>
+      <div className="mt-2 text-xs text-muted-foreground capitalize">
+        {fg.replace(/_/g, " ")}
+      </div>
+      <div className="mt-1 text-xs text-muted-foreground">
+        Modifié le {formatDateFR(row.updated_at.slice(0, 10))}
+      </div>
+      <div className="mt-3 flex items-center justify-end gap-1">
+        {canToggleShare && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="min-h-11 min-w-11"
+            onClick={() => onShare(isShared ? null : myOrgId)}
+            aria-label={isShared ? "Repasser en personnel" : "Partager avec le cabinet"}
+          >
+            <Share2 className={`w-4 h-4 ${isShared ? "text-primary" : ""}`} />
+          </Button>
+        )}
+        <Button variant="ghost" size="icon" className="min-h-11 min-w-11" onClick={onDuplicate} aria-label="Dupliquer">
+          <Copy className="w-4 h-4" />
+        </Button>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger asChild>
+            <Button variant="ghost" size="icon" className="min-h-11 min-w-11" aria-label="Supprimer">
+              <Trash2 className="w-4 h-4 text-destructive" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Supprimer ce dossier ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Cette action est irréversible. Le dossier « {row.reference} » sera
+                définitivement supprimé.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  onDelete();
+                  setOpen(false);
+                }}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Supprimer
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
+  );
+}
+
+
