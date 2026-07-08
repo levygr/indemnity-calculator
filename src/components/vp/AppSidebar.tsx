@@ -104,9 +104,9 @@ function pageHasData(key: string, d: DossierData | null): boolean {
     case "epp":
       return !!pp && Object.keys(pp).length > 0;
     case "deces":
-      return Array.isArray(d.victimesIndirectesDeces) && d.victimesIndirectesDeces.length > 0;
+      return !!d.postesDeces && Object.keys(d.postesDeces as unknown as Record<string, unknown>).length > 0;
     case "survie":
-      return Array.isArray(d.victimesIndirectesSurvie) && d.victimesIndirectesSurvie.length > 0;
+      return !!d.postesSurvie && Object.keys(d.postesSurvie as unknown as Record<string, unknown>).length > 0;
     case "tp":
       return (d.organismesTP?.length ?? 0) > 0 || (d.creancesTP?.length ?? 0) > 0;
     case "interets":
