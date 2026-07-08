@@ -15,7 +15,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { REGISTRY, type ReferentielRow } from "./registry";
+import { REGISTRY } from "./registry";
 
 interface SeedReport {
   code: string;
