@@ -52,7 +52,23 @@ function AuthPage() {
     else toast.success("Compte créé. Vous pouvez vous connecter.");
   }
 
+  async function handleReset() {
+    if (!email) {
+      toast.error("Saisissez votre email d'abord");
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) toast.error(error.message);
+    else toast.success("Email de réinitialisation envoyé.");
+  }
+
+
   return (
+
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md vp-card p-8">
         <div className="mb-6 text-center">
@@ -101,6 +117,15 @@ function AuthPage() {
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? "Connexion…" : "Se connecter"}
               </Button>
+              <button
+                type="button"
+                onClick={handleReset}
+                disabled={loading}
+                className="w-full text-sm text-muted-foreground hover:text-foreground underline"
+              >
+                Mot de passe oublié ?
+              </button>
+
             </form>
           </TabsContent>
 
