@@ -146,7 +146,15 @@ export const addMemberByEmail = createServerFn({ method: "POST" })
       if (list.users.length < perPage) break;
       page++;
     }
-    if (!targetId) throw new Error("Aucun compte n'existe pour cette adresse email");
+    if (!targetId) {
+      const { data: invited, error: inviteError } =
+        await supabaseAdmin.auth.admin.inviteUserByEmail(wanted);
+      if (inviteError || !invited?.user?.id)
+        throw new Error(
+          inviteError?.message ?? "Impossible d'inviter cette adresse email",
+        );
+      targetId = invited.user.id;
+    }
 
     const { error } = await context.supabase.from("organisation_membres").insert({
       organisation_id: data.organisationId,
