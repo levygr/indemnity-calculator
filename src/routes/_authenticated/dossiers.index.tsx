@@ -162,6 +162,9 @@ function DossiersList() {
           <Button asChild variant="outline" size="sm" className="flex-1 min-h-11">
             <Link to="/taux-legal">Taux légal</Link>
           </Button>
+          <Button asChild variant="outline" size="sm" className="flex-1 min-h-11">
+            <Link to="/referentiels">Référentiels</Link>
+          </Button>
         </div>
 
         <div className="mb-4 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
