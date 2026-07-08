@@ -13,6 +13,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTauxLegalRouteImport } from './routes/_authenticated/taux-legal'
+import { Route as AuthenticatedReferentielsRouteImport } from './routes/_authenticated/referentiels'
 import { Route as AuthenticatedCabinetRouteImport } from './routes/_authenticated/cabinet'
 import { Route as AuthenticatedDossiersIndexRouteImport } from './routes/_authenticated/dossiers.index'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
@@ -49,6 +50,12 @@ const AuthenticatedTauxLegalRoute = AuthenticatedTauxLegalRouteImport.update({
   path: '/taux-legal',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReferentielsRoute =
+  AuthenticatedReferentielsRouteImport.update({
+    id: '/referentiels',
+    path: '/referentiels',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedCabinetRoute = AuthenticatedCabinetRouteImport.update({
   id: '/cabinet',
   path: '/cabinet',
@@ -148,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cabinet': typeof AuthenticatedCabinetRoute
+  '/referentiels': typeof AuthenticatedReferentielsRoute
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/dossiers/': typeof AuthenticatedDossiersIndexRoute
@@ -169,6 +177,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cabinet': typeof AuthenticatedCabinetRoute
+  '/referentiels': typeof AuthenticatedReferentielsRoute
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers': typeof AuthenticatedDossiersIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -191,6 +200,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/cabinet': typeof AuthenticatedCabinetRoute
+  '/_authenticated/referentiels': typeof AuthenticatedReferentielsRoute
   '/_authenticated/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cabinet'
+    | '/referentiels'
     | '/taux-legal'
     | '/dossiers/$id'
     | '/dossiers/'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cabinet'
+    | '/referentiels'
     | '/taux-legal'
     | '/dossiers'
     | '/dossiers/$id/activite'
@@ -256,6 +268,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/cabinet'
+    | '/_authenticated/referentiels'
     | '/_authenticated/taux-legal'
     | '/_authenticated/dossiers/$id'
     | '/_authenticated/dossiers/'
@@ -308,6 +321,13 @@ declare module '@tanstack/react-router' {
       path: '/taux-legal'
       fullPath: '/taux-legal'
       preLoaderRoute: typeof AuthenticatedTauxLegalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/referentiels': {
+      id: '/_authenticated/referentiels'
+      path: '/referentiels'
+      fullPath: '/referentiels'
+      preLoaderRoute: typeof AuthenticatedReferentielsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/cabinet': {
@@ -473,6 +493,7 @@ const AuthenticatedDossiersIdRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCabinetRoute: typeof AuthenticatedCabinetRoute
+  AuthenticatedReferentielsRoute: typeof AuthenticatedReferentielsRoute
   AuthenticatedTauxLegalRoute: typeof AuthenticatedTauxLegalRoute
   AuthenticatedDossiersIdRoute: typeof AuthenticatedDossiersIdRouteWithChildren
   AuthenticatedDossiersIndexRoute: typeof AuthenticatedDossiersIndexRoute
@@ -480,6 +501,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCabinetRoute: AuthenticatedCabinetRoute,
+  AuthenticatedReferentielsRoute: AuthenticatedReferentielsRoute,
   AuthenticatedTauxLegalRoute: AuthenticatedTauxLegalRoute,
   AuthenticatedDossiersIdRoute: AuthenticatedDossiersIdRouteWithChildren,
   AuthenticatedDossiersIndexRoute: AuthenticatedDossiersIndexRoute,
