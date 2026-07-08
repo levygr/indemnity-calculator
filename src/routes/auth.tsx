@@ -117,6 +117,15 @@ function AuthPage() {
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? "Connexion…" : "Se connecter"}
               </Button>
+              <button
+                type="button"
+                onClick={handleReset}
+                disabled={loading}
+                className="w-full text-sm text-muted-foreground hover:text-foreground underline"
+              >
+                Mot de passe oublié ?
+              </button>
+
             </form>
           </TabsContent>
 
