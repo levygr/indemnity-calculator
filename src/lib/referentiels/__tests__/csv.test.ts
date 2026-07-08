@@ -43,11 +43,12 @@ describe("csv — PER round-trip", () => {
   it("détecte une modification de cellule", () => {
     const csv = perToCsv(perPayload);
     const lines = csv.split("\n");
-    // ligne 3 = age_liquidation index 1 ; deuxième colonne prix
-    const cells = lines[2].split(",");
+    // ligne 2 (body index 0) = age_liquidation 0, deuxième colonne prix (age_fin=1)
+    const cells = lines[1].split(",");
     const original = Number(cells[1]);
+    expect(Number.isFinite(original)).toBe(true);
     cells[1] = String(original + 42);
-    lines[2] = cells.join(",");
+    lines[1] = cells.join(",");
     const modified = perFromCsv(lines.join("\n"), perPayload);
     const diffs = perDiff(perPayload, modified);
     expect(diffs).toHaveLength(1);
