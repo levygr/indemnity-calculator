@@ -159,8 +159,8 @@
     {
       "debut": "2026-01-01",
       "fin": "2026-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 6.67,
+      "tauxAutres": 2.62,
       "reference": null
     },
     {
