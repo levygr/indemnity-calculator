@@ -33,7 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatDateFR } from "@/lib/calculs/format";
-import { Copy, Plus, Trash2, LogOut, FileText, Building2, User2, Share2, Search } from "lucide-react";
+import { Copy, Plus, Trash2, LogOut, FileText, Building2, User2, Share2, Search, Library } from "lucide-react";
 import { toast } from "sonner";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 
@@ -132,6 +132,12 @@ function DossiersList() {
             <Button asChild variant="ghost" size="sm" className="min-h-11 hidden sm:inline-flex">
               <Link to="/taux-legal">Taux légal</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm" className="min-h-11 hidden sm:inline-flex">
+              <Link to="/referentiels">
+                <Library className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Référentiels</span>
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -155,6 +161,9 @@ function DossiersList() {
           </Button>
           <Button asChild variant="outline" size="sm" className="flex-1 min-h-11">
             <Link to="/taux-legal">Taux légal</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="flex-1 min-h-11">
+            <Link to="/referentiels">Référentiels</Link>
           </Button>
         </div>
 
