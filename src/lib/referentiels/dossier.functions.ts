@@ -79,7 +79,9 @@ export const pinCurrentEditionsForDossier = createServerFn({ method: "POST" })
     }));
     if (rows.length === 0) return { pinned: 0 };
 
-    const { error: insErr } = await supabase.from("dossier_editions").insert(rows);
+    const { error: insErr } = await supabase
+      .from("dossier_editions")
+      .upsert(rows, { onConflict: "dossier_id,referentiel_id", ignoreDuplicates: true });
     if (insErr) throw new Error(insErr.message);
     return { pinned: rows.length };
   });
