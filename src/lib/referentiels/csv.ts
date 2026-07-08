@@ -259,8 +259,8 @@ export function aippFromCsv(csv: string, reference: AippPayload): AippPayload {
 
 export interface CellDiff {
   path: string;
-  before: number;
-  after: number;
+  before: number | null;
+  after: number | null;
 }
 
 export function perDiff(a: PerPayload, b: PerPayload): CellDiff[] {
