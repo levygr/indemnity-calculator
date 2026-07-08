@@ -5,23 +5,29 @@ import {
   getRecalculStatus,
   pinCurrentEditionsForDossier,
 } from "@/lib/referentiels/dossier.functions";
+import { recalculDossier } from "@/lib/referentiels/recalcul.functions";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, X } from "lucide-react";
+import { AlertTriangle, X, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 /**
  * Bandeau affiché en tête de dossier si l'édition d'un référentiel
  * épinglée sur le dossier diffère de l'édition actuellement active.
  *
- * Bloc B : le bandeau est purement informatif. Le déclenchement du
- * recalcul et la bascule vers la nouvelle édition arriveront au Bloc C.
+ * L'utilisateur peut :
+ *  - masquer le bandeau (purement local à la session) ;
+ *  - déclencher un recalcul explicite qui bascule les pins vers les
+ *    éditions actives. L'opération est journalisée (`journal_audit` et
+ *    `dossier_events`).
  *
- * Effet secondaire : à l'ouverture du dossier, épingle les éditions
- * actives manquantes (idempotent, jamais destructif).
+ * Effet secondaire à l'ouverture : épingle les éditions actives
+ * manquantes (idempotent, jamais destructif).
  */
 export function RecalculBanner({ dossierId }: { dossierId: string }) {
   const pin = useServerFn(pinCurrentEditionsForDossier);
   const status = useServerFn(getRecalculStatus);
+  const recalculer = useServerFn(recalculDossier);
   const queryClient = useQueryClient();
   const [dismissed, setDismissed] = useState(false);
 
@@ -47,6 +53,21 @@ export function RecalculBanner({ dossierId }: { dossierId: string }) {
     staleTime: 60_000,
   });
 
+  const recalcMutation = useMutation({
+    mutationFn: () => recalculer({ data: { dossierId } }),
+    onSuccess: (res) => {
+      toast.success(
+        res.updated > 0
+          ? `Recalcul effectué : ${res.updated} référentiel(s) mis à jour.`
+          : "Rien à recalculer.",
+      );
+      queryClient.invalidateQueries({ queryKey: ["recalcul-status", dossierId] });
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Échec du recalcul.");
+    },
+  });
+
   if (dismissed) return null;
   if (query.isLoading || query.error || !query.data) return null;
   if (query.data.diffs.length === 0) return null;
@@ -60,12 +81,13 @@ export function RecalculBanner({ dossierId }: { dossierId: string }) {
             Nouvelle édition disponible pour {query.data.diffs.length} référentiel
             {query.data.diffs.length > 1 ? "s" : ""}
           </AlertTitle>
-          <AlertDescription className="text-xs space-y-1 mt-2">
+          <AlertDescription className="text-xs space-y-2 mt-2">
             <p>
               Les montants de ce dossier restent calculés avec l'édition
-              épinglée. Le recalcul explicite arrivera prochainement.
+              épinglée. Cliquez sur « Recalculer » pour basculer sur les
+              éditions actives. L'opération est tracée.
             </p>
-            <ul className="list-disc list-inside pl-1 pt-1">
+            <ul className="list-disc list-inside pl-1">
               {query.data.diffs.map((d) => (
                 <li key={d.referentielId}>
                   <span className="font-medium">{d.libelle}</span> — épinglée :{" "}
@@ -74,6 +96,20 @@ export function RecalculBanner({ dossierId }: { dossierId: string }) {
                 </li>
               ))}
             </ul>
+            <div className="pt-2">
+              <Button
+                size="sm"
+                onClick={() => recalcMutation.mutate()}
+                disabled={recalcMutation.isPending}
+              >
+                <RefreshCw
+                  className={`w-3.5 h-3.5 mr-2 ${
+                    recalcMutation.isPending ? "animate-spin" : ""
+                  }`}
+                />
+                Recalculer le dossier
+              </Button>
+            </div>
           </AlertDescription>
         </div>
         <Button
