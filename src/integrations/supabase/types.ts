@@ -14,6 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dossier_editions: {
+        Row: {
+          created_at: string
+          dossier_id: string
+          edition_id: string
+          id: string
+          referentiel_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dossier_id: string
+          edition_id: string
+          id?: string
+          referentiel_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dossier_id?: string
+          edition_id?: string
+          id?: string
+          referentiel_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dossier_editions_dossier_id_fkey"
+            columns: ["dossier_id"]
+            isOneToOne: false
+            referencedRelation: "dossiers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dossier_editions_edition_id_fkey"
+            columns: ["edition_id"]
+            isOneToOne: false
+            referencedRelation: "editions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dossier_editions_referentiel_id_fkey"
+            columns: ["referentiel_id"]
+            isOneToOne: false
+            referencedRelation: "referentiels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dossier_events: {
         Row: {
           action: string
@@ -125,6 +195,98 @@ export type Database = {
           },
         ]
       }
+      editions: {
+        Row: {
+          activated_at: string | null
+          activated_by: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          libelle: string
+          referentiel_id: string
+          source: string | null
+          statut: string
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          activated_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          libelle: string
+          referentiel_id: string
+          source?: string | null
+          statut?: string
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          activated_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          libelle?: string
+          referentiel_id?: string
+          source?: string | null
+          statut?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editions_referentiel_id_fkey"
+            columns: ["referentiel_id"]
+            isOneToOne: false
+            referencedRelation: "referentiels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journal_audit: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          edition_id: string | null
+          id: string
+          referentiel_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          edition_id?: string | null
+          id?: string
+          referentiel_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          edition_id?: string | null
+          id?: string
+          referentiel_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_audit_edition_id_fkey"
+            columns: ["edition_id"]
+            isOneToOne: false
+            referencedRelation: "editions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_audit_referentiel_id_fkey"
+            columns: ["referentiel_id"]
+            isOneToOne: false
+            referencedRelation: "referentiels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organisation_membres: {
         Row: {
           created_at: string
@@ -172,6 +334,36 @@ export type Database = {
         }
         Relationships: []
       }
+      referentiels: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          libelle: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind: string
+          libelle: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          libelle?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       taux_legal: {
         Row: {
           created_at: string
@@ -208,11 +400,50 @@ export type Database = {
         }
         Relationships: []
       }
+      valeurs: {
+        Row: {
+          cle: Json
+          commentaire: string | null
+          created_at: string
+          edition_id: string
+          id: string
+          updated_at: string
+          valeur: Json
+        }
+        Insert: {
+          cle: Json
+          commentaire?: string | null
+          created_at?: string
+          edition_id: string
+          id?: string
+          updated_at?: string
+          valeur: Json
+        }
+        Update: {
+          cle?: Json
+          commentaire?: string | null
+          created_at?: string
+          edition_id?: string
+          id?: string
+          updated_at?: string
+          valeur?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "valeurs_edition_id_fkey"
+            columns: ["edition_id"]
+            isOneToOne: false
+            referencedRelation: "editions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      can_edit_referentiels: { Args: { _user: string }; Returns: boolean }
       create_organisation: {
         Args: { _nom: string }
         Returns: {
@@ -226,6 +457,7 @@ export type Database = {
         Returns: boolean
       }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      is_platform_admin: { Args: { _user: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
