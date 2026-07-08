@@ -17,6 +17,7 @@ import { Route as AuthenticatedReferentielsRouteImport } from './routes/_authent
 import { Route as AuthenticatedCabinetRouteImport } from './routes/_authenticated/cabinet'
 import { Route as AuthenticatedReferentielsIndexRouteImport } from './routes/_authenticated/referentiels.index'
 import { Route as AuthenticatedDossiersIndexRouteImport } from './routes/_authenticated/dossiers.index'
+import { Route as AuthenticatedReferentielsCodeRouteImport } from './routes/_authenticated/referentiels.$code'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
 import { Route as AuthenticatedDossiersIdIndexRouteImport } from './routes/_authenticated/dossiers.$id.index'
 import { Route as AuthenticatedDossiersIdTiersPayeursRouteImport } from './routes/_authenticated/dossiers.$id.tiers-payeurs'
@@ -73,6 +74,12 @@ const AuthenticatedDossiersIndexRoute =
     id: '/dossiers/',
     path: '/dossiers/',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedReferentielsCodeRoute =
+  AuthenticatedReferentielsCodeRouteImport.update({
+    id: '/$code',
+    path: '/$code',
+    getParentRoute: () => AuthenticatedReferentielsRoute,
   } as any)
 const AuthenticatedDossiersIdRoute = AuthenticatedDossiersIdRouteImport.update({
   id: '/dossiers/$id',
@@ -165,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/referentiels': typeof AuthenticatedReferentielsRouteWithChildren
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/referentiels/$code': typeof AuthenticatedReferentielsCodeRoute
   '/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/referentiels/': typeof AuthenticatedReferentielsIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -186,6 +194,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cabinet': typeof AuthenticatedCabinetRoute
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
+  '/referentiels/$code': typeof AuthenticatedReferentielsCodeRoute
   '/dossiers': typeof AuthenticatedDossiersIndexRoute
   '/referentiels': typeof AuthenticatedReferentielsIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -211,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/referentiels': typeof AuthenticatedReferentielsRouteWithChildren
   '/_authenticated/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
+  '/_authenticated/referentiels/$code': typeof AuthenticatedReferentielsCodeRoute
   '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/_authenticated/referentiels/': typeof AuthenticatedReferentielsIndexRoute
   '/_authenticated/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/referentiels'
     | '/taux-legal'
     | '/dossiers/$id'
+    | '/referentiels/$code'
     | '/dossiers/'
     | '/referentiels/'
     | '/dossiers/$id/activite'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cabinet'
     | '/taux-legal'
+    | '/referentiels/$code'
     | '/dossiers'
     | '/referentiels'
     | '/dossiers/$id/activite'
@@ -281,6 +293,7 @@ export interface FileRouteTypes {
     | '/_authenticated/referentiels'
     | '/_authenticated/taux-legal'
     | '/_authenticated/dossiers/$id'
+    | '/_authenticated/referentiels/$code'
     | '/_authenticated/dossiers/'
     | '/_authenticated/referentiels/'
     | '/_authenticated/dossiers/$id/activite'
@@ -361,6 +374,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dossiers/'
       preLoaderRoute: typeof AuthenticatedDossiersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/referentiels/$code': {
+      id: '/_authenticated/referentiels/$code'
+      path: '/$code'
+      fullPath: '/referentiels/$code'
+      preLoaderRoute: typeof AuthenticatedReferentielsCodeRouteImport
+      parentRoute: typeof AuthenticatedReferentielsRoute
     }
     '/_authenticated/dossiers/$id': {
       id: '/_authenticated/dossiers/$id'
@@ -464,11 +484,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedReferentielsRouteChildren {
+  AuthenticatedReferentielsCodeRoute: typeof AuthenticatedReferentielsCodeRoute
   AuthenticatedReferentielsIndexRoute: typeof AuthenticatedReferentielsIndexRoute
 }
 
 const AuthenticatedReferentielsRouteChildren: AuthenticatedReferentielsRouteChildren =
   {
+    AuthenticatedReferentielsCodeRoute: AuthenticatedReferentielsCodeRoute,
     AuthenticatedReferentielsIndexRoute: AuthenticatedReferentielsIndexRoute,
   }
 
