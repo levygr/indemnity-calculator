@@ -15,6 +15,7 @@ import {
   Scale,
   Building2,
   History,
+  Library,
 } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 import type { DossierData } from "@/lib/calculs/types";
