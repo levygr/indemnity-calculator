@@ -124,7 +124,7 @@ interface PerPayload {
   description: string;
   colonne_viagere: number;
   ages_fin_de_rente: number[];
-  lignes: { age_liquidation: number; prix: number[] }[];
+  lignes: { age_liquidation: number; prix: (number | null)[] }[];
 }
 
 export function perToCsv(payload: PerPayload): string {
@@ -137,7 +137,11 @@ export function perToCsv(payload: PerPayload): string {
   for (const ligne of payload.lignes) {
     const prixHead = ligne.prix.slice(0, payload.ages_fin_de_rente.length);
     const viagere = ligne.prix[ligne.prix.length - 1];
-    rows.push([ligne.age_liquidation, ...prixHead, viagere]);
+    rows.push([
+      ligne.age_liquidation,
+      ...prixHead.map(fmtNumeric),
+      fmtNumeric(viagere),
+    ]);
   }
   return toCsvText(rows);
 }
@@ -182,9 +186,9 @@ export function perFromCsv(csv: string, reference: PerPayload): PerPayload {
         `Ligne ${idx + 2} : âge de liquidation « ${row[0]} » ≠ « ${expectedAge} ».`,
       );
     }
-    const prix: number[] = [];
+    const prix: (number | null)[] = [];
     for (let j = 1; j < row.length; j++) {
-      prix.push(parseNumber(row[j]));
+      prix.push(parseNumberOrNull(row[j]));
     }
     return { age_liquidation: ageLiq, prix };
   });
