@@ -100,6 +100,7 @@ function DossierLayout() {
             <div className="p-6 sm:p-8 text-muted-foreground">Chargement du dossier…</div>
           ) : (
             <>
+              <RecalculBanner dossierId={id} />
               <Outlet />
               {/* Navigation Précédent / Suivant */}
               {(prev || next) && (
