@@ -139,6 +139,14 @@ export const seedReferentiels = createServerFn({ method: "POST" })
  * Renvoie, pour chaque référentiel, les lignes de l'édition active.
  * Utilisé par les blocs suivants (couche d'accès + UI admin).
  */
+type Json = import("@/integrations/supabase/types").Json;
+
+export interface ReferentielSnapshotRow {
+  cle: Json;
+  valeur: Json;
+  commentaire: string | null;
+}
+
 export interface ReferentielSnapshot {
   code: string;
   libelle: string;
@@ -148,7 +156,7 @@ export interface ReferentielSnapshot {
   editionId: string | null;
   editionLibelle: string | null;
   editionActivatedAt: string | null;
-  rows: ReferentielRow[];
+  rows: ReferentielSnapshotRow[];
 }
 
 export const listReferentielsActifs = createServerFn({ method: "GET" })
@@ -157,7 +165,7 @@ export const listReferentielsActifs = createServerFn({ method: "GET" })
     const supabase = context.supabase;
     const { data: refs, error } = await supabase
       .from("referentiels")
-      .select("id, code, libelle, kind, source, description")
+      .select("id, code, libelle, kind, description")
       .order("libelle", { ascending: true });
     if (error) throw new Error(error.message);
     if (!refs || refs.length === 0) return [];
@@ -170,15 +178,15 @@ export const listReferentielsActifs = createServerFn({ method: "GET" })
         .eq("referentiel_id", r.id)
         .eq("statut", "actif")
         .maybeSingle();
-      let rows: ReferentielRow[] = [];
+      let rows: ReferentielSnapshotRow[] = [];
       if (ed) {
         const { data: vals } = await supabase
           .from("valeurs")
           .select("cle, valeur, commentaire")
           .eq("edition_id", ed.id);
         rows = (vals ?? []).map((v) => ({
-          cle: v.cle as Record<string, unknown>,
-          valeur: v.valeur,
+          cle: v.cle as Json,
+          valeur: v.valeur as Json,
           commentaire: v.commentaire,
         }));
       }
@@ -186,7 +194,7 @@ export const listReferentielsActifs = createServerFn({ method: "GET" })
         code: r.code as string,
         libelle: r.libelle as string,
         kind: r.kind as string,
-        source: (ed?.source as string | null) ?? ((r.description as string | null) ?? ""),
+        source: (ed?.source as string | null) ?? "",
         description: (r.description as string | null) ?? "",
         editionId: (ed?.id as string | null) ?? null,
         editionLibelle: (ed?.libelle as string | null) ?? null,
