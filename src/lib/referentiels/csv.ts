@@ -98,12 +98,22 @@ function toCsvText(rows: (string | number)[][]): string {
     .join("\n");
 }
 
-function parseNumber(raw: string): number {
+function parseNumberOrNull(raw: string): number | null {
   const s = raw.replace(/\s/g, "").replace(",", ".");
-  if (s === "") throw new Error("Cellule vide");
+  if (s === "" || s.toLowerCase() === "null") return null;
   const n = Number(s);
   if (!Number.isFinite(n)) throw new Error(`Nombre invalide : « ${raw} »`);
   return n;
+}
+
+function parseNumber(raw: string): number {
+  const n = parseNumberOrNull(raw);
+  if (n === null) throw new Error("Cellule vide");
+  return n;
+}
+
+function fmtNumeric(v: number | null): string | number {
+  return v === null ? "" : v;
 }
 
 /* -------------------------------------------------------------------------- */
