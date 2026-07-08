@@ -76,7 +76,7 @@ function AuthPage() {
             VICTIMES &amp; PRÉJUDICES
           </div>
           <h1 className="mt-4 text-2xl font-display font-semibold">
-            Calculateur d'indemnisation
+            Calculateur d'indemnités
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Accès réservé aux membres du cabinet
