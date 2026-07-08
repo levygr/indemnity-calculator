@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   deleteValeurRow,
   getEditionRows,
@@ -9,10 +9,15 @@ import {
   upsertValeurRow,
   type EditionRowItem,
 } from "@/lib/referentiels/editions.functions";
+import {
+  applyCsvImport,
+  previewCsvImport,
+} from "@/lib/referentiels/csv-import.functions";
+import { detectMatrixKind } from "@/lib/referentiels/csv";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, ChevronLeft, Plus, Save, Trash2, X } from "lucide-react";
+import { AlertTriangle, ChevronLeft, FileUp, Plus, Save, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
