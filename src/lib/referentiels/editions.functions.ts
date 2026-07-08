@@ -431,3 +431,16 @@ export const deleteDraftEdition = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+/* -------------------------------------------------------------------------- */
+/*  Droits                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export const canEditReferentiels = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<boolean> => {
+    const { data } = await context.supabase.rpc("can_edit_referentiels", {
+      _user: context.userId,
+    });
+    return Boolean(data);
+  });
