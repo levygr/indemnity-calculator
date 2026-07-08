@@ -5,155 +5,155 @@
     {
       "debut": "2015-01-01",
       "fin": "2015-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 4.06,
+      "tauxAutres": 0.93,
       "reference": null
     },
     {
       "debut": "2015-07-01",
       "fin": "2015-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 4.29,
+      "tauxAutres": 0.99,
       "reference": null
     },
     {
       "debut": "2016-01-01",
       "fin": "2016-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 4.54,
+      "tauxAutres": 1.01,
       "reference": null
     },
     {
       "debut": "2016-07-01",
       "fin": "2016-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 4.35,
+      "tauxAutres": 0.93,
       "reference": null
     },
     {
       "debut": "2017-01-01",
       "fin": "2017-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 4.16,
+      "tauxAutres": 0.9,
       "reference": null
     },
     {
       "debut": "2017-07-01",
       "fin": "2017-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.94,
+      "tauxAutres": 0.9,
       "reference": null
     },
     {
       "debut": "2018-01-01",
       "fin": "2018-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.73,
+      "tauxAutres": 0.89,
       "reference": null
     },
     {
       "debut": "2018-07-01",
       "fin": "2018-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.6,
+      "tauxAutres": 0.88,
       "reference": null
     },
     {
       "debut": "2019-01-01",
       "fin": "2019-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.4,
+      "tauxAutres": 0.86,
       "reference": null
     },
     {
       "debut": "2019-07-01",
       "fin": "2019-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.26,
+      "tauxAutres": 0.87,
       "reference": null
     },
     {
       "debut": "2020-01-01",
       "fin": "2020-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.15,
+      "tauxAutres": 0.87,
       "reference": null
     },
     {
       "debut": "2020-07-01",
       "fin": "2020-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.11,
+      "tauxAutres": 0.84,
       "reference": null
     },
     {
       "debut": "2021-01-01",
       "fin": "2021-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.14,
+      "tauxAutres": 0.79,
       "reference": null
     },
     {
       "debut": "2021-07-01",
       "fin": "2021-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.12,
+      "tauxAutres": 0.76,
       "reference": null
     },
     {
       "debut": "2022-01-01",
       "fin": "2022-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.13,
+      "tauxAutres": 0.76,
       "reference": null
     },
     {
       "debut": "2022-07-01",
       "fin": "2022-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 3.15,
+      "tauxAutres": 0.77,
       "reference": null
     },
     {
       "debut": "2023-01-01",
       "fin": "2023-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 4.47,
+      "tauxAutres": 2.06,
       "reference": null
     },
     {
       "debut": "2023-07-01",
       "fin": "2023-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 6.82,
+      "tauxAutres": 4.22,
       "reference": null
     },
     {
       "debut": "2024-01-01",
       "fin": "2024-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 8.01,
+      "tauxAutres": 5.07,
       "reference": null
     },
     {
       "debut": "2024-07-01",
       "fin": "2024-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 8.16,
+      "tauxAutres": 4.92,
       "reference": null
     },
     {
       "debut": "2025-01-01",
       "fin": "2025-06-30",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 7.21,
+      "tauxAutres": 3.71,
       "reference": null
     },
     {
       "debut": "2025-07-01",
       "fin": "2025-12-31",
-      "tauxParticulier": null,
-      "tauxAutres": null,
+      "tauxParticulier": 6.65,
+      "tauxAutres": 2.76,
       "reference": null
     },
     {
