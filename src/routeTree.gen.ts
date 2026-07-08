@@ -31,6 +31,7 @@ import { Route as AuthenticatedDossiersIdExtrapatrimoniauxPermanentsRouteImport 
 import { Route as AuthenticatedDossiersIdDecesRouteImport } from './routes/_authenticated/dossiers.$id.deces'
 import { Route as AuthenticatedDossiersIdComparateurRouteImport } from './routes/_authenticated/dossiers.$id.comparateur'
 import { Route as AuthenticatedDossiersIdActiviteRouteImport } from './routes/_authenticated/dossiers.$id.activite'
+import { Route as AuthenticatedReferentielsCodeEditionsEditionIdRouteImport } from './routes/_authenticated/referentiels.$code.editions.$editionId'
 import { Route as AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport } from './routes/_authenticated/dossiers.$id.snapshots.$snapshotId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -158,6 +159,12 @@ const AuthenticatedDossiersIdActiviteRoute =
     path: '/activite',
     getParentRoute: () => AuthenticatedDossiersIdRoute,
   } as any)
+const AuthenticatedReferentielsCodeEditionsEditionIdRoute =
+  AuthenticatedReferentielsCodeEditionsEditionIdRouteImport.update({
+    id: '/editions/$editionId',
+    path: '/editions/$editionId',
+    getParentRoute: () => AuthenticatedReferentielsCodeRoute,
+  } as any)
 const AuthenticatedDossiersIdSnapshotsSnapshotIdRoute =
   AuthenticatedDossiersIdSnapshotsSnapshotIdRouteImport.update({
     id: '/snapshots/$snapshotId',
@@ -172,7 +179,7 @@ export interface FileRoutesByFullPath {
   '/referentiels': typeof AuthenticatedReferentielsRouteWithChildren
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
-  '/referentiels/$code': typeof AuthenticatedReferentielsCodeRoute
+  '/referentiels/$code': typeof AuthenticatedReferentielsCodeRouteWithChildren
   '/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/referentiels/': typeof AuthenticatedReferentielsIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -188,13 +195,14 @@ export interface FileRoutesByFullPath {
   '/dossiers/$id/tiers-payeurs': typeof AuthenticatedDossiersIdTiersPayeursRoute
   '/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
   '/dossiers/$id/snapshots/$snapshotId': typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
+  '/referentiels/$code/editions/$editionId': typeof AuthenticatedReferentielsCodeEditionsEditionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cabinet': typeof AuthenticatedCabinetRoute
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
-  '/referentiels/$code': typeof AuthenticatedReferentielsCodeRoute
+  '/referentiels/$code': typeof AuthenticatedReferentielsCodeRouteWithChildren
   '/dossiers': typeof AuthenticatedDossiersIndexRoute
   '/referentiels': typeof AuthenticatedReferentielsIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -210,6 +218,7 @@ export interface FileRoutesByTo {
   '/dossiers/$id/tiers-payeurs': typeof AuthenticatedDossiersIdTiersPayeursRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdIndexRoute
   '/dossiers/$id/snapshots/$snapshotId': typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
+  '/referentiels/$code/editions/$editionId': typeof AuthenticatedReferentielsCodeEditionsEditionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -220,7 +229,7 @@ export interface FileRoutesById {
   '/_authenticated/referentiels': typeof AuthenticatedReferentielsRouteWithChildren
   '/_authenticated/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
-  '/_authenticated/referentiels/$code': typeof AuthenticatedReferentielsCodeRoute
+  '/_authenticated/referentiels/$code': typeof AuthenticatedReferentielsCodeRouteWithChildren
   '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
   '/_authenticated/referentiels/': typeof AuthenticatedReferentielsIndexRoute
   '/_authenticated/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
@@ -236,6 +245,7 @@ export interface FileRoutesById {
   '/_authenticated/dossiers/$id/tiers-payeurs': typeof AuthenticatedDossiersIdTiersPayeursRoute
   '/_authenticated/dossiers/$id/': typeof AuthenticatedDossiersIdIndexRoute
   '/_authenticated/dossiers/$id/snapshots/$snapshotId': typeof AuthenticatedDossiersIdSnapshotsSnapshotIdRoute
+  '/_authenticated/referentiels/$code/editions/$editionId': typeof AuthenticatedReferentielsCodeEditionsEditionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/dossiers/$id/tiers-payeurs'
     | '/dossiers/$id/'
     | '/dossiers/$id/snapshots/$snapshotId'
+    | '/referentiels/$code/editions/$editionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/dossiers/$id/tiers-payeurs'
     | '/dossiers/$id'
     | '/dossiers/$id/snapshots/$snapshotId'
+    | '/referentiels/$code/editions/$editionId'
   id:
     | '__root__'
     | '/'
@@ -309,6 +321,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dossiers/$id/tiers-payeurs'
     | '/_authenticated/dossiers/$id/'
     | '/_authenticated/dossiers/$id/snapshots/$snapshotId'
+    | '/_authenticated/referentiels/$code/editions/$editionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -473,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDossiersIdActiviteRouteImport
       parentRoute: typeof AuthenticatedDossiersIdRoute
     }
+    '/_authenticated/referentiels/$code/editions/$editionId': {
+      id: '/_authenticated/referentiels/$code/editions/$editionId'
+      path: '/editions/$editionId'
+      fullPath: '/referentiels/$code/editions/$editionId'
+      preLoaderRoute: typeof AuthenticatedReferentielsCodeEditionsEditionIdRouteImport
+      parentRoute: typeof AuthenticatedReferentielsCodeRoute
+    }
     '/_authenticated/dossiers/$id/snapshots/$snapshotId': {
       id: '/_authenticated/dossiers/$id/snapshots/$snapshotId'
       path: '/snapshots/$snapshotId'
@@ -483,14 +503,30 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedReferentielsCodeRouteChildren {
+  AuthenticatedReferentielsCodeEditionsEditionIdRoute: typeof AuthenticatedReferentielsCodeEditionsEditionIdRoute
+}
+
+const AuthenticatedReferentielsCodeRouteChildren: AuthenticatedReferentielsCodeRouteChildren =
+  {
+    AuthenticatedReferentielsCodeEditionsEditionIdRoute:
+      AuthenticatedReferentielsCodeEditionsEditionIdRoute,
+  }
+
+const AuthenticatedReferentielsCodeRouteWithChildren =
+  AuthenticatedReferentielsCodeRoute._addFileChildren(
+    AuthenticatedReferentielsCodeRouteChildren,
+  )
+
 interface AuthenticatedReferentielsRouteChildren {
-  AuthenticatedReferentielsCodeRoute: typeof AuthenticatedReferentielsCodeRoute
+  AuthenticatedReferentielsCodeRoute: typeof AuthenticatedReferentielsCodeRouteWithChildren
   AuthenticatedReferentielsIndexRoute: typeof AuthenticatedReferentielsIndexRoute
 }
 
 const AuthenticatedReferentielsRouteChildren: AuthenticatedReferentielsRouteChildren =
   {
-    AuthenticatedReferentielsCodeRoute: AuthenticatedReferentielsCodeRoute,
+    AuthenticatedReferentielsCodeRoute:
+      AuthenticatedReferentielsCodeRouteWithChildren,
     AuthenticatedReferentielsIndexRoute: AuthenticatedReferentielsIndexRoute,
   }
 
@@ -572,3 +608,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
