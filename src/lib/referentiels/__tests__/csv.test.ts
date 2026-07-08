@@ -90,7 +90,7 @@ describe("csv — AIPP round-trip", () => {
 
   it("refuse un libellé de tranche incorrect", () => {
     const csv = aippToCsv(aippPayload);
-    const bad = csv.replace("1-5", "1-4");
+    const bad = csv.replace(/^1-5,/m, "1-4,");
     expect(() => aippFromCsv(bad, aippPayload)).toThrow(/tranche/);
   });
 });
