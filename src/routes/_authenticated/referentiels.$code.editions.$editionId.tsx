@@ -9,11 +9,9 @@ import {
   upsertValeurRow,
   type EditionRowItem,
 } from "@/lib/referentiels/editions.functions";
-import {
-  applyCsvImport,
-  previewCsvImport,
-} from "@/lib/referentiels/csv-import.functions";
+import { applyCsvImport, previewCsvImport } from "@/lib/referentiels/csv-import.functions";
 import { detectMatrixKind } from "@/lib/referentiels/csv";
+import { ReferentielTables, hasStructuredView } from "@/components/vp/ReferentielTables";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -23,9 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Route = createFileRoute(
-  "/_authenticated/referentiels/$code/editions/$editionId",
-)({
+export const Route = createFileRoute("/_authenticated/referentiels/$code/editions/$editionId")({
   head: ({ params }) => ({
     meta: [
       {
@@ -62,18 +58,13 @@ function EditionEditorPage() {
   };
 
   const upsertMutation = useMutation({
-    mutationFn: (input: {
-      rowId?: string;
-      cle: unknown;
-      valeur: unknown;
-      commentaire?: string | null;
-    }) => upsert({ data: { editionId, ...input } }),
+    mutationFn: (input: { rowId?: string; cle: unknown; valeur: unknown; commentaire?: string | null }) =>
+      upsert({ data: { editionId, ...input } }),
     onSuccess: () => {
       toast.success("Ligne enregistrée.");
       invalidate();
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de l'enregistrement."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de l'enregistrement."),
   });
 
   const deleteMutation = useMutation({
@@ -82,8 +73,7 @@ function EditionEditorPage() {
       toast.success("Ligne supprimée.");
       invalidate();
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de la suppression."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de la suppression."),
   });
 
   const isDraft = edition?.statut === "brouillon";
@@ -93,18 +83,13 @@ function EditionEditorPage() {
       <header className="border-b bg-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
           <Button asChild variant="ghost" size="sm">
-            <Link
-              to="/referentiels/$code"
-              params={{ code }}
-            >
+            <Link to="/referentiels/$code" params={{ code }}>
               <ChevronLeft className="w-4 h-4 mr-1" />
               Retour
             </Link>
           </Button>
           <div className="min-w-0">
-            <h1 className="font-display font-semibold text-lg truncate">
-              {edition?.libelle ?? "Édition"}
-            </h1>
+            <h1 className="font-display font-semibold text-lg truncate">{edition?.libelle ?? "Édition"}</h1>
             <div className="text-xs text-muted-foreground">
               Référentiel : {code} · Statut : {edition?.statut ?? "…"}
             </div>
@@ -118,8 +103,8 @@ function EditionEditorPage() {
             <AlertTriangle className="w-4 h-4" />
             <AlertTitle>Édition en lecture seule</AlertTitle>
             <AlertDescription>
-              Seules les éditions en statut « brouillon » sont modifiables.
-              Créez un nouveau brouillon pour proposer des changements.
+              Seules les éditions en statut « brouillon » sont modifiables. Créez un nouveau brouillon pour proposer des
+              changements.
             </AlertDescription>
           </Alert>
         )}
@@ -129,61 +114,76 @@ function EditionEditorPage() {
             <AlertTriangle className="w-4 h-4" />
             <AlertTitle>Erreur</AlertTitle>
             <AlertDescription>
-              {rowsQuery.error instanceof Error
-                ? rowsQuery.error.message
-                : "Impossible de charger les lignes."}
+              {rowsQuery.error instanceof Error ? rowsQuery.error.message : "Impossible de charger les lignes."}
             </AlertDescription>
           </Alert>
         )}
 
-        {isDraft && detectMatrixKind(code) && (
-          <CsvImportPanel code={code} editionId={editionId} />
+        {isDraft && detectMatrixKind(code) && <CsvImportPanel code={code} editionId={editionId} />}
+
+        {rowsQuery.isLoading && <div className="text-sm text-muted-foreground">Chargement…</div>}
+
+        {/* Vue structurée (tables lisibles), à la manière de l'écran Taux légal */}
+        {rowsQuery.data && rowsQuery.data.length > 0 && hasStructuredView(code) && (
+          <ReferentielTables
+            code={code}
+            rows={rowsQuery.data}
+            editable={isDraft}
+            saving={upsertMutation.isPending}
+            onSaveRow={(input) =>
+              upsertMutation.mutate({
+                rowId: input.rowId,
+                cle: input.cle,
+                valeur: input.valeur,
+                commentaire: input.commentaire ?? null,
+              })
+            }
+          />
         )}
 
-        <Card>
-          <CardHeader className="flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-base">
-              Lignes ({rowsQuery.data?.length ?? 0})
-            </CardTitle>
-            {isDraft && (
-              <NewRowButton
-                onCreate={(cle, valeur, commentaire) =>
-                  upsertMutation.mutate({ cle, valeur, commentaire })
-                }
-                disabled={upsertMutation.isPending}
-              />
-            )}
-          </CardHeader>
-          <CardContent>
-            {rowsQuery.isLoading && (
-              <div className="text-sm text-muted-foreground">Chargement…</div>
-            )}
-            {rowsQuery.data && rowsQuery.data.length === 0 && (
-              <div className="text-sm text-muted-foreground">Aucune ligne.</div>
-            )}
-            {rowsQuery.data && rowsQuery.data.length > 0 && (
-              <div className="space-y-3">
-                {rowsQuery.data.map((row) => (
-                  <RowEditor
-                    key={row.id}
-                    row={row}
-                    editable={isDraft}
-                    onSave={(cle, valeur, commentaire) =>
-                      upsertMutation.mutate({
-                        rowId: row.id,
-                        cle,
-                        valeur,
-                        commentaire,
-                      })
-                    }
-                    onDelete={() => deleteMutation.mutate(row.id)}
-                    busy={upsertMutation.isPending || deleteMutation.isPending}
-                  />
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Vue avancée : lignes brutes JSON (repli et maintenance) */}
+        <details className="group" open={!hasStructuredView(code)}>
+          <summary className="cursor-pointer text-sm text-muted-foreground select-none py-1">
+            Vue avancée — lignes brutes ({rowsQuery.data?.length ?? 0})
+          </summary>
+          <Card className="mt-2">
+            <CardHeader className="flex-row items-center justify-between space-y-0">
+              <CardTitle className="text-base">Lignes ({rowsQuery.data?.length ?? 0})</CardTitle>
+              {isDraft && (
+                <NewRowButton
+                  onCreate={(cle, valeur, commentaire) => upsertMutation.mutate({ cle, valeur, commentaire })}
+                  disabled={upsertMutation.isPending}
+                />
+              )}
+            </CardHeader>
+            <CardContent>
+              {rowsQuery.data && rowsQuery.data.length === 0 && (
+                <div className="text-sm text-muted-foreground">Aucune ligne.</div>
+              )}
+              {rowsQuery.data && rowsQuery.data.length > 0 && (
+                <div className="space-y-3">
+                  {rowsQuery.data.map((row) => (
+                    <RowEditor
+                      key={row.id}
+                      row={row}
+                      editable={isDraft}
+                      onSave={(cle, valeur, commentaire) =>
+                        upsertMutation.mutate({
+                          rowId: row.id,
+                          cle,
+                          valeur,
+                          commentaire,
+                        })
+                      }
+                      onDelete={() => deleteMutation.mutate(row.id)}
+                      busy={upsertMutation.isPending || deleteMutation.isPending}
+                    />
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </details>
       </main>
     </div>
   );
@@ -211,9 +211,7 @@ function RowEditor({
   busy: boolean;
 }) {
   const [cle, setCle] = useState(() => JSON.stringify(row.cle));
-  const [valeur, setValeur] = useState(() =>
-    JSON.stringify(row.valeur, null, 2),
-  );
+  const [valeur, setValeur] = useState(() => JSON.stringify(row.valeur, null, 2));
   const [commentaire, setCommentaire] = useState(row.commentaire ?? "");
   const [dirty, setDirty] = useState(false);
 
@@ -287,11 +285,7 @@ function RowEditor({
             <Trash2 className="w-3.5 h-3.5 mr-1" />
             Supprimer
           </Button>
-          <Button
-            size="sm"
-            onClick={handleSave}
-            disabled={!dirty || busy}
-          >
+          <Button size="sm" onClick={handleSave} disabled={!dirty || busy}>
             <Save className="w-3.5 h-3.5 mr-1" />
             Enregistrer
           </Button>
@@ -332,28 +326,15 @@ function NewRowButton({
       </div>
       <div>
         <Label className="text-xs">Clé (JSON)</Label>
-        <Input
-          value={cle}
-          onChange={(e) => setCle(e.target.value)}
-          className="font-mono text-xs"
-        />
+        <Input value={cle} onChange={(e) => setCle(e.target.value)} className="font-mono text-xs" />
       </div>
       <div>
         <Label className="text-xs">Valeur (JSON)</Label>
-        <Textarea
-          value={valeur}
-          onChange={(e) => setValeur(e.target.value)}
-          rows={3}
-          className="font-mono text-xs"
-        />
+        <Textarea value={valeur} onChange={(e) => setValeur(e.target.value)} rows={3} className="font-mono text-xs" />
       </div>
       <div>
         <Label className="text-xs">Commentaire</Label>
-        <Input
-          value={commentaire}
-          onChange={(e) => setCommentaire(e.target.value)}
-          placeholder="Optionnel"
-        />
+        <Input value={commentaire} onChange={(e) => setCommentaire(e.target.value)} placeholder="Optionnel" />
       </div>
       <div className="flex justify-end">
         <Button
@@ -383,24 +364,15 @@ function NewRowButton({
 /*  Panneau d'import CSV (PER / AIPP)                                          */
 /* -------------------------------------------------------------------------- */
 
-function CsvImportPanel({
-  code,
-  editionId,
-}: {
-  code: string;
-  editionId: string;
-}) {
+function CsvImportPanel({ code, editionId }: { code: string; editionId: string }) {
   const preview = useServerFn(previewCsvImport);
   const apply = useServerFn(applyCsvImport);
   const queryClient = useQueryClient();
   const [csvText, setCsvText] = useState("");
-  const [diffs, setDiffs] = useState<
-    { path: string; before: number | null; after: number | null }[] | null
-  >(null);
+  const [diffs, setDiffs] = useState<{ path: string; before: number | null; after: number | null }[] | null>(null);
 
   const previewMutation = useMutation({
-    mutationFn: (csv: string) =>
-      preview({ data: { editionId, code, csv } }),
+    mutationFn: (csv: string) => preview({ data: { editionId, code, csv } }),
     onSuccess: (res) => {
       setDiffs(res.diffs);
       toast.success(
@@ -416,16 +388,14 @@ function CsvImportPanel({
   });
 
   const applyMutation = useMutation({
-    mutationFn: (csv: string) =>
-      apply({ data: { editionId, code, csv } }),
+    mutationFn: (csv: string) => apply({ data: { editionId, code, csv } }),
     onSuccess: (res) => {
       toast.success(`Import appliqué : ${res.changed} cellule(s) modifiée(s).`);
       setCsvText("");
       setDiffs(null);
       queryClient.invalidateQueries({ queryKey: ["edition-rows", editionId] });
     },
-    onError: (err) =>
-      toast.error(err instanceof Error ? err.message : "Échec de l'import."),
+    onError: (err) => toast.error(err instanceof Error ? err.message : "Échec de l'import."),
   });
 
   const onFile = async (file: File) => {
@@ -446,11 +416,9 @@ function CsvImportPanel({
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs text-muted-foreground">
-          Chargez un fichier CSV dont l'en-tête et les dimensions correspondent
-          exactement à ceux du brouillon (même colonnes, mêmes libellés de
-          lignes). Seules les valeurs numériques peuvent être modifiées. La
-          prévisualisation affiche la liste précise des cellules qui changeront
-          avant tout enregistrement.
+          Chargez un fichier CSV dont l'en-tête et les dimensions correspondent exactement à ceux du brouillon (même
+          colonnes, mêmes libellés de lignes). Seules les valeurs numériques peuvent être modifiées. La prévisualisation
+          affiche la liste précise des cellules qui changeront avant tout enregistrement.
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <input
@@ -473,12 +441,7 @@ function CsvImportPanel({
           <Button
             size="sm"
             onClick={() => applyMutation.mutate(csvText)}
-            disabled={
-              !csvText ||
-              applyMutation.isPending ||
-              diffs === null ||
-              diffs.length === 0
-            }
+            disabled={!csvText || applyMutation.isPending || diffs === null || diffs.length === 0}
           >
             Appliquer{diffs && diffs.length > 0 ? ` (${diffs.length})` : ""}
           </Button>
@@ -499,9 +462,7 @@ function CsvImportPanel({
         {diffs && diffs.length === 0 && (
           <Alert>
             <AlertTitle>Aucune différence</AlertTitle>
-            <AlertDescription>
-              Le CSV est identique aux valeurs actuelles du brouillon.
-            </AlertDescription>
+            <AlertDescription>Le CSV est identique aux valeurs actuelles du brouillon.</AlertDescription>
           </Alert>
         )}
 
@@ -512,9 +473,7 @@ function CsvImportPanel({
                 <strong>{diffs.length}</strong> cellule(s) modifiée(s)
               </span>
               {diffs.length > shortDiffs.length && (
-                <span className="text-muted-foreground">
-                  affichage des {shortDiffs.length} premières
-                </span>
+                <span className="text-muted-foreground">affichage des {shortDiffs.length} premières</span>
               )}
             </div>
             <div className="max-h-80 overflow-auto">
@@ -529,33 +488,18 @@ function CsvImportPanel({
                 </thead>
                 <tbody>
                   {shortDiffs.map((d, i) => {
-                    const delta =
-                      d.before !== null && d.after !== null
-                        ? d.after - d.before
-                        : null;
+                    const delta = d.before !== null && d.after !== null ? d.after - d.before : null;
                     return (
                       <tr key={i} className="border-b">
                         <td className="px-3 py-1 font-mono">{d.path}</td>
-                        <td className="px-3 py-1 text-right font-mono">
-                          {d.before ?? "∅"}
-                        </td>
-                        <td className="px-3 py-1 text-right font-mono">
-                          {d.after ?? "∅"}
-                        </td>
+                        <td className="px-3 py-1 text-right font-mono">{d.before ?? "∅"}</td>
+                        <td className="px-3 py-1 text-right font-mono">{d.after ?? "∅"}</td>
                         <td
                           className={`px-3 py-1 text-right font-mono ${
-                            delta && delta > 0
-                              ? "text-emerald-600"
-                              : delta && delta < 0
-                                ? "text-destructive"
-                                : ""
+                            delta && delta > 0 ? "text-emerald-600" : delta && delta < 0 ? "text-destructive" : ""
                           }`}
                         >
-                          {delta === null
-                            ? "—"
-                            : delta > 0
-                              ? `+${delta}`
-                              : delta}
+                          {delta === null ? "—" : delta > 0 ? `+${delta}` : delta}
                         </td>
                       </tr>
                     );
