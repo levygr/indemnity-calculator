@@ -149,6 +149,10 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
           <Building2 className="w-4 h-4" />
           Cabinet
         </Link>
+        <Link to="/referentiels" onClick={onNavigate} className="mt-1 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground min-h-11">
+          <Library className="w-4 h-4" />
+          Référentiels
+        </Link>
       </div>
 
       <div className="p-5 border-b border-sidebar-border">
