@@ -8,6 +8,7 @@ import { collecterAvertissements } from "@/lib/calculs";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { RecalculBanner } from "@/components/vp/RecalculBanner";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id")({
   component: DossierLayout,
@@ -99,6 +100,7 @@ function DossierLayout() {
             <div className="p-6 sm:p-8 text-muted-foreground">Chargement du dossier…</div>
           ) : (
             <>
+              <RecalculBanner dossierId={id} />
               <Outlet />
               {/* Navigation Précédent / Suivant */}
               {(prev || next) && (
