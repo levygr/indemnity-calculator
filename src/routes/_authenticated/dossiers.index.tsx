@@ -33,7 +33,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { formatDateFR } from "@/lib/calculs/format";
-import { Copy, Plus, Trash2, LogOut, FileText, Building2, User2, Share2, Search } from "lucide-react";
+import { Copy, Plus, Trash2, LogOut, FileText, Building2, User2, Share2, Search, Library } from "lucide-react";
 import { toast } from "sonner";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 
