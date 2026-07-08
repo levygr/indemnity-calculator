@@ -131,17 +131,10 @@ export function perToCsv(payload: PerPayload): string {
   const header = [
     "age_liquidation",
     ...payload.ages_fin_de_rente.map((a) => String(a)),
-    "viagere",
   ];
   const rows: (string | number)[][] = [header];
   for (const ligne of payload.lignes) {
-    const prixHead = ligne.prix.slice(0, payload.ages_fin_de_rente.length);
-    const viagere = ligne.prix[ligne.prix.length - 1];
-    rows.push([
-      ligne.age_liquidation,
-      ...prixHead.map(fmtNumeric),
-      fmtNumeric(viagere),
-    ]);
+    rows.push([ligne.age_liquidation, ...ligne.prix.map(fmtNumeric)]);
   }
   return toCsvText(rows);
 }
