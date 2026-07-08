@@ -136,6 +136,10 @@ function EditionEditorPage() {
           </Alert>
         )}
 
+        {isDraft && detectMatrixKind(code) && (
+          <CsvImportPanel code={code} editionId={editionId} />
+        )}
+
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
             <CardTitle className="text-base">
