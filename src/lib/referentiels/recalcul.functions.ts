@@ -87,8 +87,8 @@ export const recalculDossier = createServerFn({ method: "POST" })
     await supabase.from("dossier_events").insert({
       dossier_id: data.dossierId,
       user_id: context.userId,
-      type: "recalcul_referentiels",
-      payload: {
+      action: "recalcul_referentiels",
+      details: {
         changes: changes.map((c) => ({
           referentielId: c.referentielId,
           from: c.previousEditionId,
