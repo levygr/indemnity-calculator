@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTauxLegalRouteImport } from './routes/_authenticated/taux-legal'
 import { Route as AuthenticatedReferentielsRouteImport } from './routes/_authenticated/referentiels'
 import { Route as AuthenticatedCabinetRouteImport } from './routes/_authenticated/cabinet'
+import { Route as AuthenticatedReferentielsIndexRouteImport } from './routes/_authenticated/referentiels.index'
 import { Route as AuthenticatedDossiersIndexRouteImport } from './routes/_authenticated/dossiers.index'
 import { Route as AuthenticatedDossiersIdRouteImport } from './routes/_authenticated/dossiers.$id'
 import { Route as AuthenticatedDossiersIdIndexRouteImport } from './routes/_authenticated/dossiers.$id.index'
@@ -61,6 +62,12 @@ const AuthenticatedCabinetRoute = AuthenticatedCabinetRouteImport.update({
   path: '/cabinet',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedReferentielsIndexRoute =
+  AuthenticatedReferentielsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedReferentielsRoute,
+  } as any)
 const AuthenticatedDossiersIndexRoute =
   AuthenticatedDossiersIndexRouteImport.update({
     id: '/dossiers/',
@@ -155,10 +162,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cabinet': typeof AuthenticatedCabinetRoute
-  '/referentiels': typeof AuthenticatedReferentielsRoute
+  '/referentiels': typeof AuthenticatedReferentielsRouteWithChildren
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/dossiers/': typeof AuthenticatedDossiersIndexRoute
+  '/referentiels/': typeof AuthenticatedReferentielsIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
   '/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
@@ -177,9 +185,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cabinet': typeof AuthenticatedCabinetRoute
-  '/referentiels': typeof AuthenticatedReferentielsRoute
   '/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/dossiers': typeof AuthenticatedDossiersIndexRoute
+  '/referentiels': typeof AuthenticatedReferentielsIndexRoute
   '/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
   '/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
@@ -200,10 +208,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/cabinet': typeof AuthenticatedCabinetRoute
-  '/_authenticated/referentiels': typeof AuthenticatedReferentielsRoute
+  '/_authenticated/referentiels': typeof AuthenticatedReferentielsRouteWithChildren
   '/_authenticated/taux-legal': typeof AuthenticatedTauxLegalRoute
   '/_authenticated/dossiers/$id': typeof AuthenticatedDossiersIdRouteWithChildren
   '/_authenticated/dossiers/': typeof AuthenticatedDossiersIndexRoute
+  '/_authenticated/referentiels/': typeof AuthenticatedReferentielsIndexRoute
   '/_authenticated/dossiers/$id/activite': typeof AuthenticatedDossiersIdActiviteRoute
   '/_authenticated/dossiers/$id/comparateur': typeof AuthenticatedDossiersIdComparateurRoute
   '/_authenticated/dossiers/$id/deces': typeof AuthenticatedDossiersIdDecesRoute
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/taux-legal'
     | '/dossiers/$id'
     | '/dossiers/'
+    | '/referentiels/'
     | '/dossiers/$id/activite'
     | '/dossiers/$id/comparateur'
     | '/dossiers/$id/deces'
@@ -246,9 +256,9 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cabinet'
-    | '/referentiels'
     | '/taux-legal'
     | '/dossiers'
+    | '/referentiels'
     | '/dossiers/$id/activite'
     | '/dossiers/$id/comparateur'
     | '/dossiers/$id/deces'
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/_authenticated/taux-legal'
     | '/_authenticated/dossiers/$id'
     | '/_authenticated/dossiers/'
+    | '/_authenticated/referentiels/'
     | '/_authenticated/dossiers/$id/activite'
     | '/_authenticated/dossiers/$id/comparateur'
     | '/_authenticated/dossiers/$id/deces'
@@ -336,6 +347,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cabinet'
       preLoaderRoute: typeof AuthenticatedCabinetRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/referentiels/': {
+      id: '/_authenticated/referentiels/'
+      path: '/'
+      fullPath: '/referentiels/'
+      preLoaderRoute: typeof AuthenticatedReferentielsIndexRouteImport
+      parentRoute: typeof AuthenticatedReferentielsRoute
     }
     '/_authenticated/dossiers/': {
       id: '/_authenticated/dossiers/'
@@ -445,6 +463,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedReferentielsRouteChildren {
+  AuthenticatedReferentielsIndexRoute: typeof AuthenticatedReferentielsIndexRoute
+}
+
+const AuthenticatedReferentielsRouteChildren: AuthenticatedReferentielsRouteChildren =
+  {
+    AuthenticatedReferentielsIndexRoute: AuthenticatedReferentielsIndexRoute,
+  }
+
+const AuthenticatedReferentielsRouteWithChildren =
+  AuthenticatedReferentielsRoute._addFileChildren(
+    AuthenticatedReferentielsRouteChildren,
+  )
+
 interface AuthenticatedDossiersIdRouteChildren {
   AuthenticatedDossiersIdActiviteRoute: typeof AuthenticatedDossiersIdActiviteRoute
   AuthenticatedDossiersIdComparateurRoute: typeof AuthenticatedDossiersIdComparateurRoute
@@ -493,7 +525,7 @@ const AuthenticatedDossiersIdRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCabinetRoute: typeof AuthenticatedCabinetRoute
-  AuthenticatedReferentielsRoute: typeof AuthenticatedReferentielsRoute
+  AuthenticatedReferentielsRoute: typeof AuthenticatedReferentielsRouteWithChildren
   AuthenticatedTauxLegalRoute: typeof AuthenticatedTauxLegalRoute
   AuthenticatedDossiersIdRoute: typeof AuthenticatedDossiersIdRouteWithChildren
   AuthenticatedDossiersIndexRoute: typeof AuthenticatedDossiersIndexRoute
@@ -501,7 +533,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCabinetRoute: AuthenticatedCabinetRoute,
-  AuthenticatedReferentielsRoute: AuthenticatedReferentielsRoute,
+  AuthenticatedReferentielsRoute: AuthenticatedReferentielsRouteWithChildren,
   AuthenticatedTauxLegalRoute: AuthenticatedTauxLegalRoute,
   AuthenticatedDossiersIdRoute: AuthenticatedDossiersIdRouteWithChildren,
   AuthenticatedDossiersIndexRoute: AuthenticatedDossiersIndexRoute,
