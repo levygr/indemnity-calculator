@@ -378,3 +378,194 @@ function NewRowButton({
     </div>
   );
 }
+
+/* -------------------------------------------------------------------------- */
+/*  Panneau d'import CSV (PER / AIPP)                                          */
+/* -------------------------------------------------------------------------- */
+
+function CsvImportPanel({
+  code,
+  editionId,
+}: {
+  code: string;
+  editionId: string;
+}) {
+  const preview = useServerFn(previewCsvImport);
+  const apply = useServerFn(applyCsvImport);
+  const queryClient = useQueryClient();
+  const [csvText, setCsvText] = useState("");
+  const [diffs, setDiffs] = useState<
+    { path: string; before: number | null; after: number | null }[] | null
+  >(null);
+
+  const previewMutation = useMutation({
+    mutationFn: (csv: string) =>
+      preview({ data: { editionId, code, csv } }),
+    onSuccess: (res) => {
+      setDiffs(res.diffs);
+      toast.success(
+        res.total === 0
+          ? "Aucune différence détectée."
+          : `${res.total} cellule(s) modifiée(s) prêtes à être appliquées.`,
+      );
+    },
+    onError: (err) => {
+      setDiffs(null);
+      toast.error(err instanceof Error ? err.message : "CSV invalide.");
+    },
+  });
+
+  const applyMutation = useMutation({
+    mutationFn: (csv: string) =>
+      apply({ data: { editionId, code, csv } }),
+    onSuccess: (res) => {
+      toast.success(`Import appliqué : ${res.changed} cellule(s) modifiée(s).`);
+      setCsvText("");
+      setDiffs(null);
+      queryClient.invalidateQueries({ queryKey: ["edition-rows", editionId] });
+    },
+    onError: (err) =>
+      toast.error(err instanceof Error ? err.message : "Échec de l'import."),
+  });
+
+  const onFile = async (file: File) => {
+    const text = await file.text();
+    setCsvText(text);
+    setDiffs(null);
+  };
+
+  const shortDiffs = useMemo(() => diffs?.slice(0, 100) ?? [], [diffs]);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <FileUp className="w-4 h-4" />
+          Import CSV
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-xs text-muted-foreground">
+          Chargez un fichier CSV dont l'en-tête et les dimensions correspondent
+          exactement à ceux du brouillon (même colonnes, mêmes libellés de
+          lignes). Seules les valeurs numériques peuvent être modifiées. La
+          prévisualisation affiche la liste précise des cellules qui changeront
+          avant tout enregistrement.
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <input
+            type="file"
+            accept=".csv,text/csv,text/plain"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) onFile(f);
+            }}
+            className="text-xs"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => previewMutation.mutate(csvText)}
+            disabled={!csvText || previewMutation.isPending}
+          >
+            Prévisualiser
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => applyMutation.mutate(csvText)}
+            disabled={
+              !csvText ||
+              applyMutation.isPending ||
+              diffs === null ||
+              diffs.length === 0
+            }
+          >
+            Appliquer{diffs && diffs.length > 0 ? ` (${diffs.length})` : ""}
+          </Button>
+        </div>
+
+        {csvText && (
+          <details className="text-xs">
+            <summary className="cursor-pointer text-muted-foreground">
+              Aperçu du CSV chargé ({csvText.length.toLocaleString("fr-FR")} car.)
+            </summary>
+            <pre className="mt-2 max-h-40 overflow-auto border rounded p-2 bg-muted/40">
+              {csvText.slice(0, 4000)}
+              {csvText.length > 4000 ? "\n…" : ""}
+            </pre>
+          </details>
+        )}
+
+        {diffs && diffs.length === 0 && (
+          <Alert>
+            <AlertTitle>Aucune différence</AlertTitle>
+            <AlertDescription>
+              Le CSV est identique aux valeurs actuelles du brouillon.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {diffs && diffs.length > 0 && (
+          <div className="border rounded-md">
+            <div className="px-3 py-2 text-xs bg-muted border-b flex items-center justify-between">
+              <span>
+                <strong>{diffs.length}</strong> cellule(s) modifiée(s)
+              </span>
+              {diffs.length > shortDiffs.length && (
+                <span className="text-muted-foreground">
+                  affichage des {shortDiffs.length} premières
+                </span>
+              )}
+            </div>
+            <div className="max-h-80 overflow-auto">
+              <table className="w-full text-xs">
+                <thead className="bg-muted/50 sticky top-0">
+                  <tr>
+                    <th className="text-left px-3 py-1.5 border-b">Cellule</th>
+                    <th className="text-right px-3 py-1.5 border-b">Avant</th>
+                    <th className="text-right px-3 py-1.5 border-b">Après</th>
+                    <th className="text-right px-3 py-1.5 border-b">Δ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {shortDiffs.map((d, i) => {
+                    const delta =
+                      d.before !== null && d.after !== null
+                        ? d.after - d.before
+                        : null;
+                    return (
+                      <tr key={i} className="border-b">
+                        <td className="px-3 py-1 font-mono">{d.path}</td>
+                        <td className="px-3 py-1 text-right font-mono">
+                          {d.before ?? "∅"}
+                        </td>
+                        <td className="px-3 py-1 text-right font-mono">
+                          {d.after ?? "∅"}
+                        </td>
+                        <td
+                          className={`px-3 py-1 text-right font-mono ${
+                            delta && delta > 0
+                              ? "text-emerald-600"
+                              : delta && delta < 0
+                                ? "text-destructive"
+                                : ""
+                          }`}
+                        >
+                          {delta === null
+                            ? "—"
+                            : delta > 0
+                              ? `+${delta}`
+                              : delta}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
