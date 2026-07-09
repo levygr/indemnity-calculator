@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -20,11 +22,13 @@ import { calculerSynthese, formatEuros, hydraterDossier } from "@/lib/calculs";
 import { listTauxLegal } from "@/lib/taux-legal.functions";
 import {
   calculerLigneInterets,
+  calculerDateExecutoire,
   phasesPourLigne,
   defaultLigneInterets,
   LIBELLES_REGIME,
   TauxLegalManquantError,
   type CategorieCreancier,
+  type DelaiRecours,
   type LigneTauxLegal,
   type LigneInterets,
   type RegimeInterets,
@@ -33,6 +37,19 @@ import {
 import { formatDateFR } from "@/lib/calculs/format";
 import type { DossierData } from "@/lib/calculs/types";
 import { AlertTriangle, ChevronDown, ExternalLink, Plus, Trash2 } from "lucide-react";
+
+function formatPct(n: number): string {
+  const rounded = Math.round(n * 100) / 100;
+  return `${rounded.toString().replace(".", ",")} %`;
+}
+
+function formulaLibelle(taux: number, mult: number, maj: number, eff: number): string {
+  const parts: string[] = [`T`];
+  if (mult !== 1) parts.push(`×${mult.toString().replace(".", ",")}`);
+  if (maj !== 0) parts.push(`+ ${maj} pts`);
+  return `${parts.join(" ")} = ${formatPct(eff)} (T = ${formatPct(taux)})`;
+}
+
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/interets")({
   component: Page,
@@ -281,8 +298,7 @@ function LigneCard({
                 <SelectContent>
                   <SelectItem value="taux_legal">{LIBELLES_REGIME.taux_legal}</SelectItem>
                   <SelectItem value="badinter_avant">{LIBELLES_REGIME.badinter_avant}</SelectItem>
-                  <SelectItem value="decision_5pts">{LIBELLES_REGIME.decision_5pts}</SelectItem>
-                  <SelectItem value="badinter_apres">{LIBELLES_REGIME.badinter_apres}</SelectItem>
+                  <SelectItem value="apres_decision">{LIBELLES_REGIME.apres_decision}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -307,54 +323,19 @@ function LigneCard({
             </div>
             <div />
             <div>
-              <Label>Date de début (fixée par la décision)</Label>
+              <Label>Date de début des intérêts</Label>
               <Input type="date" value={ligne.dateDebut ?? ""} onChange={(e) => onChange({ dateDebut: e.target.value || null })} />
             </div>
             <div>
               <Label>Date de fin</Label>
               <Input type="date" value={ligne.dateFin ?? ""} onChange={(e) => onChange({ dateFin: e.target.value || null })} />
             </div>
-
-            {ligne.regime === "decision_5pts" && (
-              <>
-                <div>
-                  <Label>Date de la décision</Label>
-                  <Input type="date" value={ligne.dateDecision ?? ""} onChange={(e) => onChange({ dateDecision: e.target.value || null })} />
-                </div>
-                <div>
-                  <Label>Date à laquelle la décision est devenue exécutoire</Label>
-                  <Input type="date" value={ligne.dateExecutoire ?? ""} onChange={(e) => onChange({ dateExecutoire: e.target.value || null })} />
-                </div>
-                <div>
-                  <Label>Délai avant majoration (mois)</Label>
-                  <Input type="number" value={ligne.delaiMajorationMois} onChange={(e) => onChange({ delaiMajorationMois: Number(e.target.value) })} />
-                </div>
-              </>
-            )}
-
-            {ligne.regime === "badinter_apres" && (
-              <>
-                <div>
-                  <Label>Date de la décision</Label>
-                  <Input type="date" value={ligne.dateDecision ?? ""} onChange={(e) => onChange({ dateDecision: e.target.value || null })} />
-                </div>
-                <div>
-                  <Label>Délai avant passage à × 1,5 (mois)</Label>
-                  <Input type="number" value={ligne.delaiBadinter1Mois} onChange={(e) => onChange({ delaiBadinter1Mois: Number(e.target.value) })} />
-                </div>
-                <div>
-                  <Label>Délai avant passage à × 2 (mois)</Label>
-                  <Input type="number" value={ligne.delaiBadinter2Mois} onChange={(e) => onChange({ delaiBadinter2Mois: Number(e.target.value) })} />
-                </div>
-              </>
-            )}
           </div>
 
-          {(ligne.regime === "decision_5pts" || ligne.regime === "badinter_apres") && (
-            <p className="text-xs text-muted-foreground">
-              Vérifier les dates et délais retenus contre le texte de la décision.
-            </p>
+          {ligne.regime === "apres_decision" && (
+            <ApresDecisionEditor ligne={ligne} onChange={onChange} />
           )}
+
 
           <div className="space-y-2">
             <label className="flex items-start gap-2">
@@ -400,9 +381,7 @@ function LigneCard({
                   <TableRow>
                     <TableHead>Période</TableHead>
                     <TableHead>Taux légal</TableHead>
-                    <TableHead>×</TableHead>
-                    <TableHead>+ pts</TableHead>
-                    <TableHead>Taux effectif</TableHead>
+                    <TableHead>Formule</TableHead>
                     <TableHead className="text-right">Base</TableHead>
                     <TableHead className="text-right">Jours</TableHead>
                     <TableHead className="text-right">Intérêts</TableHead>
@@ -412,10 +391,8 @@ function LigneCard({
                   {resultat.value.segments.map((s, i) => (
                     <TableRow key={i}>
                       <TableCell>{formatDateFR(s.debut)} → {formatDateFR(s.fin)}</TableCell>
-                      <TableCell>{s.tauxLegalBase.toString().replace(".", ",")} %</TableCell>
-                      <TableCell>{s.multiplicateur}</TableCell>
-                      <TableCell>{s.majorationPoints}</TableCell>
-                      <TableCell>{s.tauxAnnuel.toString().replace(".", ",")} %</TableCell>
+                      <TableCell>{formatPct(s.tauxLegalBase)}</TableCell>
+                      <TableCell className="text-xs">{formulaLibelle(s.tauxLegalBase, s.multiplicateur, s.majorationPoints, s.tauxAnnuel)}</TableCell>
                       <TableCell className="text-right">{formatEuros(s.base)}</TableCell>
                       <TableCell className="text-right">{s.jours}</TableCell>
                       <TableCell className="text-right">{formatEuros(s.interets)}</TableCell>
@@ -423,6 +400,7 @@ function LigneCard({
                   ))}
                 </TableBody>
               </Table>
+
 
               {resultat.value.capitalisations.length > 0 && (
                 <div>
@@ -459,3 +437,184 @@ function LigneCard({
     </Collapsible>
   );
 }
+
+function ApresDecisionEditor({
+  ligne,
+  onChange,
+}: {
+  ligne: LigneInterets;
+  onChange: (patch: Partial<LigneInterets>) => void;
+}) {
+  const dateExecCalculee = calculerDateExecutoire(
+    ligne.dateSignification,
+    ligne.delaiRecours,
+  );
+  const executoireEffective = ligne.dateExecutoireManuelle
+    ? ligne.dateExecutoire
+    : ligne.dateExecutoire ?? dateExecCalculee;
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label>Date de la décision (jugement)</Label>
+          <Input
+            type="date"
+            value={ligne.dateDecision ?? ""}
+            onChange={(e) => {
+              const v = e.target.value || null;
+              // Par défaut, la date de début suit la décision tant qu'elle
+              // n'a pas été fixée manuellement à une autre valeur.
+              if (v && (!ligne.dateDebut || ligne.dateDebut === ligne.dateDecision)) {
+                onChange({ dateDecision: v, dateDebut: v });
+              } else {
+                onChange({ dateDecision: v });
+              }
+            }}
+          />
+        </div>
+        <div>
+          <Label>Date exécutoire de la décision</Label>
+          <Input
+            type="date"
+            value={ligne.dateExecutoire ?? (ligne.dateExecutoireManuelle ? "" : dateExecCalculee ?? "")}
+            onChange={(e) =>
+              onChange({
+                dateExecutoire: e.target.value || null,
+                dateExecutoireManuelle: !!e.target.value,
+              })
+            }
+          />
+          <p className="text-[11px] text-muted-foreground mt-1">
+            {ligne.dateExecutoireManuelle
+              ? "Saisie manuellement."
+              : dateExecCalculee
+                ? `Calculée depuis la signification (${formatDateFR(dateExecCalculee)}). Modifiable.`
+                : "Renseignez soit cette date, soit la signification + le délai de recours ci-dessous."}
+          </p>
+        </div>
+      </div>
+
+      <div className="rounded-md border bg-muted/30 p-3 space-y-3">
+        <p className="text-xs font-medium">
+          Assistant : calculer la date exécutoire depuis la signification
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="text-xs">Date de signification</Label>
+            <Input
+              type="date"
+              value={ligne.dateSignification ?? ""}
+              onChange={(e) =>
+                onChange({
+                  dateSignification: e.target.value || null,
+                  dateExecutoireManuelle: false,
+                })
+              }
+            />
+          </div>
+          <div>
+            <Label className="text-xs">Délai de recours</Label>
+            <RadioGroup
+              className="flex gap-4 mt-2"
+              value={ligne.delaiRecours ?? ""}
+              onValueChange={(v) =>
+                onChange({
+                  delaiRecours: v as DelaiRecours,
+                  dateExecutoireManuelle: false,
+                })
+              }
+            >
+              {(["15j", "1m", "2m"] as DelaiRecours[]).map((d) => (
+                <label key={d} className="flex items-center gap-1.5 text-xs">
+                  <RadioGroupItem value={d} />
+                  {d === "15j" ? "15 jours" : d === "1m" ? "1 mois" : "2 mois"}
+                </label>
+              ))}
+            </RadioGroup>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3 border rounded-md p-3">
+        <label className="flex items-start gap-2">
+          <Switch
+            checked={ligne.l211_17Actif}
+            onCheckedChange={(v) => onChange({ l211_17Actif: !!v })}
+          />
+          <span className="text-sm">
+            <strong>Multiplicateur L. 211-17 C. assur.</strong> (×1,5 puis ×2)
+            <span className="block text-xs text-muted-foreground">
+              Calé sur la date de la décision.
+            </span>
+          </span>
+        </label>
+        {ligne.l211_17Actif && (
+          <div className="grid grid-cols-2 gap-4 pl-8">
+            <div>
+              <Label className="text-xs">Délai avant passage à ×1,5 (mois)</Label>
+              <Input
+                type="number"
+                value={ligne.delaiBadinter1Mois}
+                onChange={(e) => onChange({ delaiBadinter1Mois: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Délai avant passage à ×2 (mois)</Label>
+              <Input
+                type="number"
+                value={ligne.delaiBadinter2Mois}
+                onChange={(e) => onChange({ delaiBadinter2Mois: Number(e.target.value) })}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-3 border rounded-md p-3">
+        <label className="flex items-start gap-2">
+          <Switch
+            checked={ligne.l313_3Actif}
+            onCheckedChange={(v) => onChange({ l313_3Actif: !!v })}
+          />
+          <span className="text-sm">
+            <strong>Majoration L. 313-3 C. mon. fin.</strong> (+5 points, 2 mois après la date exécutoire)
+            <span className="block text-xs text-muted-foreground">
+              Calée sur la date à laquelle la décision devient exécutoire.
+            </span>
+          </span>
+        </label>
+        {ligne.l313_3Actif && (
+          <div className="grid grid-cols-2 gap-4 pl-8">
+            <div>
+              <Label className="text-xs">Délai avant majoration (mois)</Label>
+              <Input
+                type="number"
+                value={ligne.delaiMajorationMois}
+                onChange={(e) => onChange({ delaiMajorationMois: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Points de majoration</Label>
+              <Input
+                type="number"
+                value={ligne.pointsMajoration}
+                onChange={(e) => onChange({ pointsMajoration: Number(e.target.value) })}
+              />
+            </div>
+            {!executoireEffective && (
+              <p className="col-span-2 text-xs text-warning-foreground">
+                Renseignez la date exécutoire (ou signification + délai) pour activer le calcul.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      <p className="text-xs text-muted-foreground">
+        Les délais et dates par défaut sont des repères : vérifiez-les contre le texte de la décision.
+      </p>
+    </div>
+  );
+}
+

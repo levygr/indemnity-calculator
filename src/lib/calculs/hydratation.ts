@@ -106,24 +106,55 @@ export function hydraterDossier(raw: unknown): DossierData {
     provisions: pickArray(src.provisions),
     organismesTP: pickArray(src.organismesTP),
     creancesTP: pickArray(src.creancesTP),
-    lignesInterets: pickArray<Partial<DossierData["lignesInterets"][number]>>(
+    lignesInterets: pickArray<Partial<DossierData["lignesInterets"][number]> & { regime?: string }>(
       src.lignesInterets,
-    ).map((l) => ({
-      id: l.id ?? crypto.randomUUID(),
-      libelle: l.libelle ?? "",
-      base: typeof l.base === "number" ? l.base : 0,
-      categorieCreancier: l.categorieCreancier ?? "particulier",
-      regime: l.regime ?? "taux_legal",
-      dateDebut: l.dateDebut ?? null,
-      dateFin: l.dateFin ?? null,
-      anatocisme: !!l.anatocisme,
-      dateAnatocisme: l.dateAnatocisme ?? null,
-      dateDecision: l.dateDecision ?? null,
-      dateExecutoire: l.dateExecutoire ?? null,
-      delaiMajorationMois: typeof l.delaiMajorationMois === "number" ? l.delaiMajorationMois : 2,
-      delaiBadinter1Mois: typeof l.delaiBadinter1Mois === "number" ? l.delaiBadinter1Mois : 2,
-      delaiBadinter2Mois: typeof l.delaiBadinter2Mois === "number" ? l.delaiBadinter2Mois : 4,
-    })) as DossierData["lignesInterets"],
+    ).map((l) => {
+      // Migration régimes : les deux anciens régimes après jugement
+      // convergent vers `apres_decision` en n'activant qu'un seul texte.
+      const legacy = l.regime as string | undefined;
+      let regime: DossierData["lignesInterets"][number]["regime"] =
+        legacy === "decision_5pts" || legacy === "badinter_apres"
+          ? "apres_decision"
+          : (l.regime as DossierData["lignesInterets"][number]["regime"]) ?? "taux_legal";
+      const l211_17Actif =
+        typeof l.l211_17Actif === "boolean"
+          ? l.l211_17Actif
+          : legacy === "badinter_apres";
+      const l313_3Actif =
+        typeof l.l313_3Actif === "boolean"
+          ? l.l313_3Actif
+          : legacy === "decision_5pts";
+      return {
+        id: l.id ?? crypto.randomUUID(),
+        libelle: l.libelle ?? "",
+        base: typeof l.base === "number" ? l.base : 0,
+        categorieCreancier: l.categorieCreancier ?? "particulier",
+        regime,
+        dateDebut: l.dateDebut ?? null,
+        dateFin: l.dateFin ?? null,
+        anatocisme: !!l.anatocisme,
+        dateAnatocisme: l.dateAnatocisme ?? null,
+        dateDecision: l.dateDecision ?? null,
+        dateExecutoire: l.dateExecutoire ?? null,
+        dateExecutoireManuelle:
+          typeof l.dateExecutoireManuelle === "boolean"
+            ? l.dateExecutoireManuelle
+            : !!l.dateExecutoire, // ancienne saisie manuelle par défaut
+        dateSignification: l.dateSignification ?? null,
+        delaiRecours: l.delaiRecours ?? null,
+        l211_17Actif,
+        delaiBadinter1Mois:
+          typeof l.delaiBadinter1Mois === "number" ? l.delaiBadinter1Mois : 2,
+        delaiBadinter2Mois:
+          typeof l.delaiBadinter2Mois === "number" ? l.delaiBadinter2Mois : 4,
+        l313_3Actif,
+        delaiMajorationMois:
+          typeof l.delaiMajorationMois === "number" ? l.delaiMajorationMois : 2,
+        pointsMajoration:
+          typeof l.pointsMajoration === "number" ? l.pointsMajoration : 5,
+      };
+    }) as DossierData["lignesInterets"],
+
   };
 
   return merged;
