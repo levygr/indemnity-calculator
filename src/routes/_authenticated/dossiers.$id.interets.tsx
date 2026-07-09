@@ -364,9 +364,7 @@ function LigneCard({
                   <TableRow>
                     <TableHead>Période</TableHead>
                     <TableHead>Taux légal</TableHead>
-                    <TableHead>×</TableHead>
-                    <TableHead>+ pts</TableHead>
-                    <TableHead>Taux effectif</TableHead>
+                    <TableHead>Formule</TableHead>
                     <TableHead className="text-right">Base</TableHead>
                     <TableHead className="text-right">Jours</TableHead>
                     <TableHead className="text-right">Intérêts</TableHead>
@@ -376,10 +374,8 @@ function LigneCard({
                   {resultat.value.segments.map((s, i) => (
                     <TableRow key={i}>
                       <TableCell>{formatDateFR(s.debut)} → {formatDateFR(s.fin)}</TableCell>
-                      <TableCell>{s.tauxLegalBase.toString().replace(".", ",")} %</TableCell>
-                      <TableCell>{s.multiplicateur}</TableCell>
-                      <TableCell>{s.majorationPoints}</TableCell>
-                      <TableCell>{s.tauxAnnuel.toString().replace(".", ",")} %</TableCell>
+                      <TableCell>{formatPct(s.tauxLegalBase)}</TableCell>
+                      <TableCell className="text-xs">{formulaLibelle(s.tauxLegalBase, s.multiplicateur, s.majorationPoints, s.tauxAnnuel)}</TableCell>
                       <TableCell className="text-right">{formatEuros(s.base)}</TableCell>
                       <TableCell className="text-right">{s.jours}</TableCell>
                       <TableCell className="text-right">{formatEuros(s.interets)}</TableCell>
@@ -387,6 +383,7 @@ function LigneCard({
                   ))}
                 </TableBody>
               </Table>
+
 
               {resultat.value.capitalisations.length > 0 && (
                 <div>
