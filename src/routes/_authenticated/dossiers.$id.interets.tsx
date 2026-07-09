@@ -281,8 +281,7 @@ function LigneCard({
                 <SelectContent>
                   <SelectItem value="taux_legal">{LIBELLES_REGIME.taux_legal}</SelectItem>
                   <SelectItem value="badinter_avant">{LIBELLES_REGIME.badinter_avant}</SelectItem>
-                  <SelectItem value="decision_5pts">{LIBELLES_REGIME.decision_5pts}</SelectItem>
-                  <SelectItem value="badinter_apres">{LIBELLES_REGIME.badinter_apres}</SelectItem>
+                  <SelectItem value="apres_decision">{LIBELLES_REGIME.apres_decision}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -307,54 +306,19 @@ function LigneCard({
             </div>
             <div />
             <div>
-              <Label>Date de début (fixée par la décision)</Label>
+              <Label>Date de début des intérêts</Label>
               <Input type="date" value={ligne.dateDebut ?? ""} onChange={(e) => onChange({ dateDebut: e.target.value || null })} />
             </div>
             <div>
               <Label>Date de fin</Label>
               <Input type="date" value={ligne.dateFin ?? ""} onChange={(e) => onChange({ dateFin: e.target.value || null })} />
             </div>
-
-            {ligne.regime === "decision_5pts" && (
-              <>
-                <div>
-                  <Label>Date de la décision</Label>
-                  <Input type="date" value={ligne.dateDecision ?? ""} onChange={(e) => onChange({ dateDecision: e.target.value || null })} />
-                </div>
-                <div>
-                  <Label>Date à laquelle la décision est devenue exécutoire</Label>
-                  <Input type="date" value={ligne.dateExecutoire ?? ""} onChange={(e) => onChange({ dateExecutoire: e.target.value || null })} />
-                </div>
-                <div>
-                  <Label>Délai avant majoration (mois)</Label>
-                  <Input type="number" value={ligne.delaiMajorationMois} onChange={(e) => onChange({ delaiMajorationMois: Number(e.target.value) })} />
-                </div>
-              </>
-            )}
-
-            {ligne.regime === "badinter_apres" && (
-              <>
-                <div>
-                  <Label>Date de la décision</Label>
-                  <Input type="date" value={ligne.dateDecision ?? ""} onChange={(e) => onChange({ dateDecision: e.target.value || null })} />
-                </div>
-                <div>
-                  <Label>Délai avant passage à × 1,5 (mois)</Label>
-                  <Input type="number" value={ligne.delaiBadinter1Mois} onChange={(e) => onChange({ delaiBadinter1Mois: Number(e.target.value) })} />
-                </div>
-                <div>
-                  <Label>Délai avant passage à × 2 (mois)</Label>
-                  <Input type="number" value={ligne.delaiBadinter2Mois} onChange={(e) => onChange({ delaiBadinter2Mois: Number(e.target.value) })} />
-                </div>
-              </>
-            )}
           </div>
 
-          {(ligne.regime === "decision_5pts" || ligne.regime === "badinter_apres") && (
-            <p className="text-xs text-muted-foreground">
-              Vérifier les dates et délais retenus contre le texte de la décision.
-            </p>
+          {ligne.regime === "apres_decision" && (
+            <ApresDecisionEditor ligne={ligne} onChange={onChange} />
           )}
+
 
           <div className="space-y-2">
             <label className="flex items-start gap-2">
