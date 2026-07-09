@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -20,11 +22,13 @@ import { calculerSynthese, formatEuros, hydraterDossier } from "@/lib/calculs";
 import { listTauxLegal } from "@/lib/taux-legal.functions";
 import {
   calculerLigneInterets,
+  calculerDateExecutoire,
   phasesPourLigne,
   defaultLigneInterets,
   LIBELLES_REGIME,
   TauxLegalManquantError,
   type CategorieCreancier,
+  type DelaiRecours,
   type LigneTauxLegal,
   type LigneInterets,
   type RegimeInterets,
@@ -33,6 +37,19 @@ import {
 import { formatDateFR } from "@/lib/calculs/format";
 import type { DossierData } from "@/lib/calculs/types";
 import { AlertTriangle, ChevronDown, ExternalLink, Plus, Trash2 } from "lucide-react";
+
+function formatPct(n: number): string {
+  const rounded = Math.round(n * 100) / 100;
+  return `${rounded.toString().replace(".", ",")} %`;
+}
+
+function formulaLibelle(taux: number, mult: number, maj: number, eff: number): string {
+  const parts: string[] = [`T`];
+  if (mult !== 1) parts.push(`×${mult.toString().replace(".", ",")}`);
+  if (maj !== 0) parts.push(`+ ${maj} pts`);
+  return `${parts.join(" ")} = ${formatPct(eff)} (T = ${formatPct(taux)})`;
+}
+
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/interets")({
   component: Page,
