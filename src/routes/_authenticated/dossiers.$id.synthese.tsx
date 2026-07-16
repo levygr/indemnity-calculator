@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { MontantInput } from "@/components/vp/MontantInput";
 import { useGridNav } from "@/hooks/useGridNav";
 import {
@@ -58,6 +59,10 @@ function Page() {
   const [pendingImport, setPendingImport] = useState<{ file: File; parsed: unknown } | null>(null);
   const [snapshotBeforeImport, setSnapshotBeforeImport] = useState(true);
   const [importing, setImporting] = useState(false);
+  const [hideZero, setHideZero] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("vp:hide-zero") === "1";
+  });
   const createSnap = useServerFn(createSnapshot);
 
   const synth = useMemo(() => (dossier ? calculerSynthese(dossier) : null), [dossier]);
