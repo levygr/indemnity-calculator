@@ -114,16 +114,6 @@ function addDays(iso: string, days: number): string {
 function maxISO(a: string, b: string): string { return a >= b ? a : b; }
 function minISO(a: string, b: string): string { return a <= b ? a : b; }
 
-function ajouterMois(iso: string, mois: number): string {
-  const d = parseDate(iso);
-  const jour = d.getUTCDate();
-  d.setUTCDate(1);
-  d.setUTCMonth(d.getUTCMonth() + mois);
-  // Clamp jour si le mois de destination est plus court.
-  const dernierJour = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
-  d.setUTCDate(Math.min(jour, dernierJour));
-  return toISO(d);
-}
 
 function anniversaireDans(origine: string, annee: number): string {
   const [, m, d] = origine.split("-");
