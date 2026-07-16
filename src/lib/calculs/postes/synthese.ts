@@ -252,6 +252,8 @@ export function calculerSynthese(d: DossierData): Synthese {
       code: "PROVISIONS_SUPERIEURES",
       poste: "Provisions",
       message: "Le total des provisions excède la part revenant à la victime.",
+      route: "/dossiers/$id/synthese",
+      anchor: "section-provisions",
     });
   }
 
@@ -275,6 +277,8 @@ export function calculerSynthese(d: DossierData): Synthese {
       code: "ECART_CREANCES_TP",
       poste: e.posteCode,
       message: `Créances ventilées (${e.ventile.toFixed(2)} €) ≠ TP retenu dans la synthèse (${e.tpSynthese.toFixed(2)} €) pour ${e.libelle}.`,
+      route: "/dossiers/$id/tiers-payeurs",
+      anchor: "section-creances-tp",
     });
   }
 

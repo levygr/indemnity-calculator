@@ -167,6 +167,16 @@ table th,
   font-variant-numeric: tabular-nums;
 }
 
+/* Mise en évidence temporaire d'une section ciblée par un lien contextuel. */
+.vp-anchor-flash {
+  animation: vp-anchor-flash 2s ease-out;
+  border-radius: 0.375rem;
+}
+@keyframes vp-anchor-flash {
+  0% { background-color: color-mix(in oklab, var(--primary) 18%, transparent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 22%, transparent); }
+  100% { background-color: transparent; box-shadow: 0 0 0 0 transparent; }
+}
+
 @media print {
   /* Masquer surfaces non pertinentes. */
   aside,
@@ -218,6 +228,12 @@ table th,
   h2,
   h3 {
     break-after: avoid;
+  }
+  /* Écarts snapshots : forcer noir + gras pour rester lisible en N&B. */
+  .ecart-positif,
+  .ecart-negatif {
+    color: black !important;
+    font-weight: 600;
   }
   @page {
     margin: 15mm;

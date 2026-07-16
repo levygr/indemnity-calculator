@@ -101,13 +101,15 @@ export function Section({
   title,
   description,
   children,
+  id,
 }: {
   title: string;
   description?: string;
   children: React.ReactNode;
+  id?: string;
 }) {
   return (
-    <section className="vp-card p-6">
+    <section id={id} className="vp-card p-6">
       <h2 className="font-display text-lg font-semibold">{title}</h2>
       {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
       <div className="mt-5">{children}</div>

@@ -8,7 +8,10 @@ import { PrintHeader } from "@/components/vp/PrintHeader";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { MontantInput } from "@/components/vp/MontantInput";
+import { useGridNav } from "@/hooks/useGridNav";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -52,6 +55,10 @@ function Page() {
   const { dossier, update } = useDossier(id);
   const fileRef = useRef<HTMLInputElement>(null);
   const [exporting, setExporting] = useState(false);
+  const [pendingImport, setPendingImport] = useState<{ file: File; parsed: unknown } | null>(null);
+  const [snapshotBeforeImport, setSnapshotBeforeImport] = useState(true);
+  const [importing, setImporting] = useState(false);
+  const createSnap = useServerFn(createSnapshot);
 
   const synth = useMemo(() => (dossier ? calculerSynthese(dossier) : null), [dossier]);
   if (!dossier || !synth) return null;
@@ -99,16 +106,33 @@ function Page() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result));
-        // Hydratation profonde : conserve toutes les valeurs par défaut manquantes
-        const merged = hydraterDossier(parsed);
-        update(() => merged);
-        toast.success("Dossier importé");
+        setPendingImport({ file, parsed });
+        setSnapshotBeforeImport(true);
       } catch {
         toast.error("Fichier invalide");
       }
     };
     reader.readAsText(file);
     e.target.value = "";
+  }
+
+  async function confirmImport() {
+    if (!pendingImport || !dossier) return;
+    setImporting(true);
+    try {
+      if (snapshotBeforeImport) {
+        const nom = `Avant import du ${new Date().toLocaleDateString("fr-FR")}`;
+        await createSnap({ data: { dossierId: id, nom } });
+      }
+      const merged = hydraterDossier(pendingImport.parsed as Record<string, unknown>);
+      update(() => merged);
+      toast.success("Dossier importé");
+      setPendingImport(null);
+    } catch (err) {
+      toast.error(`Échec de l'import : ${(err as Error).message}`);
+    } finally {
+      setImporting(false);
+    }
   }
 
   return (
@@ -141,18 +165,56 @@ function Page() {
         </div>
       </header>
 
+      <AlertDialog open={!!pendingImport} onOpenChange={(o) => !o && !importing && setPendingImport(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remplacer le dossier «&nbsp;{dossier.reference}&nbsp;» ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              L'import va écraser <strong>entièrement</strong> le dossier actuel avec le contenu du fichier JSON. Cette opération est irréversible sauf si vous conservez un chiffrage figé.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex items-start gap-2 py-2">
+            <Checkbox
+              id="snapshot-before-import"
+              checked={snapshotBeforeImport}
+              onCheckedChange={(v) => setSnapshotBeforeImport(v === true)}
+            />
+            <Label htmlFor="snapshot-before-import" className="text-sm font-normal cursor-pointer">
+              Figer le chiffrage actuel avant l'import (recommandé)
+            </Label>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={importing}>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmImport} disabled={importing}>
+              {importing ? "Import en cours…" : "Remplacer"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+
       {synth.avertissements.length > 0 ? (
-        <div className="rounded-md border border-destructive/40 bg-destructive/10 p-4">
+        <div id="section-controles-coherence" className="rounded-md border border-destructive/40 bg-destructive/10 p-4">
           <div className="flex items-center gap-2 text-destructive font-display font-semibold text-sm">
             <AlertTriangle className="w-4 h-4" />
             Contrôles de cohérence ({synth.avertissements.length})
           </div>
           <ul className="mt-2 space-y-1 text-sm">
-            {synth.avertissements.map((a, i) => (
-              <li key={i} className="text-destructive/90">
-                <span className="font-semibold">{a.poste} :</span> {a.message}
-              </li>
-            ))}
+            {synth.avertissements.map((a, i) => {
+              const to = a.route as "/dossiers/$id";
+              return (
+                <li key={i}>
+                  <Link
+                    to={to}
+                    params={{ id }}
+                    hash={a.anchor}
+                    className="text-destructive/90 hover:text-destructive underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+                  >
+                    <span className="font-semibold">{a.poste} :</span> {a.message}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : (
@@ -369,9 +431,29 @@ function ProvisionsSection({ provisions, onChange, total }: {
   function patch(id: string, p: Partial<Provision>) {
     onChange(provisions.map((x) => (x.id === id ? { ...x, ...p } : x)));
   }
-  function del(id: string) { onChange(provisions.filter((x) => x.id !== id)); }
+  function del(id: string) {
+    const index = provisions.findIndex((x) => x.id === id);
+    if (index < 0) return;
+    const removed = provisions[index];
+    onChange(provisions.filter((x) => x.id !== id));
+    toast.success("Provision supprimée", {
+      duration: 5000,
+      action: {
+        label: "Annuler",
+        onClick: () => {
+          // Réinsère à l'index d'origine à partir de l'état courant
+          onChange([
+            ...provisions.slice(0, index),
+            removed,
+            ...provisions.slice(index).filter((x) => x.id !== id),
+          ]);
+        },
+      },
+    });
+  }
+  const grid = useGridNav<HTMLTableSectionElement>({ onAppendRow: add });
   return (
-    <Section title="Provisions versées" description="Provisions et indemnités provisionnelles déjà versées à la victime. Elles s'imputent sur la part revenant à la victime pour déterminer le solde final.">
+    <Section id="section-provisions" title="Provisions versées" description="Provisions et indemnités provisionnelles déjà versées à la victime. Elles s'imputent sur la part revenant à la victime pour déterminer le solde final.">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
@@ -382,15 +464,15 @@ function ProvisionsSection({ provisions, onChange, total }: {
               <TableHead className="w-10"></TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody ref={grid.ref} onKeyDown={grid.onKeyDown}>
             {provisions.length === 0 && (
               <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune provision.</TableCell></TableRow>
             )}
-            {provisions.map((p) => (
+            {provisions.map((p, i) => (
               <TableRow key={p.id} className="vp-row-alt">
-                <TableCell><Input type="date" value={p.date ?? ""} onChange={(e) => patch(p.id, { date: e.target.value || null })} /></TableCell>
-                <TableCell><Input value={p.debiteur} placeholder="Assureur, FGAO…" onChange={(e) => patch(p.id, { debiteur: e.target.value })} /></TableCell>
-                <TableCell><MontantInput aria-label="Montant de la provision" value={p.montant} onChange={(v) => patch(p.id, { montant: v ?? 0 })} /></TableCell>
+                <TableCell><Input type="date" data-row={i} data-col="date" value={p.date ?? ""} onChange={(e) => patch(p.id, { date: e.target.value || null })} /></TableCell>
+                <TableCell><Input data-row={i} data-col="debiteur" value={p.debiteur} placeholder="Assureur, FGAO…" onChange={(e) => patch(p.id, { debiteur: e.target.value })} /></TableCell>
+                <TableCell><MontantInput aria-label="Montant de la provision" data-row={i} data-col="montant" value={p.montant} onChange={(v) => patch(p.id, { montant: v ?? 0 })} /></TableCell>
                 <TableCell>
                   <Button size="icon" variant="ghost" onClick={() => del(p.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
                     <Trash2 className="w-4 h-4" />
@@ -495,25 +577,38 @@ function SnapshotsSection({ dossierId, totalVictimeCourant }: { dossierId: strin
             <TableHead>Nom</TableHead>
             <TableHead>Date</TableHead>
             <TableHead className="text-right">Part victime</TableHead>
+            <TableHead className="text-right">Écart vs actuel</TableHead>
             <TableHead className="w-32 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {snapshots.length === 0 && (
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground py-6">
+              <TableCell colSpan={5} className="text-center text-muted-foreground py-6">
                 Aucun chiffrage figé pour ce dossier.
               </TableCell>
             </TableRow>
           )}
           {snapshots.map((s) => {
             const synth = s.synthese as unknown as { totalVictime?: number };
+            const snapTotal = typeof synth.totalVictime === "number" ? synth.totalVictime : null;
+            const ecart = snapTotal != null ? totalVictimeCourant - snapTotal : null;
+            const sign = ecart == null ? "" : ecart > 0 ? "+\u00a0" : ecart < 0 ? "\u2212\u00a0" : "";
+            const ecartClass =
+              ecart == null || ecart === 0
+                ? "text-muted-foreground"
+                : ecart > 0
+                  ? "text-success ecart-positif"
+                  : "text-destructive ecart-negatif";
             return (
               <TableRow key={s.id}>
                 <TableCell className="font-medium">{s.nom}</TableCell>
                 <TableCell>{new Date(s.created_at).toLocaleString("fr-FR")}</TableCell>
                 <TableCell className="text-right tabular-nums">
-                  {typeof synth.totalVictime === "number" ? formatEuros(synth.totalVictime) : "—"}
+                  {snapTotal != null ? formatEuros(snapTotal) : "—"}
+                </TableCell>
+                <TableCell className={`text-right tabular-nums font-medium ${ecartClass}`}>
+                  {ecart == null ? "—" : `${sign}${formatEuros(Math.abs(ecart))}`}
                 </TableCell>
                 <TableCell className="text-right">
                   <Link

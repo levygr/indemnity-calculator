@@ -38,6 +38,7 @@ import {
   formatNombre,
 } from "@/lib/calculs";
 import { Plus, Trash2 } from "lucide-react";
+import { DossierDashboard } from "@/components/vp/DossierDashboard";
 
 export const Route = createFileRoute("/_authenticated/dossiers/$id/")({
   component: DossierPage,
@@ -115,6 +116,9 @@ function DossierPage() {
         <h1 className="mt-1 text-2xl font-display font-semibold">Informations du dossier</h1>
       </header>
 
+      <DossierDashboard dossierId={id} dossier={dossier} />
+
+
       <Section title="Identification">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Référence du dossier" htmlFor="ref">
@@ -178,7 +182,7 @@ function DossierPage() {
         )}
       </Section>
 
-      <Section title="Dates et âges">
+      <Section id="section-dates" title="Dates et âges">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Field label="Date de naissance" htmlFor="dob">
             <Input
@@ -368,6 +372,7 @@ function DossierPage() {
       </Section>
 
       <Section
+        id="section-periodes-dft"
         title="Périodes de DFT"
         description="Le DFT commence au choix le jour même de l'accident ou le lendemain. Les périodes doivent être chaînées et rester avant la date de consolidation."
       >
