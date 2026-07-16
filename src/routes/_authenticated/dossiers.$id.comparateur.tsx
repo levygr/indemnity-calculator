@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Fragment, useMemo, useState } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Note, Section } from "@/components/vp/Field";
+import { PrintHeader } from "@/components/vp/PrintHeader";
+
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -118,7 +120,9 @@ function Page() {
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <PrintHeader reference={dossier.reference} document="Comparateur" />
       <header>
+
         <div className="text-xs font-display font-semibold text-primary tracking-wide">
           COMPARATEUR
         </div>
