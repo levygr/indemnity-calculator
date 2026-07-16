@@ -20,6 +20,7 @@ import {
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 import type { DossierData } from "@/lib/calculs/types";
 import { SECTION_GROUPS, pageHasData, type SectionMeta } from "@/lib/dossier/pageStatus";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   identite: FileText,
@@ -111,7 +112,12 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
                     )}
                   >
                     <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                    <span className="flex-1 min-w-0 truncate">{s.label}</span>
+                    <Tooltip delayDuration={400}>
+                      <TooltipTrigger asChild>
+                        <span className="flex-1 min-w-0 truncate">{s.label}</span>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{s.label}</TooltipContent>
+                    </Tooltip>
                     {s.route === "/dossiers/$id/synthese" && nbAvertissements > 0 && (
                       <span
                         className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground font-display font-semibold shrink-0"
