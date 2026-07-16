@@ -8,6 +8,7 @@ import { PrintHeader } from "@/components/vp/PrintHeader";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -389,7 +390,7 @@ function ProvisionsSection({ provisions, onChange, total }: {
               <TableRow key={p.id} className="vp-row-alt">
                 <TableCell><Input type="date" value={p.date ?? ""} onChange={(e) => patch(p.id, { date: e.target.value || null })} /></TableCell>
                 <TableCell><Input value={p.debiteur} placeholder="Assureur, FGAO…" onChange={(e) => patch(p.id, { debiteur: e.target.value })} /></TableCell>
-                <TableCell><Input type="number" min={0} step="0.01" className="text-right" value={p.montant} onChange={(e) => patch(p.id, { montant: num(e.target.value) })} /></TableCell>
+                <TableCell><MontantInput aria-label="Montant de la provision" value={p.montant} onChange={(v) => patch(p.id, { montant: v ?? 0 })} /></TableCell>
                 <TableCell>
                   <Button size="icon" variant="ghost" onClick={() => del(p.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">
                     <Trash2 className="w-4 h-4" />
