@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { AppSidebar, DOSSIER_PAGES_ORDER } from "@/components/vp/AppSidebar";
 import { useDossier } from "@/hooks/useDossier";
 import type { SaveStatus } from "@/hooks/useDossier";
+import { useUnsavedChangesGuard } from "@/hooks/useUnsavedChangesGuard";
 import { Check, ChevronLeft, ChevronRight, CircleDashed, Cloud, CloudOff, Menu } from "lucide-react";
 import { collecterAvertissements } from "@/lib/calculs";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/dossiers/$id")({
 function DossierLayout() {
   const { id } = Route.useParams();
   const { dossier, status, isLoading } = useDossier(id);
+  useUnsavedChangesGuard(status);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [mobileOpen, setMobileOpen] = useState(false);
 
