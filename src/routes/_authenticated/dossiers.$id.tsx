@@ -95,7 +95,7 @@ function DossierLayout() {
           <SaveIndicator status={status} />
         </header>
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+        <main id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden">
           {isLoading ? (
             <div className="p-6 sm:p-8 text-muted-foreground">Chargement du dossier…</div>
           ) : (
@@ -163,9 +163,15 @@ function SaveIndicator({ status }: { status: SaveStatus }) {
   };
   const s = map[status];
   return (
-    <div className={`flex items-center gap-2 text-xs font-display shrink-0 ${s.className}`} title={s.label}>
+    <div
+      role="status"
+      aria-live="polite"
+      className={`flex items-center gap-2 text-xs font-display shrink-0 ${s.className}`}
+      title={s.label}
+    >
       {s.icon}
       <span className="hidden sm:inline">{s.label}</span>
     </div>
   );
 }
+
