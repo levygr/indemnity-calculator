@@ -279,14 +279,17 @@ function Page() {
 
       <SnapshotsSection dossierId={id} totalVictimeCourant={synth.totalVictime} />
 
-
-
-
-
+      <div className="flex items-center justify-end gap-3 print:hidden">
+        <Label htmlFor="hide-zero" className="text-xs font-normal cursor-pointer flex items-center gap-2">
+          <Switch id="hide-zero" checked={hideZero} onCheckedChange={setHideZero} />
+          Masquer les postes à zéro
+        </Label>
+      </div>
 
       {ORDRE.map((cat) => {
         const st = synth.sousTotaux.find((x) => x.categorie === cat)!;
-        const lignes = synth.lignes.filter((l) => l.categorie === cat);
+        const lignesAll = synth.lignes.filter((l) => l.categorie === cat);
+        const lignes = hideZero ? lignesAll.filter((l) => l.montant !== 0) : lignesAll;
         if (st.montant === 0) return null;
         return (
           <Section key={cat} title={CATEGORIE_LABEL[cat]}>
@@ -303,7 +306,7 @@ function Page() {
               </TableHeader>
               <TableBody>
                 {lignes.map((l) => (
-                  <TableRow key={l.code} className={l.montant === 0 ? "opacity-50" : ""}>
+                  <TableRow key={l.code} className={l.montant === 0 ? "opacity-50 print:hidden" : ""}>
                     <TableCell>
                       <span className="text-xs text-muted-foreground mr-2">{l.code}</span>
                       {l.poste}
