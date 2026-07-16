@@ -299,18 +299,15 @@ export function calculerInterets(params: ParamsInterets): ResultatInterets {
 /**
  * Régimes disponibles.
  *
- * `apres_decision` remplace les deux anciens régimes distincts (`decision_5pts`
- * et `badinter_apres`) : les deux textes L. 211-17 C. assur. (multiplicateur)
- * et L. 313-3 C. mon. fin. (majoration additive) y sont activables
- * indépendamment et se cumulent selon la formule (taux × mult) + majoration,
- * jamais (taux + majoration) × mult.
+ * Le module ne gère que les intérêts **antérieurs au jugement** :
+ *  - `taux_legal`     : taux légal simple ;
+ *  - `badinter_avant` : doublement Badinter avant jugement
+ *    (art. L. 211-13 C. assur.).
+ *
+ * Toute logique postérieure au jugement (art. L. 211-17 C. assur.,
+ * majoration L. 313-3 C. mon. fin.) a été retirée du calculateur.
  */
-export type RegimeInterets =
-  | "taux_legal"
-  | "badinter_avant"
-  | "apres_decision";
-
-export type DelaiRecours = "15j" | "1m" | "2m";
+export type RegimeInterets = "taux_legal" | "badinter_avant";
 
 export interface LigneInterets {
   id: string;
@@ -322,20 +319,6 @@ export interface LigneInterets {
   dateFin: string | null;
   anatocisme: boolean;
   dateAnatocisme: string | null;
-  // Régime "apres_decision" — dates
-  dateDecision: string | null;
-  dateExecutoire: string | null;
-  dateExecutoireManuelle: boolean;
-  dateSignification: string | null;
-  delaiRecours: DelaiRecours | null;
-  // Régime "apres_decision" — L. 211-17
-  l211_17Actif: boolean;
-  delaiBadinter1Mois: number; // défaut 2 → passage ×1,5
-  delaiBadinter2Mois: number; // défaut 4 → passage ×2
-  // Régime "apres_decision" — L. 313-3
-  l313_3Actif: boolean;
-  delaiMajorationMois: number; // défaut 2 → +5 pts à partir de exécutoire + délai
-  pointsMajoration: number; // défaut 5
 }
 
 export function defaultLigneInterets(id: string): LigneInterets {
@@ -349,57 +332,13 @@ export function defaultLigneInterets(id: string): LigneInterets {
     dateFin: null,
     anatocisme: false,
     dateAnatocisme: null,
-    dateDecision: null,
-    dateExecutoire: null,
-    dateExecutoireManuelle: false,
-    dateSignification: null,
-    delaiRecours: null,
-    l211_17Actif: false,
-    delaiBadinter1Mois: 2,
-    delaiBadinter2Mois: 4,
-    l313_3Actif: false,
-    delaiMajorationMois: 2,
-    pointsMajoration: 5,
   };
 }
 
 export const LIBELLES_REGIME: Record<RegimeInterets, string> = {
   taux_legal: "Taux légal simple",
   badinter_avant: "Doublement Badinter avant jugement (art. L. 211-9 / L. 211-13 C. assur.)",
-  apres_decision: "Après décision de justice (art. L. 211-17 C. assur. / L. 313-3 C. mon. fin.)",
 };
-
-/** Convertit un choix de délai de recours en nombre de jours. */
-export function delaiRecoursEnJours(d: DelaiRecours): number {
-  if (d === "15j") return 15;
-  if (d === "1m") return 30; // approximation ; l'assistant peut aussi calculer en mois via ajouterMois
-  return 60;
-}
-
-/**
- * Date exécutoire pré-calculée depuis la signification + délai de recours.
- * Convention : 15 jours = signification + 15 jours ; 1 ou 2 mois =
- * signification + mois calendaires (via `ajouterMois`).
- */
-export function calculerDateExecutoire(
-  signification: string | null,
-  delai: DelaiRecours | null,
-): string | null {
-  if (!signification || !delai) return null;
-  if (delai === "15j") return addDays(signification, 15);
-  if (delai === "1m") return ajouterMois(signification, 1);
-  return ajouterMois(signification, 2);
-}
-
-/**
- * Résout la date exécutoire effective : la saisie manuelle prime toujours ;
- * sinon on retombe sur la valeur calculée depuis la signification.
- */
-export function resoudreDateExecutoire(ligne: LigneInterets): string | null {
-  if (ligne.dateExecutoireManuelle) return ligne.dateExecutoire;
-  if (ligne.dateExecutoire) return ligne.dateExecutoire;
-  return calculerDateExecutoire(ligne.dateSignification, ligne.delaiRecours);
-}
 
 /**
  * Construit le profil de phases pour une ligne, à partir de son régime.
@@ -414,70 +353,7 @@ export function phasesPourLigne(ligne: LigneInterets): PhaseTaux[] | null {
       return [{ aPartirDe: debut, multiplicateur: 1, majorationPoints: 0 }];
     case "badinter_avant":
       return [{ aPartirDe: debut, multiplicateur: 2, majorationPoints: 0 }];
-    case "apres_decision":
-      return phasesApresDecision(ligne);
   }
 }
 
-/**
- * Construit les phases du régime « Après décision de justice » par fusion de
- * deux chronologies indépendantes :
- *   - multiplicateur L. 211-17 (×1 → ×1,5 → ×2), calé sur la date de décision ;
- *   - majoration L. 313-3 (+5 pts), calée sur la date exécutoire.
- *
- * Formule à chaque instant : (taux légal du jour × multiplicateur) + majoration.
- */
-function phasesApresDecision(ligne: LigneInterets): PhaseTaux[] | null {
-  if (!ligne.dateDebut) return null;
-  const debut = ligne.dateDebut;
-
-  // Chronologie multiplicateur.
-  const multChanges: Array<{ date: string; mult: number }> = [
-    { date: debut, mult: 1 },
-  ];
-  if (ligne.l211_17Actif) {
-    if (!ligne.dateDecision) return null;
-    const p1 = ajouterMois(ligne.dateDecision, ligne.delaiBadinter1Mois);
-    const p2 = ajouterMois(ligne.dateDecision, ligne.delaiBadinter2Mois);
-    multChanges.push({ date: p1, mult: 1.5 });
-    multChanges.push({ date: p2, mult: 2 });
-  }
-
-  // Chronologie majoration.
-  const majChanges: Array<{ date: string; maj: number }> = [
-    { date: debut, maj: 0 },
-  ];
-  if (ligne.l313_3Actif) {
-    const dExec = resoudreDateExecutoire(ligne);
-    if (!dExec) return null;
-    const bascule = ajouterMois(dExec, ligne.delaiMajorationMois);
-    majChanges.push({ date: bascule, maj: ligne.pointsMajoration });
-  }
-
-  // Fusion : union des frontières >= début.
-  const cutSet = new Set<string>([debut]);
-  for (const c of multChanges) if (c.date >= debut) cutSet.add(c.date);
-  for (const c of majChanges) if (c.date >= debut) cutSet.add(c.date);
-  const cuts = Array.from(cutSet).sort();
-
-  const valueAt = <T extends { date: string }>(
-    date: string,
-    changes: T[],
-    key: keyof T,
-  ): number => {
-    const sorted = [...changes].sort((a, b) => a.date.localeCompare(b.date));
-    let v = sorted[0][key] as unknown as number;
-    for (const c of sorted) {
-      if (c.date <= date) v = c[key] as unknown as number;
-      else break;
-    }
-    return v;
-  };
-
-  return cuts.map((d) => ({
-    aPartirDe: d,
-    multiplicateur: valueAt(d, multChanges, "mult"),
-    majorationPoints: valueAt(d, majChanges, "maj"),
-  }));
-}
 
