@@ -63,7 +63,8 @@ describe("Calcul avant jugement", () => {
       categorieCreancier: "particulier", taux: fixture4,
     });
     expect(segAt(r, "2020-01-01").tauxAnnuel).toBe(8);
-    expect(r.totalInterets).toBeCloseTo(8000, 6);
+    // 2020 est bissextile : 366 jours × 8 % × 100 000 / 365 = 8021,92 €
+    expect(r.totalInterets).toBeCloseTo((100000 * 8 * 366) / 100 / 365, 6);
   });
 });
 
