@@ -150,6 +150,7 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
         Version beta 0.7
       </div>
     </aside>
+    </TooltipProvider>
   );
 }
 
