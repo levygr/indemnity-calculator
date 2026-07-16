@@ -84,4 +84,24 @@ describe("Avertissements de calcul", () => {
     const a = collecterAvertissements(d);
     expect(a.some((x) => x.code === "AIPP_HORS_BORNES")).toBe(false);
   });
+
+  // ---- Métadonnées de navigation ----
+  it("chaque avertissement porte une route et une ancre", () => {
+    const d = defaultDossierData();
+    d.dateAccident = "2024-06-01";
+    d.dateConsolidation = "2024-01-01";
+    d.tauxAIPP = 150;
+    d.periodesDFT = [
+      { id: "a", debut: "2024-01-01", fin: "2024-06-30", taux: 1 },
+      { id: "b", debut: "2024-06-15", fin: "2024-09-30", taux: 0.5 },
+    ];
+    const a = collecterAvertissements(d);
+    expect(a.length).toBeGreaterThan(0);
+    for (const av of a) {
+      expect(typeof av.route).toBe("string");
+      expect(av.route.length).toBeGreaterThan(0);
+      expect(typeof av.anchor).toBe("string");
+      expect(av.anchor.length).toBeGreaterThan(0);
+    }
+  });
 });

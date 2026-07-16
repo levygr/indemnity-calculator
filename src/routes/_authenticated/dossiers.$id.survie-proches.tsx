@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -141,8 +142,8 @@ function PageInner({
                       </SelectContent>
                     </Select>
                   </TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" className="w-32" value={p.perteRevenusAnnuelle} onChange={(e) => patchProche(p.id, { perteRevenusAnnuelle: n(e.target.value) })} /></TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.perteRevenusTP} onChange={(e) => patchProche(p.id, { perteRevenusTP: n(e.target.value) })} /></TableCell>
+                  <TableCell><MontantInput className="w-32" aria-label="Montant" value={p.perteRevenusAnnuelle} onChange={(v) => patchProche(p.id,{ perteRevenusAnnuelle: v ?? 0 })} /></TableCell>
+                  <TableCell><MontantInput className="w-28" aria-label="Montant" value={p.perteRevenusTP} onChange={(v) => patchProche(p.id,{ perteRevenusTP: v ?? 0 })} /></TableCell>
                   <TableCell>
                     <Select value={p.lienReferentiel || "__none"} onValueChange={(v) => patchProche(p.id, { lienReferentiel: v === "__none" ? "" : v })}>
                       <SelectTrigger className="w-56"><SelectValue placeholder="Lien (référentiel)" /></SelectTrigger>
@@ -153,10 +154,10 @@ function PageInner({
                         ))}
                       </SelectContent>
                     </Select>
-                    <Input type="number" min={0} step="0.01" className="w-28 mt-1" value={p.affection} onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
+                    <MontantInput className="w-28 mt-1" aria-label="Montant" value={p.affection} onChange={(v) => patchProche(p.id,{ affection: v ?? 0 })} />
                     <div className="mt-1"><FourchetteAffectionHint code={p.lienReferentiel ?? ""} /></div>
                   </TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" className="w-28" value={p.pep} onChange={(e) => patchProche(p.id, { pep: n(e.target.value) })} /></TableCell>
+                  <TableCell><MontantInput className="w-28" aria-label="Montant" value={p.pep} onChange={(v) => patchProche(p.id,{ pep: v ?? 0 })} /></TableCell>
                   <TableCell><Button variant="ghost" size="icon" onClick={() => delProche(p.id)}><Trash2 className="w-4 h-4" /></Button></TableCell>
                 </TableRow>
               ))}
@@ -165,7 +166,7 @@ function PageInner({
         )}
       </Section>
 
-      <Section title="Perte de revenus capitalisée">
+      <Section id="poste-perte-proches" title="Perte de revenus capitalisée">
         {perte.lignes.length > 0 && (
           <Table>
             <TableHeader>
@@ -221,8 +222,8 @@ function PageInner({
               {ps.fraisDivers.map((f) => (
                 <TableRow key={f.id}>
                   <TableCell><Input value={f.libelle} onChange={(e) => patchFrais(f.id, { libelle: e.target.value })} /></TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" value={f.montant} onChange={(e) => patchFrais(f.id, { montant: n(e.target.value) })} /></TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" value={f.tiersPayeur} onChange={(e) => patchFrais(f.id, { tiersPayeur: n(e.target.value) })} /></TableCell>
+                  <TableCell><MontantInput aria-label="Montant" value={f.montant} onChange={(v) => patchFrais(f.id,{ montant: v ?? 0 })} /></TableCell>
+                  <TableCell><MontantInput aria-label="Montant" value={f.tiersPayeur} onChange={(v) => patchFrais(f.id,{ tiersPayeur: v ?? 0 })} /></TableCell>
                   <TableCell><Button variant="ghost" size="icon" onClick={() => delFrais(f.id)}><Trash2 className="w-4 h-4" /></Button></TableCell>
                 </TableRow>
               ))}

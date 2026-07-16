@@ -6,6 +6,7 @@ import { useDossier } from "@/hooks/useDossier";
 import { Section } from "@/components/vp/Field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -306,12 +307,11 @@ function LigneCard({
               </Select>
             </div>
             <div>
-              <Label>Base (€)</Label>
-              <Input
-                type="number"
-                value={ligne.base}
-                onChange={(e) => onChange({ base: Number(e.target.value) })}
-                inputMode="decimal"
+              <Label htmlFor="ligne-base">Base (€)</Label>
+              <MontantInput
+                id="ligne-base"
+                value={isFinite(ligne.base) ? ligne.base : null}
+                onChange={(v) => onChange({ base: v ?? 0 })}
               />
             </div>
             <div />

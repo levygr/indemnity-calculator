@@ -5,6 +5,10 @@
  * des postes. Elles servent à alerter l'utilisateur lorsqu'une saisie produit un
  * capital à zéro alors qu'une rente est renseignée, lorsque des dates ou périodes
  * sont incohérentes, ou lorsque le taux d'AIPP est hors bornes.
+ *
+ * Chaque avertissement porte, en plus de `poste` et `message`, la `route` cible
+ * et l'`anchor` de la section du poste concerné pour permettre la navigation
+ * directe depuis la synthèse.
  */
 
 import type { DossierData } from "./types";
@@ -32,13 +36,40 @@ export interface AvertissementCalcul {
   code: AvertissementCode;
   poste: string;
   message: string;
+  /** Route cible relative au dossier (avec `/dossiers/$id`). */
+  route: string;
+  /** Identifiant de la section (`id` HTML) où scroller/mettre en évidence. */
+  anchor: string;
+}
+
+/** Table de correspondance poste → localisation (route + ancre). */
+const LOCATIONS: Record<string, { route: string; anchor: string }> = {
+  "ATP permanente": { route: "/dossiers/$id/patrimoniaux-permanents", anchor: "poste-atp-permanente" },
+  "PGPF": { route: "/dossiers/$id/patrimoniaux-permanents", anchor: "poste-pgpf" },
+  "DSF récurrentes": { route: "/dossiers/$id/patrimoniaux-permanents", anchor: "poste-dsf-recurrentes" },
+  "Logement adapté": { route: "/dossiers/$id/patrimoniaux-permanents", anchor: "poste-logement" },
+  "Véhicule adapté": { route: "/dossiers/$id/patrimoniaux-permanents", anchor: "poste-vehicule" },
+  "Incidence professionnelle": { route: "/dossiers/$id/patrimoniaux-permanents", anchor: "poste-ip" },
+  "Perte de revenus du foyer": { route: "/dossiers/$id/deces", anchor: "poste-perte-foyer" },
+  "Perte de revenus des proches": { route: "/dossiers/$id/survie-proches", anchor: "poste-perte-proches" },
+  "Dossier": { route: "/dossiers/$id", anchor: "section-dates" },
+  "DFT": { route: "/dossiers/$id", anchor: "section-periodes-dft" },
+  "ATP temporaire": { route: "/dossiers/$id/patrimoniaux-temporaires", anchor: "poste-atp-temp" },
+  "DSA récurrentes": { route: "/dossiers/$id/patrimoniaux-temporaires", anchor: "poste-dsa-recurrentes" },
+  "Référentiels": { route: "/dossiers/$id/synthese", anchor: "section-referentiels" },
+};
+
+function locate(poste: string): { route: string; anchor: string } {
+  return LOCATIONS[poste] ?? { route: "/dossiers/$id/synthese", anchor: "section-controles-coherence" };
 }
 
 function perNul(poste: string, detail: string): AvertissementCalcul {
+  const loc = locate(poste);
   return {
     code: "PER_NUL",
     poste,
     message: `Rente saisie mais capital à zéro : ${detail}. Vérifiez la date de naissance, l'âge de fin et la table barémique.`,
+    ...loc,
   };
 }
 
@@ -58,6 +89,7 @@ function detecterChevauchements(
   periodes: Periode[],
 ): AvertissementCalcul[] {
   const out: AvertissementCalcul[] = [];
+  const loc = locate(poste);
   const valid = periodes.filter(
     (p): p is Periode & { debut: string; fin: string } => !!p.debut && !!p.fin && p.debut <= p.fin,
   );
@@ -70,6 +102,7 @@ function detecterChevauchements(
           code: "PERIODES_CHEVAUCHANTES",
           poste,
           message: `Chevauchement détecté entre « ${a.label} » et « ${b.label} ».`,
+          ...loc,
         });
       }
     }
@@ -148,6 +181,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
         poste: "Perte de revenus du foyer",
         message:
           "Perte annuelle du foyer nulle malgré un revenu du défunt : vérifiez la part d'autoconsommation et le revenu maintenu du conjoint.",
+        ...locate("Perte de revenus du foyer"),
       });
     }
     if (perteFoyer > 0) {
@@ -205,6 +239,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       code: "DATES_INCOHERENTES",
       poste: "Dossier",
       message: "Date de consolidation antérieure à la date d'accident.",
+      ...locate("Dossier"),
     });
   }
   if (d.dateConsolidation && d.dateLiquidation && d.dateLiquidation < d.dateConsolidation) {
@@ -212,6 +247,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       code: "DATES_INCOHERENTES",
       poste: "Dossier",
       message: "Date de liquidation antérieure à la date de consolidation.",
+      ...locate("Dossier"),
     });
   }
 
@@ -253,13 +289,11 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       code: "AIPP_HORS_BORNES",
       poste: "Dossier",
       message: `Taux d'AIPP hors de la plage [0, 100] : ${d.tauxAIPP}.`,
+      ...locate("Dossier"),
     });
   }
 
   // ---- e) REFERENTIEL_NON_VERSIONNE ----
-  // Les éditions de AIPP_META et REFERENTIEL sont désormais renseignées
-  // (édition septembre 2025). Le contrôle reste ici pour documenter
-  // l'invariant ; il ne se déclenche qu'en cas de régression future.
   const aippEdition: string | null | undefined = AIPP_META.edition;
   const refEdition: string | null | undefined = REFERENTIEL.edition;
   if (!aippEdition) {
@@ -267,6 +301,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       code: "REFERENTIEL_NON_VERSIONNE",
       poste: "Référentiels",
       message: `Édition du barème AIPP (${AIPP_META.source}) non renseignée : compléter src/data/bareme_aipp.ts avant tout usage juridique.`,
+      ...locate("Référentiels"),
     });
   }
   if (!refEdition) {
@@ -274,6 +309,7 @@ export function collecterAvertissements(d: DossierData): AvertissementCalcul[] {
       code: "REFERENTIEL_NON_VERSIONNE",
       poste: "Référentiels",
       message: `Édition du référentiel d'évaluation (${REFERENTIEL.nom}) non renseignée : compléter src/data/referentiel_evaluation.ts avant tout usage juridique.`,
+      ...locate("Référentiels"),
     });
   }
 

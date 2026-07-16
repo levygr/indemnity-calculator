@@ -19,103 +19,23 @@ import {
 } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 import type { DossierData } from "@/lib/calculs/types";
+import { SECTION_GROUPS, pageHasData, type SectionMeta } from "@/lib/dossier/pageStatus";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-interface Section {
-  label: string;
-  to:
-    | "/dossiers/$id"
-    | "/dossiers/$id/patrimoniaux-temporaires"
-    | "/dossiers/$id/extrapatrimoniaux-temporaires"
-    | "/dossiers/$id/patrimoniaux-permanents"
-    | "/dossiers/$id/extrapatrimoniaux-permanents"
-    | "/dossiers/$id/deces"
-    | "/dossiers/$id/survie-proches"
-    | "/dossiers/$id/tiers-payeurs"
-    | "/dossiers/$id/synthese"
-    | "/dossiers/$id/comparateur"
-    | "/dossiers/$id/interets"
-    | "/dossiers/$id/activite";
-  icon: React.ComponentType<{ className?: string }>;
-  key: string;
-}
-
-interface Group {
-  title: string;
-  items: Section[];
-}
-
-const GROUPS: Group[] = [
-  {
-    title: "Identité",
-    items: [{ label: "Dossier", to: "/dossiers/$id", icon: FileText, key: "identite" }],
-  },
-  {
-    title: "Postes temporaires",
-    items: [
-      { label: "Préj. patrimoniaux temporaires", to: "/dossiers/$id/patrimoniaux-temporaires", icon: Receipt, key: "pt" },
-      { label: "Préj. extrapatrimoniaux temporaires", to: "/dossiers/$id/extrapatrimoniaux-temporaires", icon: HeartPulse, key: "ept" },
-    ],
-  },
-  {
-    title: "Postes permanents",
-    items: [
-      { label: "Préj. patrimoniaux permanents", to: "/dossiers/$id/patrimoniaux-permanents", icon: TrendingUp, key: "pp" },
-      { label: "Préj. extrapatrimoniaux permanents", to: "/dossiers/$id/extrapatrimoniaux-permanents", icon: User2, key: "epp" },
-    ],
-  },
-  {
-    title: "Décès & survie",
-    items: [
-      { label: "Victimes indirectes - décès", to: "/dossiers/$id/deces", icon: Users, key: "deces" },
-      { label: "Victimes indirectes - survie", to: "/dossiers/$id/survie-proches", icon: Users, key: "survie" },
-    ],
-  },
-  {
-    title: "Recours & synthèse",
-    items: [
-      { label: "Tiers payeurs", to: "/dossiers/$id/tiers-payeurs", icon: Landmark, key: "tp" },
-      { label: "Synthèse", to: "/dossiers/$id/synthese", icon: ClipboardList, key: "synthese" },
-      { label: "Comparateur", to: "/dossiers/$id/comparateur", icon: GitCompareArrows, key: "comparateur" },
-      { label: "Intérêts", to: "/dossiers/$id/interets", icon: Percent, key: "interets" },
-      { label: "Activité", to: "/dossiers/$id/activite", icon: History, key: "activite" },
-    ],
-  },
-];
-
-/** Retourne true si la page comporte au moins une donnée saisie non triviale. */
-function pageHasData(key: string, d: DossierData | null): boolean {
-  if (!d) return false;
-  const pt = d.postesTemp;
-  const pp = d.postesPerm as unknown as Record<string, unknown> | undefined;
-  switch (key) {
-    case "identite":
-      return !!(d.reference && d.reference.trim().length > 0) || !!d.dateNaissance || !!d.dateAccident;
-    case "pt":
-      return (
-        (pt?.dsaPonctuelles?.length ?? 0) > 0 ||
-        (pt?.dsaRecurrentes?.length ?? 0) > 0 ||
-        (pt?.fraisDivers?.length ?? 0) > 0 ||
-        (pt?.atpTemp?.length ?? 0) > 0 ||
-        !!pt?.pgpa?.methode
-      );
-    case "ept":
-      return !!(pt?.dft?.tauxJournalier || pt?.se?.montant || pt?.pet?.montant);
-    case "pp":
-      return !!pp && Object.keys(pp).length > 0;
-    case "epp":
-      return !!pp && Object.keys(pp).length > 0;
-    case "deces":
-      return !!d.postesDeces && Object.keys(d.postesDeces as unknown as Record<string, unknown>).length > 0;
-    case "survie":
-      return !!d.postesSurvie && Object.keys(d.postesSurvie as unknown as Record<string, unknown>).length > 0;
-    case "tp":
-      return (d.organismesTP?.length ?? 0) > 0 || (d.creancesTP?.length ?? 0) > 0;
-    case "interets":
-      return (d.lignesInterets?.length ?? 0) > 0;
-    default:
-      return false;
-  }
-}
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  identite: FileText,
+  pt: Receipt,
+  ept: HeartPulse,
+  pp: TrendingUp,
+  epp: User2,
+  deces: Users,
+  survie: Users,
+  tp: Landmark,
+  synthese: ClipboardList,
+  comparateur: GitCompareArrows,
+  interets: Percent,
+  activite: History,
+};
 
 interface Props {
   id: string;
@@ -129,6 +49,7 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
+    <TooltipProvider delayDuration={400}>
     <aside className="w-72 shrink-0 h-full min-h-screen bg-sidebar text-sidebar-foreground flex flex-col">
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
@@ -163,21 +84,22 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
       </div>
 
       <nav aria-label="Navigation du dossier" className="flex-1 py-2 overflow-y-auto">
-        {GROUPS.map((g) => (
+        {SECTION_GROUPS.map((g) => (
           <div key={g.title} className="mb-2" role="group" aria-label={g.title}>
             <div className="px-5 py-1.5 text-[10px] uppercase tracking-widest text-sidebar-foreground/45 font-display font-semibold">
               {g.title}
             </div>
-            {g.items.map((s) => {
-              const target = s.to === "/dossiers/$id" ? `/dossiers/${id}` : s.to.replace("$id", id);
+            {g.items.map((s: SectionMeta) => {
+              const target = s.route === "/dossiers/$id" ? `/dossiers/${id}` : s.route.replace("$id", id);
               const active = pathname === target;
-              const Icon = s.icon;
+              const Icon = ICONS[s.key] ?? FileText;
               const hasData = pageHasData(s.key, dossier);
               return (
                 <Link
                   key={s.label}
-                  to={s.to}
+                  to={s.route}
                   params={{ id }}
+                  hash={s.route === "/dossiers/$id/synthese" && nbAvertissements > 0 ? "section-controles-coherence" : undefined}
                   onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
@@ -191,8 +113,13 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
                     )}
                   >
                     <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                    <span className="flex-1 min-w-0 truncate">{s.label}</span>
-                    {s.to === "/dossiers/$id/synthese" && nbAvertissements > 0 && (
+                    <Tooltip delayDuration={400}>
+                      <TooltipTrigger asChild>
+                        <span className="flex-1 min-w-0 truncate">{s.label}</span>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{s.label}</TooltipContent>
+                    </Tooltip>
+                    {s.route === "/dossiers/$id/synthese" && nbAvertissements > 0 && (
                       <span
                         className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground font-display font-semibold shrink-0"
                         aria-label={`${nbAvertissements} avertissement${nbAvertissements > 1 ? "s" : ""}`}
@@ -223,10 +150,11 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
         Version beta 0.7
       </div>
     </aside>
+    </TooltipProvider>
   );
 }
 
 /** Ordre logique des pages du dossier pour la navigation Précédent / Suivant. */
-export const DOSSIER_PAGES_ORDER: { path: string; label: string; key: string }[] = GROUPS.flatMap(
-  (g) => g.items.map((s) => ({ path: s.to, label: s.label, key: s.key })),
+export const DOSSIER_PAGES_ORDER: { path: string; label: string; key: string }[] = SECTION_GROUPS.flatMap(
+  (g) => g.items.map((s) => ({ path: s.route, label: s.label, key: s.key })),
 );

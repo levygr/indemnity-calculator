@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -135,7 +136,7 @@ function Page() {
         </div>
       </Section>
 
-      <Section title="Créances ventilées poste par poste" description="Chaque ligne rattache une créance à un organisme et à un poste de la synthèse.">
+      <Section id="section-creances-tp" title="Créances ventilées poste par poste" description="Chaque ligne rattache une créance à un organisme et à un poste de la synthèse.">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -174,10 +175,10 @@ function Page() {
                     <Input value={c.libelle} placeholder="Libellé" onChange={(e) => patchCreance(c.id, { libelle: e.target.value })} />
                   </TableCell>
                   <TableCell>
-                    <Input type="number" min={0} step="0.01" className="text-right" value={c.montantEchu} onChange={(e) => patchCreance(c.id, { montantEchu: num(e.target.value) })} />
+                    <MontantInput className="text-right" aria-label="Montant" value={c.montantEchu} onChange={(v) => patchCreance(c.id,{ montantEchu: v ?? 0 })} />
                   </TableCell>
                   <TableCell>
-                    <Input type="number" min={0} step="0.01" className="text-right" value={c.montantAEchoir} onChange={(e) => patchCreance(c.id, { montantAEchoir: num(e.target.value) })} />
+                    <MontantInput className="text-right" aria-label="Montant" value={c.montantAEchoir} onChange={(v) => patchCreance(c.id,{ montantAEchoir: v ?? 0 })} />
                   </TableCell>
                   <TableCell>
                     <Button size="icon" variant="ghost" onClick={() => delCreance(c.id)} className="h-8 w-8 text-muted-foreground hover:text-destructive">

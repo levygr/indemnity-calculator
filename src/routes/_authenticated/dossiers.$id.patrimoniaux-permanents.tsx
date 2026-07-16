@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -151,8 +152,8 @@ function PageInner({
                 return (
                   <TableRow key={l.id} className="vp-row-alt">
                     <TableCell><Input value={l.libelle} onChange={(e) => patchDSFP(l.id, { libelle: e.target.value })} /></TableCell>
-                    <TableCell className="w-32"><Input type="number" min={0} step="0.01" value={l.montant} onChange={(e) => patchDSFP(l.id, { montant: n(e.target.value) })} /></TableCell>
-                    <TableCell className="w-32"><Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchDSFP(l.id, { tiersPayeur: n(e.target.value) })} /></TableCell>
+                    <TableCell className="w-32"><MontantInput aria-label="Montant" value={l.montant} onChange={(v) => patchDSFP(l.id,{ montant: v ?? 0 })} /></TableCell>
+                    <TableCell className="w-32"><MontantInput aria-label="Montant" value={l.tiersPayeur} onChange={(v) => patchDSFP(l.id,{ tiersPayeur: v ?? 0 })} /></TableCell>
                     <TableCell className="font-medium">{formatEuros(c?.resteACharge ?? 0)}</TableCell>
                     <TableCell><IconDel onClick={() => delDSFP(l.id)} /></TableCell>
                   </TableRow>
@@ -168,7 +169,7 @@ function PageInner({
       </Section>
 
       {/* -------- DSF récurrentes -------- */}
-      <Section title="Dépenses de santé futures — récurrentes" description="Frais périodiques capitalisés à la date de liquidation. « Viager » = jusqu'à la fin de vie ; « Temporaire » = jusqu'à un âge donné.">
+      <Section id="poste-dsf-recurrentes" title="Dépenses de santé futures — récurrentes" description="Frais périodiques capitalisés à la date de liquidation. « Viager » = jusqu'à la fin de vie ; « Temporaire » = jusqu'à un âge donné.">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -187,7 +188,7 @@ function PageInner({
                 return (
                   <TableRow key={l.id} className="vp-row-alt">
                     <TableCell><Input value={l.libelle} onChange={(e) => patchDSFR(l.id, { libelle: e.target.value })} /></TableCell>
-                    <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.montant} onChange={(e) => patchDSFR(l.id, { montant: n(e.target.value) })} /></TableCell>
+                    <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.montant} onChange={(v) => patchDSFR(l.id,{ montant: v ?? 0 })} /></TableCell>
                     <TableCell className="w-28"><PeriodiciteSelect value={l.periodicite} onChange={(v) => patchDSFR(l.id, { periodicite: v })} /></TableCell>
                     <TableCell className="w-32">
                       <Select value={l.capitalisation} onValueChange={(v) => patchDSFR(l.id, { capitalisation: v as "viager" | "temporaire" })}>
@@ -199,7 +200,7 @@ function PageInner({
                       </Select>
                     </TableCell>
                     <TableCell className="w-24"><Input type="number" min={0} step={1} value={l.ageFin ?? ""} disabled={l.capitalisation === "viager"} onChange={(e) => patchDSFR(l.id, { ageFin: nOrNull(e.target.value) })} /></TableCell>
-                    <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchDSFR(l.id, { tiersPayeur: n(e.target.value) })} /></TableCell>
+                    <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.tiersPayeur} onChange={(v) => patchDSFR(l.id,{ tiersPayeur: v ?? 0 })} /></TableCell>
                     <TableCell className="text-muted-foreground">{(c?.per ?? 0).toFixed(3)}</TableCell>
                     <TableCell className="font-medium">{formatEuros(c?.capitalReste ?? 0)}</TableCell>
                     <TableCell><IconDel onClick={() => delDSFR(l.id)} /></TableCell>
@@ -222,9 +223,9 @@ function PageInner({
       </Section>
 
       {/* -------- ATP permanente -------- */}
-      <Section title="Assistance tierce personne — permanente (ATP perm.)" description="Rente annuelle = taux horaire × h/j × facteur (usuel 412). Capitalisée en viager ou jusqu'à un âge.">
+      <Section id="poste-atp-permanente" title="Assistance tierce personne — permanente (ATP perm.)" description="Rente annuelle = taux horaire × h/j × facteur (usuel 412). Capitalisée en viager ou jusqu'à un âge.">
         <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
-          <Field label="Taux horaire (€/h)"><Input type="number" min={0} step="0.01" value={pp.atpPerm.tauxHoraire} onChange={(e) => patchATPP({ tauxHoraire: n(e.target.value) })} /></Field>
+          <Field label="Taux horaire (€/h)"><MontantInput aria-label="Montant" value={pp.atpPerm.tauxHoraire} onChange={(v) => patchATPP({ tauxHoraire: v ?? 0 })} /></Field>
           <Field label="Heures / jour"><Input type="number" min={0} step="0.5" value={pp.atpPerm.heuresParJour} onChange={(e) => patchATPP({ heuresParJour: n(e.target.value) })} /></Field>
           <Field label="Facteur jours"><Input type="number" min={0} step={1} value={pp.atpPerm.facteurJours} onChange={(e) => patchATPP({ facteurJours: n(e.target.value) })} /></Field>
           <Field label="Capitalisation">
@@ -237,7 +238,7 @@ function PageInner({
             </Select>
           </Field>
           <Field label="Âge fin"><Input type="number" min={0} step={1} value={pp.atpPerm.ageFin ?? ""} disabled={pp.atpPerm.capitalisation === "viager"} onChange={(e) => patchATPP({ ageFin: nOrNull(e.target.value) })} /></Field>
-          <Field label="TP annuel (PCH…)"><Input type="number" min={0} step="0.01" value={pp.atpPerm.tiersPayeur} onChange={(e) => patchATPP({ tiersPayeur: n(e.target.value) })} /></Field>
+          <Field label="TP annuel (PCH…)"><MontantInput aria-label="Montant" value={pp.atpPerm.tiersPayeur} onChange={(v) => patchATPP({ tiersPayeur: v ?? 0 })} /></Field>
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <Recap label="Rente annuelle" value={formatEuros(atp.renteAnnuelle)} />
@@ -249,9 +250,9 @@ function PageInner({
       </Section>
 
       {/* -------- PGPF -------- */}
-      <Section title="Pertes de gains professionnels futurs (PGPF)" description="Rente annuelle nette × PER. Trois modes : viager, temporaire (âge fin) ou différée (âge de début, ex. reprise différée)."> 
+      <Section id="poste-pgpf" title="Pertes de gains professionnels futurs (PGPF)" description="Rente annuelle nette × PER. Trois modes : viager, temporaire (âge fin) ou différée (âge de début, ex. reprise différée)."> 
         <div className="grid grid-cols-1 md:grid-cols-6 gap-3">
-          <Field label="Rente annuelle nette (€)"><Input type="number" min={0} step="0.01" value={pp.pgpf.renteAnnuelle} onChange={(e) => patchPGPF({ renteAnnuelle: n(e.target.value) })} /></Field>
+          <Field label="Rente annuelle nette (€)"><MontantInput aria-label="Montant" value={pp.pgpf.renteAnnuelle} onChange={(v) => patchPGPF({ renteAnnuelle: v ?? 0 })} /></Field>
           <Field label="Capitalisation">
             <Select value={pp.pgpf.capitalisation} onValueChange={(v) => patchPGPF({ capitalisation: v as PGPFData["capitalisation"] })}>
               <SelectTrigger><SelectValue /></SelectTrigger>
@@ -264,7 +265,7 @@ function PageInner({
           </Field>
           <Field label="Âge début" hint="Requis si différée"><Input type="number" min={0} step={1} value={pp.pgpf.ageDebut ?? ""} disabled={pp.pgpf.capitalisation !== "differee"} onChange={(e) => patchPGPF({ ageDebut: nOrNull(e.target.value) })} /></Field>
           <Field label="Âge fin" hint="Requis si temporaire"><Input type="number" min={0} step={1} value={pp.pgpf.ageFin ?? ""} disabled={pp.pgpf.capitalisation !== "temporaire"} onChange={(e) => patchPGPF({ ageFin: nOrNull(e.target.value) })} /></Field>
-          <Field label="TP annuel (rente TP)"><Input type="number" min={0} step="0.01" value={pp.pgpf.tiersPayeur} onChange={(e) => patchPGPF({ tiersPayeur: n(e.target.value) })} /></Field>
+          <Field label="TP annuel (rente TP)"><MontantInput aria-label="Montant" value={pp.pgpf.tiersPayeur} onChange={(v) => patchPGPF({ tiersPayeur: v ?? 0 })} /></Field>
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <Recap label="PER" value={pgpf.per.toFixed(3)} />
@@ -276,12 +277,12 @@ function PageInner({
       </Section>
 
       {/* -------- IP -------- */}
-      <Section title="Incidence professionnelle (IP)" description="Forfait (dévalorisation, pénibilité) + perte de retraite (rente différée à l'âge d'ouverture des droits).">
+      <Section id="poste-ip" title="Incidence professionnelle (IP)" description="Forfait (dévalorisation, pénibilité) + perte de retraite (rente différée à l'âge d'ouverture des droits).">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <Field label="Forfait IP (€)"><Input type="number" min={0} step="0.01" value={pp.ip.forfait} onChange={(e) => patchIP({ forfait: n(e.target.value) })} /></Field>
-          <Field label="Perte de retraite — rente annuelle (€)"><Input type="number" min={0} step="0.01" value={pp.ip.perteRetraiteRente} onChange={(e) => patchIP({ perteRetraiteRente: n(e.target.value) })} /></Field>
+          <Field label="Forfait IP (€)"><MontantInput aria-label="Montant" value={pp.ip.forfait} onChange={(v) => patchIP({ forfait: v ?? 0 })} /></Field>
+          <Field label="Perte de retraite — rente annuelle (€)"><MontantInput aria-label="Montant" value={pp.ip.perteRetraiteRente} onChange={(v) => patchIP({ perteRetraiteRente: v ?? 0 })} /></Field>
           <Field label="Âge d'ouverture des droits"><Input type="number" min={0} step={1} value={pp.ip.perteRetraiteAgeDebut ?? ""} onChange={(e) => patchIP({ perteRetraiteAgeDebut: nOrNull(e.target.value) })} /></Field>
-          <Field label="TP annuel"><Input type="number" min={0} step="0.01" value={pp.ip.perteRetraiteTP} onChange={(e) => patchIP({ perteRetraiteTP: n(e.target.value) })} /></Field>
+          <Field label="TP annuel"><MontantInput aria-label="Montant" value={pp.ip.perteRetraiteTP} onChange={(v) => patchIP({ perteRetraiteTP: v ?? 0 })} /></Field>
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
           <Recap label="Retraite — PER" value={ip.retraite.per.toFixed(3)} />
@@ -392,7 +393,7 @@ function AdaptationSection({
               return (
                 <TableRow key={l.id} className="vp-row-alt">
                   <TableCell><Input value={l.libelle} onChange={(e) => onPatch(l.id, { libelle: e.target.value })} /></TableCell>
-                  <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.montant} onChange={(e) => onPatch(l.id, { montant: n(e.target.value) })} /></TableCell>
+                  <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.montant} onChange={(v) => onPatch(l.id,{ montant: v ?? 0 })} /></TableCell>
                   <TableCell className="w-24">
                     <Select value={l.recurrent ? "oui" : "non"} onValueChange={(v) => onPatch(l.id, { recurrent: v === "oui" })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
@@ -410,7 +411,7 @@ function AdaptationSection({
                     </Select>
                   </TableCell>
                   <TableCell className="w-20"><Input type="number" min={0} step={1} value={l.ageFin ?? ""} disabled={!l.recurrent || l.capitalisation === "viager"} onChange={(e) => onPatch(l.id, { ageFin: nOrNull(e.target.value) })} /></TableCell>
-                  <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => onPatch(l.id, { tiersPayeur: n(e.target.value) })} /></TableCell>
+                  <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.tiersPayeur} onChange={(v) => onPatch(l.id,{ tiersPayeur: v ?? 0 })} /></TableCell>
                   <TableCell className="text-muted-foreground">{(c?.per ?? 0).toFixed(3)}</TableCell>
                   <TableCell className="font-medium">{formatEuros(c?.reste ?? 0)}</TableCell>
                   <TableCell><IconDel onClick={() => onDel(l.id)} /></TableCell>

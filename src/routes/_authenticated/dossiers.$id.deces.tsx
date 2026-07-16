@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -117,10 +118,10 @@ function PageInner({
       <Section title="Frais d'obsèques" description="Montant total (indépendant du droit de préférence de la victime directe).">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Field label="Montant (€)">
-            <Input type="number" min={0} step="0.01" value={pd.obsequesMontant} onChange={(e) => patch({ obsequesMontant: n(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pd.obsequesMontant} onChange={(v) => patch({ obsequesMontant: v ?? 0 })} />
           </Field>
           <Field label="Créance TP (€)">
-            <Input type="number" min={0} step="0.01" value={pd.obsequesTP} onChange={(e) => patch({ obsequesTP: n(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pd.obsequesTP} onChange={(v) => patch({ obsequesTP: v ?? 0 })} />
           </Field>
           <Recap label="Dette responsable" value={formatEuros(detteObs)} />
           <Recap label="Part victime (proches)" value={formatEuros(repObs.victime)} accent="victime" />
@@ -128,7 +129,7 @@ function PageInner({
       </Section>
 
       {/* Proches */}
-      <Section title="Proches" description="Ajoutez chaque proche, son lien avec le défunt, sa date de naissance et son sexe. Les enfants sont capitalisés jusqu'à l'âge de fin d'études ; le conjoint en viager.">
+      <Section id="poste-perte-foyer" title="Proches" description="Ajoutez chaque proche, son lien avec le défunt, sa date de naissance et son sexe. Les enfants sont capitalisés jusqu'à l'âge de fin d'études ; le conjoint en viager.">
         <div className="flex gap-2 mb-3">
           <Button size="sm" variant="outline" onClick={() => addProche("conjoint")}><Plus className="w-4 h-4 mr-1" /> Conjoint</Button>
           <Button size="sm" variant="outline" onClick={() => addProche("enfant")}><Plus className="w-4 h-4 mr-1" /> Enfant</Button>
@@ -201,9 +202,7 @@ function PageInner({
                         ))}
                       </SelectContent>
                     </Select>
-                    <Input type="number" min={0} step="0.01" className="w-28 mt-1"
-                      value={p.affection}
-                      onChange={(e) => patchProche(p.id, { affection: n(e.target.value) })} />
+                    <MontantInput className="w-28 mt-1" aria-label="Montant" value={p.affection} onChange={(v) => patchProche(p.id,{ affection: v ?? 0 })} />
                     <div className="mt-1"><FourchetteAffectionHint code={p.lienReferentiel ?? ""} /></div>
                   </TableCell>
                   <TableCell>
@@ -226,10 +225,10 @@ function PageInner({
       >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Field label="Revenu annuel net du défunt (€)">
-            <Input type="number" min={0} step="0.01" value={pd.revenuAnnuelDefunt} onChange={(e) => patch({ revenuAnnuelDefunt: n(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pd.revenuAnnuelDefunt} onChange={(v) => patch({ revenuAnnuelDefunt: v ?? 0 })} />
           </Field>
           <Field label="Revenu annuel net du conjoint survivant (€)">
-            <Input type="number" min={0} step="0.01" value={pd.revenuAnnuelConjoint} onChange={(e) => patch({ revenuAnnuelConjoint: n(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pd.revenuAnnuelConjoint} onChange={(v) => patch({ revenuAnnuelConjoint: v ?? 0 })} />
           </Field>
           <Field label="Part consommée par le défunt (0..1)" hint="Typiquement 0,3 pour couple + 2 enfants.">
             <Input type="number" min={0} max={1} step="0.05" value={pd.partConsommeeDefunt} onChange={(e) => patch({ partConsommeeDefunt: n(e.target.value) })} />
@@ -346,8 +345,8 @@ function PageInner({
               {pd.fraisDivers.map((f) => (
                 <TableRow key={f.id}>
                   <TableCell><Input value={f.libelle} onChange={(e) => patchFrais(f.id, { libelle: e.target.value })} /></TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" value={f.montant} onChange={(e) => patchFrais(f.id, { montant: n(e.target.value) })} /></TableCell>
-                  <TableCell><Input type="number" min={0} step="0.01" value={f.tiersPayeur} onChange={(e) => patchFrais(f.id, { tiersPayeur: n(e.target.value) })} /></TableCell>
+                  <TableCell><MontantInput aria-label="Montant" value={f.montant} onChange={(v) => patchFrais(f.id,{ montant: v ?? 0 })} /></TableCell>
+                  <TableCell><MontantInput aria-label="Montant" value={f.tiersPayeur} onChange={(v) => patchFrais(f.id,{ tiersPayeur: v ?? 0 })} /></TableCell>
                   <TableCell><Button variant="ghost" size="icon" onClick={() => delFrais(f.id)}><Trash2 className="w-4 h-4" /></Button></TableCell>
                 </TableRow>
               ))}
@@ -365,10 +364,10 @@ function PageInner({
       <Section title="Accompagnement de fin de vie" description="Forfait indemnisant l'assistance apportée par les proches durant la fin de vie de la victime.">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Field label="Montant (€)">
-            <Input type="number" min={0} step="0.01" value={pd.accompagnementFinDeVie} onChange={(e) => patch({ accompagnementFinDeVie: n(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pd.accompagnementFinDeVie} onChange={(v) => patch({ accompagnementFinDeVie: v ?? 0 })} />
           </Field>
           <Field label="Créance TP (€)">
-            <Input type="number" min={0} step="0.01" value={pd.accompagnementTP} onChange={(e) => patch({ accompagnementTP: n(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pd.accompagnementTP} onChange={(v) => patch({ accompagnementTP: v ?? 0 })} />
           </Field>
           <Recap label="Dette responsable" value={formatEuros(detteAcc)} />
           <Recap label="Part victime (proches)" value={formatEuros(repAcc.victime)} accent="victime" />

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -231,11 +232,11 @@ function PatrimoniauxTempPageInner({
                       <Input value={l.libelle} onChange={(e) => patchDSAP(l.id, { libelle: e.target.value })} />
                     </TableCell>
                     <TableCell className="w-28">
-                      <Input type="number" min={0} step="0.01" value={l.depense} onChange={(e) => patchDSAP(l.id, { depense: numOr0(e.target.value) })} />
+                      <MontantInput aria-label="Montant" value={l.depense} onChange={(v) => patchDSAP(l.id,{ depense: v ?? 0 })} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">{formatEuros(calc?.depenseRevalorisee ?? 0)}</TableCell>
                     <TableCell className="w-28">
-                      <Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchDSAP(l.id, { tiersPayeur: numOr0(e.target.value) })} />
+                      <MontantInput aria-label="Montant" value={l.tiersPayeur} onChange={(v) => patchDSAP(l.id,{ tiersPayeur: v ?? 0 })} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">{formatEuros(calc?.tpRevalorise ?? 0)}</TableCell>
                     <TableCell className="font-medium">{formatEuros(calc?.resteRevalorise ?? 0)}</TableCell>
@@ -256,6 +257,7 @@ function PatrimoniauxTempPageInner({
       </Section>
 
       <Section
+        id="poste-dsa-recurrentes"
         title="Dépenses de santé actuelles — récurrentes"
         description="Ex. transports, séances de kiné, avec une périodicité."
       >
@@ -289,7 +291,7 @@ function PatrimoniauxTempPageInner({
                     <TableCell className="w-40"><Input type="date" value={l.debut ?? ""} onChange={(e) => patchDSAR(l.id, { debut: e.target.value || null })} /></TableCell>
                     <TableCell className="w-40"><Input type="date" value={l.fin ?? ""} onChange={(e) => patchDSAR(l.id, { fin: e.target.value || null })} /></TableCell>
                     <TableCell><Input value={l.libelle} onChange={(e) => patchDSAR(l.id, { libelle: e.target.value })} /></TableCell>
-                    <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.montant} onChange={(e) => patchDSAR(l.id, { montant: numOr0(e.target.value) })} /></TableCell>
+                    <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.montant} onChange={(v) => patchDSAR(l.id,{ montant: v ?? 0 })} /></TableCell>
                     <TableCell className="w-28">
                       <Select value={l.periodicite} onValueChange={(v) => patchDSAR(l.id, { periodicite: v as Periodicite })}>
                         <SelectTrigger><SelectValue /></SelectTrigger>
@@ -302,7 +304,7 @@ function PatrimoniauxTempPageInner({
                       </Select>
                     </TableCell>
                     <TableCell className="text-muted-foreground">{formatEuros(calc?.depenseRevalorisee ?? 0)}</TableCell>
-                    <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchDSAR(l.id, { tiersPayeur: numOr0(e.target.value) })} /></TableCell>
+                    <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.tiersPayeur} onChange={(v) => patchDSAR(l.id,{ tiersPayeur: v ?? 0 })} /></TableCell>
                     <TableCell className="text-muted-foreground">{formatEuros(calc?.tpRevalorise ?? 0)}</TableCell>
                     <TableCell className="font-medium">{formatEuros(calc?.resteRevalorise ?? 0)}</TableCell>
                     <TableCell className="w-32"><ModeRevaloSelect value={l.modeRevalo} onChange={(v) => patchDSAR(l.id, { modeRevalo: v })} /></TableCell>
@@ -367,11 +369,11 @@ function PatrimoniauxTempPageInner({
                       <Input value={l.libelle} onChange={(e) => patchFD(l.id, { libelle: e.target.value })} />
                     </TableCell>
                     <TableCell className="w-28">
-                      <Input type="number" min={0} step="0.01" value={l.montant} onChange={(e) => patchFD(l.id, { montant: numOr0(e.target.value) })} />
+                      <MontantInput aria-label="Montant" value={l.montant} onChange={(v) => patchFD(l.id,{ montant: v ?? 0 })} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">{formatEuros(calc?.depenseRevalorisee ?? 0)}</TableCell>
                     <TableCell className="w-28">
-                      <Input type="number" min={0} step="0.01" value={l.tiersPayeur} onChange={(e) => patchFD(l.id, { tiersPayeur: numOr0(e.target.value) })} />
+                      <MontantInput aria-label="Montant" value={l.tiersPayeur} onChange={(v) => patchFD(l.id,{ tiersPayeur: v ?? 0 })} />
                     </TableCell>
                     <TableCell className="text-muted-foreground">{formatEuros(calc?.tpRevalorise ?? 0)}</TableCell>
                     <TableCell className="font-medium">{formatEuros(calc?.resteRevalorise ?? 0)}</TableCell>
@@ -399,6 +401,7 @@ function PatrimoniauxTempPageInner({
 
 
       <Section
+        id="poste-atp-temp"
         title="Assistance tierce personne — temporaire"
         description="Montant = taux horaire × heures/jour × jours × (facteur / 365). Facteur usuel 412 pour tenir compte des congés et jours fériés."
       >
@@ -427,7 +430,7 @@ function PatrimoniauxTempPageInner({
                     <TableCell className="w-40"><Input type="date" value={l.debut ?? ""} onChange={(e) => patchATP(l.id, { debut: e.target.value || null })} /></TableCell>
                     <TableCell className="w-40"><Input type="date" value={l.fin ?? ""} onChange={(e) => patchATP(l.id, { fin: e.target.value || null })} /></TableCell>
                     <TableCell className="w-20"><Input type="number" min={0} step="0.5" value={l.heuresParJour} onChange={(e) => patchATP(l.id, { heuresParJour: numOr0(e.target.value) })} /></TableCell>
-                    <TableCell className="w-24"><Input type="number" min={0} step="0.01" value={l.tauxHoraire} onChange={(e) => patchATP(l.id, { tauxHoraire: numOr0(e.target.value) })} /></TableCell>
+                    <TableCell className="w-24"><MontantInput aria-label="Montant" value={l.tauxHoraire} onChange={(v) => patchATP(l.id,{ tauxHoraire: v ?? 0 })} /></TableCell>
                     <TableCell className="w-24"><Input type="number" min={0} step="1" value={l.facteurJours} onChange={(e) => patchATP(l.id, { facteurJours: numOr0(e.target.value) })} /></TableCell>
                     <TableCell className="text-muted-foreground">{calc?.jours ?? "—"}</TableCell>
                     <TableCell className="font-medium">{formatEuros(calc?.montant ?? 0)}</TableCell>
@@ -463,14 +466,14 @@ function PatrimoniauxTempPageInner({
             </Select>
           </Field>
           <Field label="Indemnités journalières perçues (TP)" hint="Créance du tiers payeur.">
-            <Input type="number" min={0} step="0.01" value={pt.pgpa.ij} onChange={(e) => patchPGPA({ ij: numOr0(e.target.value) })} />
+            <MontantInput aria-label="Montant" value={pt.pgpa.ij} onChange={(v) => patchPGPA({ ij: v ?? 0 })} />
           </Field>
         </div>
 
         {pt.pgpa.methode === "reference" && (
           <div className="mt-5 grid grid-cols-1 md:grid-cols-4 gap-4">
             <Field label="Revenu annuel net de référence (€)">
-              <Input type="number" min={0} step="0.01" value={pt.pgpa.revenuReference} onChange={(e) => patchPGPA({ revenuReference: numOr0(e.target.value) })} />
+              <MontantInput aria-label="Montant" value={pt.pgpa.revenuReference} onChange={(v) => patchPGPA({ revenuReference: v ?? 0 })} />
             </Field>
             <Field label="Année de référence">
               <Input type="number" min={2003} max={2030} step={1} value={pt.pgpa.anneeReference ?? ""} onChange={(e) => patchPGPA({ anneeReference: e.target.value ? Number(e.target.value) : null })} />
@@ -505,7 +508,7 @@ function PatrimoniauxTempPageInner({
                   <TableRow key={p.id} className="vp-row-alt">
                     <TableCell className="w-40"><Input type="date" value={p.debut ?? ""} onChange={(e) => patchPGPAPeriode(p.id, { debut: e.target.value || null })} /></TableCell>
                     <TableCell className="w-40"><Input type="date" value={p.fin ?? ""} onChange={(e) => patchPGPAPeriode(p.id, { fin: e.target.value || null })} /></TableCell>
-                    <TableCell className="w-40"><Input type="number" min={0} step="0.01" value={p.perte} onChange={(e) => patchPGPAPeriode(p.id, { perte: numOr0(e.target.value) })} /></TableCell>
+                    <TableCell className="w-40"><MontantInput aria-label="Montant" value={p.perte} onChange={(v) => patchPGPAPeriode(p.id,{ perte: v ?? 0 })} /></TableCell>
                     <TableCell><IconDelete onClick={() => delPGPAPeriode(p.id)} /></TableCell>
                   </TableRow>
                 ))}
@@ -518,7 +521,7 @@ function PatrimoniauxTempPageInner({
         {pt.pgpa.methode === "forfait" && (
           <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
             <Field label="Montant forfaitaire (€)">
-              <Input type="number" min={0} step="0.01" value={pt.pgpa.forfait} onChange={(e) => patchPGPA({ forfait: numOr0(e.target.value) })} />
+              <MontantInput aria-label="Montant" value={pt.pgpa.forfait} onChange={(v) => patchPGPA({ forfait: v ?? 0 })} />
             </Field>
           </div>
         )}

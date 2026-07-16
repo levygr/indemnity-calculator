@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -95,7 +96,7 @@ function PageInner({
                 <Input type="number" value={dossier.tauxAIPP} readOnly className="bg-muted/40" />
               </Field>
               <Field label="Valeur du point personnalisée (€)" hint="Laisser vide pour utiliser le référentiel Mornet">
-                <Input type="number" min={0} step="0.01" value={pp.dfp.valeurPointCustom ?? ""} onChange={(e) => patchDFP({ valeurPointCustom: nOrNull(e.target.value) })} />
+                <MontantInput aria-label="Valeur du point" value={pp.dfp.valeurPointCustom ?? null} onChange={(v) => patchDFP({ valeurPointCustom: v })} />
               </Field>
               <Field label="Valeur du point retenue">
                 <Input value={formatEuros(dfp.valeurPoint)} readOnly className="bg-muted/40" />
@@ -103,7 +104,7 @@ function PageInner({
             </>
           ) : (
             <Field label="Montant capitalisé (€)">
-              <Input type="number" min={0} step="0.01" value={pp.dfp.montantCapitalise} onChange={(e) => patchDFP({ montantCapitalise: n(e.target.value) })} />
+              <MontantInput aria-label="Montant" value={pp.dfp.montantCapitalise} onChange={(v) => patchDFP({ montantCapitalise: v ?? 0 })} />
             </Field>
           )}
         </div>
@@ -134,7 +135,7 @@ function PageInner({
                 <Input type="number" min={0} max={7} step="0.5" value={f.cotation} onChange={(e) => patchForfait(k, { cotation: n(e.target.value) })} />
               </Field>
               <Field label="Montant retenu (€)">
-                <Input type="number" min={0} step="0.01" value={f.montant} onChange={(e) => patchForfait(k, { montant: n(e.target.value) })} />
+                <MontantInput aria-label="Montant" value={f.montant} onChange={(v) => patchForfait(k,{ montant: v ?? 0 })} />
               </Field>
               <Recap label="Dette responsable" value={formatEuros(dette)} />
               <Recap label="Part victime" value={formatEuros(rep.victime)} accent="victime" />

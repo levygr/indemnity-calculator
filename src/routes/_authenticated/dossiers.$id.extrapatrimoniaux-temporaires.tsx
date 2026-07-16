@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useDossier } from "@/hooks/useDossier";
 import { Field, Note, Section } from "@/components/vp/Field";
 import { Input } from "@/components/ui/input";
+import { MontantInput } from "@/components/vp/MontantInput";
 import { calculerDFT, formatEuros, detteResponsable } from "@/lib/calculs";
 import { FourchetteDegreHint } from "@/components/vp/FourchetteHint";
 import { REFERENTIEL } from "@/data/referentiel_evaluation";
@@ -52,7 +53,7 @@ function ExtraTempPageInner({
       >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Field label="Taux journalier (€/jour à 100 %)" hint={REFERENTIEL.dftIndicatif.note}>
-            <Input type="number" min={0} step="0.5" value={pt.dft.tauxJournalier} onChange={(e) => patchPT("dft", { tauxJournalier: Number(e.target.value) || 0 })} />
+            <MontantInput aria-label="Taux journalier DFT" value={pt.dft.tauxJournalier} onChange={(v) => patchPT("dft", { tauxJournalier: v ?? 0 })} />
           </Field>
           <Recap label="Jours totaux" value={String(dft.joursTotaux)} />
           <Recap label="Jours pondérés" value={dft.joursPonderes.toFixed(2)} />
@@ -70,7 +71,7 @@ function ExtraTempPageInner({
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Field label="Montant retenu (€)" hint="Saisir la valorisation, aucune valeur inventée.">
-            <Input type="number" min={0} step="100" value={pt.se.montant} onChange={(e) => patchPT("se", { montant: Number(e.target.value) || 0 })} />
+            <MontantInput aria-label="Montant SE" value={pt.se.montant} onChange={(v) => patchPT("se", { montant: v ?? 0 })} />
           </Field>
           <Recap label="Dette responsable" value={formatEuros(detteSE)} />
         </div>
@@ -83,7 +84,7 @@ function ExtraTempPageInner({
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Field label="Montant retenu (€)">
-            <Input type="number" min={0} step="100" value={pt.pet.montant} onChange={(e) => patchPT("pet", { montant: Number(e.target.value) || 0 })} />
+            <MontantInput aria-label="Montant PET" value={pt.pet.montant} onChange={(v) => patchPT("pet", { montant: v ?? 0 })} />
           </Field>
           <Recap label="Dette responsable" value={formatEuros(dettePET)} />
         </div>
