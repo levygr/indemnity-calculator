@@ -160,11 +160,68 @@
   }
 }
 
-@media print {
-  aside, .print\:hidden { display: none !important; }
-  body { background: white !important; }
-  .vp-card { box-shadow: none !important; border: 1px solid #ddd !important; }
-  main, section { break-inside: avoid; }
-  h1, h2, h3 { break-after: avoid; }
-  @page { margin: 15mm; size: A4; }
+/* Alignement vertical parfait des chiffres dans les tableaux. */
+table td,
+table th,
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
+
+@media print {
+  /* Masquer surfaces non pertinentes. */
+  aside,
+  nav,
+  header.sticky,
+  [role="banner"],
+  [role="alert"],
+  .print\:hidden {
+    display: none !important;
+  }
+  /* Fond blanc, texte noir, pas d'ombres. */
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+    color-scheme: light;
+  }
+  body,
+  .vp-card,
+  section,
+  main {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+  .vp-card {
+    border: 1px solid #ddd !important;
+  }
+  /* Bordures et texte de tables lisibles. */
+  table,
+  th,
+  td {
+    color: black !important;
+    border-color: #000 !important;
+  }
+  /* Éviter les coupures au milieu des lignes / sections. */
+  tr,
+  thead,
+  tbody,
+  section,
+  .vp-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  thead {
+    display: table-header-group;
+  }
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  @page {
+    margin: 15mm;
+    size: A4;
+  }
+}
+

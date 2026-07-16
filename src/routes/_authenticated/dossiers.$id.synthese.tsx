@@ -4,6 +4,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useDossier } from "@/hooks/useDossier";
 import { Note, Section } from "@/components/vp/Field";
+import { PrintHeader } from "@/components/vp/PrintHeader";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -110,7 +112,9 @@ function Page() {
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
+      <PrintHeader reference={dossier.reference} document="Synthèse" />
       <header className="flex items-start justify-between gap-4 print:block">
+
         <div>
           <div className="text-xs font-display font-semibold text-primary tracking-wide">
             PAGE 8 — SYNTHÈSE
