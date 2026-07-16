@@ -114,7 +114,7 @@ function addDays(iso: string, days: number): string {
 function maxISO(a: string, b: string): string { return a >= b ? a : b; }
 function minISO(a: string, b: string): string { return a <= b ? a : b; }
 
-export function ajouterMois(iso: string, mois: number): string {
+function ajouterMois(iso: string, mois: number): string {
   const d = parseDate(iso);
   const jour = d.getUTCDate();
   d.setUTCDate(1);
