@@ -58,10 +58,12 @@ export function SyntheseCategories({ synth }: { synth: Synthese }) {
               <TableBody>
                 {lignes.map((l) => (
                   <TableRow key={l.code} className={l.montant === 0 ? "opacity-50" : ""}>
-                    <TableCell scope="row" asHeader>
+                    <TableHead scope="row" className="font-normal text-foreground">
+
                       <span className="text-xs text-muted-foreground mr-2">{l.code}</span>
                       {l.poste}
-                    </TableCell>
+                    </TableHead>
+
                     <TableCell className="text-right tabular-nums">{formatEuros(l.montant)}</TableCell>
                     <TableCell className="text-right tabular-nums">{formatEuros(l.tiersPayeur)}</TableCell>
                     <TableCell className="text-right tabular-nums">{formatEuros(l.dette)}</TableCell>
@@ -70,7 +72,7 @@ export function SyntheseCategories({ synth }: { synth: Synthese }) {
                   </TableRow>
                 ))}
                 <TableRow className="font-semibold bg-muted/40">
-                  <TableCell scope="row" asHeader>Sous-total</TableCell>
+                  <TableHead scope="row" className="font-semibold text-foreground">Sous-total</TableHead>
                   <TableCell className="text-right tabular-nums">{formatEuros(st.montant)}</TableCell>
                   <TableCell className="text-right tabular-nums">{formatEuros(st.tiersPayeur)}</TableCell>
                   <TableCell className="text-right tabular-nums">{formatEuros(st.dette)}</TableCell>
