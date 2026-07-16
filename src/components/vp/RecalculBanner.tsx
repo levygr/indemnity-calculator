@@ -73,7 +73,7 @@ export function RecalculBanner({ dossierId }: { dossierId: string }) {
   if (query.data.diffs.length === 0) return null;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-4">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-4" role="status" aria-live="polite" aria-atomic="true">
       <Alert className="border-primary/50 bg-primary/5">
         <AlertTriangle className="w-4 h-4 text-primary" />
         <div className="flex-1">
