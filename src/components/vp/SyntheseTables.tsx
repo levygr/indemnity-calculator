@@ -4,8 +4,9 @@
  * d'un chiffrage figé.
  */
 import { Section } from "@/components/vp/Field";
+import { LiveAnnouncer } from "@/components/vp/LiveAnnouncer";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { CATEGORIE_LABEL, formatEuros, type Categorie } from "@/lib/calculs";
 import type { Synthese } from "@/lib/calculs/postes/synthese";
@@ -15,16 +16,19 @@ const ORDRE: Categorie[] = ["PT", "EPT", "PP", "EPP", "DECES", "SURVIE"];
 export function SyntheseTotaux({ synth }: { synth: Synthese }) {
   return (
     <Section title="Totaux généraux">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3" aria-live="polite" aria-atomic="true">
         <Recap label="Montant total des postes" value={formatEuros(synth.totalMontant)} />
         <Recap label="Créance tiers payeurs" value={formatEuros(synth.totalTP)} />
         <Recap label="Dette du responsable" value={formatEuros(synth.totalDette)} />
         <Recap label="Part victime (droit de préférence)" value={formatEuros(synth.totalVictime)} accent="victime" />
       </div>
-      <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3" aria-live="polite" aria-atomic="true">
         <Recap label="Part revenant aux tiers payeurs" value={formatEuros(synth.totalTPRepartition)} accent="tiers" />
         <Recap label="Solde revenant à la victime" value={formatEuros(synth.soldeVictime)} accent={synth.soldeVictime < 0 ? "tiers" : "victime"} />
       </div>
+      <LiveAnnouncer
+        message={`Total mis à jour : ${formatEuros(synth.totalMontant)}. Part victime ${formatEuros(synth.totalVictime)}.`}
+      />
     </Section>
   );
 }
@@ -36,26 +40,30 @@ export function SyntheseCategories({ synth }: { synth: Synthese }) {
         const st = synth.sousTotaux.find((x) => x.categorie === cat);
         if (!st || st.montant === 0) return null;
         const lignes = synth.lignes.filter((l) => l.categorie === cat);
+        const catLabel = CATEGORIE_LABEL[cat];
         return (
-          <Section key={cat} title={CATEGORIE_LABEL[cat]}>
+          <Section key={cat} title={catLabel}>
             <Table>
+              <TableCaption className="sr-only">Synthèse — {catLabel}</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Poste</TableHead>
-                  <TableHead className="text-right">Montant</TableHead>
-                  <TableHead className="text-right">TP</TableHead>
-                  <TableHead className="text-right">Dette</TableHead>
-                  <TableHead className="text-right">Part victime</TableHead>
-                  <TableHead className="text-right">Part TP</TableHead>
+                  <TableHead scope="col">Poste</TableHead>
+                  <TableHead scope="col" className="text-right">Montant</TableHead>
+                  <TableHead scope="col" className="text-right">TP</TableHead>
+                  <TableHead scope="col" className="text-right">Dette</TableHead>
+                  <TableHead scope="col" className="text-right">Part victime</TableHead>
+                  <TableHead scope="col" className="text-right">Part TP</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {lignes.map((l) => (
                   <TableRow key={l.code} className={l.montant === 0 ? "opacity-50" : ""}>
-                    <TableCell>
+                    <TableHead scope="row" className="font-normal text-foreground">
+
                       <span className="text-xs text-muted-foreground mr-2">{l.code}</span>
                       {l.poste}
-                    </TableCell>
+                    </TableHead>
+
                     <TableCell className="text-right tabular-nums">{formatEuros(l.montant)}</TableCell>
                     <TableCell className="text-right tabular-nums">{formatEuros(l.tiersPayeur)}</TableCell>
                     <TableCell className="text-right tabular-nums">{formatEuros(l.dette)}</TableCell>
@@ -64,7 +72,7 @@ export function SyntheseCategories({ synth }: { synth: Synthese }) {
                   </TableRow>
                 ))}
                 <TableRow className="font-semibold bg-muted/40">
-                  <TableCell>Sous-total</TableCell>
+                  <TableHead scope="row" className="font-semibold text-foreground">Sous-total</TableHead>
                   <TableCell className="text-right tabular-nums">{formatEuros(st.montant)}</TableCell>
                   <TableCell className="text-right tabular-nums">{formatEuros(st.tiersPayeur)}</TableCell>
                   <TableCell className="text-right tabular-nums">{formatEuros(st.dette)}</TableCell>

@@ -162,9 +162,9 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
         </div>
       </div>
 
-      <nav className="flex-1 py-2 overflow-y-auto">
+      <nav aria-label="Navigation du dossier" className="flex-1 py-2 overflow-y-auto">
         {GROUPS.map((g) => (
-          <div key={g.title} className="mb-2">
+          <div key={g.title} className="mb-2" role="group" aria-label={g.title}>
             <div className="px-5 py-1.5 text-[10px] uppercase tracking-widest text-sidebar-foreground/45 font-display font-semibold">
               {g.title}
             </div>
@@ -174,7 +174,14 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
               const Icon = s.icon;
               const hasData = pageHasData(s.key, dossier);
               return (
-                <Link key={s.label} to={s.to} params={{ id }} onClick={onNavigate}>
+                <Link
+                  key={s.label}
+                  to={s.to}
+                  params={{ id }}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+                >
                   <div
                     className={cn(
                       "flex items-center gap-3 px-5 py-2.5 text-sm border-l-2 transition min-h-11",
@@ -183,15 +190,18 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
                         : "border-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
                     )}
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
                     <span className="flex-1 min-w-0 truncate">{s.label}</span>
                     {s.to === "/dossiers/$id/synthese" && nbAvertissements > 0 && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground font-display font-semibold shrink-0">
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded-full bg-destructive text-destructive-foreground font-display font-semibold shrink-0"
+                        aria-label={`${nbAvertissements} avertissement${nbAvertissements > 1 ? "s" : ""}`}
+                      >
                         {nbAvertissements}
                       </span>
                     )}
                     <span
-                      aria-hidden
+                      aria-hidden="true"
                       title={hasData ? "Contient des données" : "Vide"}
                       className={cn(
                         "w-1.5 h-1.5 rounded-full shrink-0 border",
@@ -207,6 +217,7 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
           </div>
         ))}
       </nav>
+
 
       <div className="p-4 text-[11px] text-sidebar-foreground/50 border-t border-sidebar-border">
         Version beta 0.7
