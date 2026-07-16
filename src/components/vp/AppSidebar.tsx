@@ -49,6 +49,7 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
+    <TooltipProvider delayDuration={400}>
     <aside className="w-72 shrink-0 h-full min-h-screen bg-sidebar text-sidebar-foreground flex flex-col">
       <div className="p-5 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
