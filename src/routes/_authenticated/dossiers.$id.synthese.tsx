@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useDossier } from "@/hooks/useDossier";
@@ -64,6 +64,10 @@ function Page() {
     return sessionStorage.getItem("vp:hide-zero") === "1";
   });
   const createSnap = useServerFn(createSnapshot);
+  useEffect(() => {
+    if (typeof window !== "undefined") sessionStorage.setItem("vp:hide-zero", hideZero ? "1" : "0");
+  }, [hideZero]);
+
 
   const synth = useMemo(() => (dossier ? calculerSynthese(dossier) : null), [dossier]);
   if (!dossier || !synth) return null;
