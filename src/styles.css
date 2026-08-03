@@ -62,7 +62,8 @@
 }
 
 :root {
-  --radius: 1rem; /* 16 px, cartes arrondies */
+  --radius: 0.4rem; /* 6-7 px : chrome allégé, esthétique éditoriale */
+
 
   /* Fonds */
   --background: oklch(0.985 0.003 85);       /* gris très clair #F6F5F3 approx */
