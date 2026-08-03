@@ -106,12 +106,13 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
                 >
                   <div
                     className={cn(
-                      "flex items-center gap-3 px-5 py-2.5 text-sm border-l-2 transition min-h-11",
+                      "flex items-center gap-3 px-5 py-2 text-[13px] border-l-2 transition-colors min-h-10",
                       active
-                        ? "border-primary bg-sidebar-accent text-sidebar-foreground"
-                        : "border-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
+                        ? "border-primary text-sidebar-foreground font-medium"
+                        : "border-transparent text-sidebar-foreground/65 hover:text-sidebar-foreground hover:border-sidebar-foreground/25",
                     )}
                   >
+
                     <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
                     <Tooltip delayDuration={400}>
                       <TooltipTrigger asChild>
