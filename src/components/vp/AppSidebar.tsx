@@ -51,44 +51,47 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
   return (
     <TooltipProvider delayDuration={400}>
     <aside className="w-72 shrink-0 h-full min-h-screen bg-sidebar text-sidebar-foreground flex flex-col">
-      <div className="p-5 border-b border-sidebar-border">
+      <div className="px-5 py-6 border-b border-sidebar-border/60">
         <div className="flex items-center gap-2">
-          <img src={logoAsset.url} alt="Victimes & Préjudices" className="w-8 h-8 shrink-0" />
-          <div className="text-[10px] font-semibold text-accent font-display tracking-widest">
+          <img src={logoAsset.url} alt="Victimes & Préjudices" className="w-7 h-7 shrink-0" />
+          <div className="text-[10px] font-semibold text-accent font-display tracking-[0.18em]">
             VICTIMES &amp; PRÉJUDICES
           </div>
         </div>
-        <Link to="/dossiers" onClick={onNavigate} className="mt-3 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground min-h-11">
-          <Home className="w-4 h-4" />
-          Retour aux dossiers
-        </Link>
-        <Link to="/taux-legal" onClick={onNavigate} className="mt-1 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground min-h-11">
-          <Scale className="w-4 h-4" />
-          Taux légal
-        </Link>
-        <Link to="/cabinet" onClick={onNavigate} className="mt-1 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground min-h-11">
-          <Building2 className="w-4 h-4" />
-          Cabinet
-        </Link>
-        <Link to="/referentiels" onClick={onNavigate} className="mt-1 flex items-center gap-2 text-sm text-sidebar-foreground/80 hover:text-sidebar-foreground min-h-11">
-          <Library className="w-4 h-4" />
-          Référentiels
-        </Link>
+        <div className="mt-4 space-y-0.5">
+          <Link to="/dossiers" onClick={onNavigate} className="flex items-center gap-2.5 text-[13px] text-sidebar-foreground/65 hover:text-sidebar-foreground min-h-9">
+            <Home className="w-4 h-4" />
+            Retour aux dossiers
+          </Link>
+          <Link to="/taux-legal" onClick={onNavigate} className="flex items-center gap-2.5 text-[13px] text-sidebar-foreground/65 hover:text-sidebar-foreground min-h-9">
+            <Scale className="w-4 h-4" />
+            Taux légal
+          </Link>
+          <Link to="/cabinet" onClick={onNavigate} className="flex items-center gap-2.5 text-[13px] text-sidebar-foreground/65 hover:text-sidebar-foreground min-h-9">
+            <Building2 className="w-4 h-4" />
+            Cabinet
+          </Link>
+          <Link to="/referentiels" onClick={onNavigate} className="flex items-center gap-2.5 text-[13px] text-sidebar-foreground/65 hover:text-sidebar-foreground min-h-9">
+            <Library className="w-4 h-4" />
+            Référentiels
+          </Link>
+        </div>
       </div>
 
-      <div className="p-5 border-b border-sidebar-border">
-        <div className="text-xs text-sidebar-foreground/60 uppercase tracking-wide font-display">Dossier</div>
-        <div className="mt-1 font-display font-semibold text-sidebar-foreground truncate" title={reference}>
+      <div className="px-5 py-5 border-b border-sidebar-border/60">
+        <div className="text-[10px] text-sidebar-foreground/45 uppercase tracking-[0.16em] font-display">Dossier</div>
+        <div className="mt-1 font-display text-sm font-medium text-sidebar-foreground truncate" title={reference}>
           {reference || "Sans nom"}
         </div>
       </div>
 
-      <nav aria-label="Navigation du dossier" className="flex-1 py-2 overflow-y-auto">
+      <nav aria-label="Navigation du dossier" className="flex-1 py-4 overflow-y-auto">
         {SECTION_GROUPS.map((g) => (
-          <div key={g.title} className="mb-2" role="group" aria-label={g.title}>
-            <div className="px-5 py-1.5 text-[10px] uppercase tracking-widest text-sidebar-foreground/45 font-display font-semibold">
+          <div key={g.title} className="mb-5" role="group" aria-label={g.title}>
+            <div className="px-5 pb-2 text-[10px] uppercase tracking-[0.16em] text-sidebar-foreground/40 font-display font-semibold">
               {g.title}
             </div>
+
             {g.items.map((s: SectionMeta) => {
               const target = s.route === "/dossiers/$id" ? `/dossiers/${id}` : s.route.replace("$id", id);
               const active = pathname === target;
