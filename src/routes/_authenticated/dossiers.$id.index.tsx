@@ -300,7 +300,7 @@ function DossierPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field
             label="Fraction — faute de la victime"
-            hint="Fraction entre 0 et 1 appliquée à chaque poste (défaut 1 = pas de réduction)."
+            hint={"Fraction entre 0 et 1 appliquée à chaque poste (1 - taux de responsabilité de la victime).\nFraction entre 0 et 1 appliquée à chaque poste (défaut 1 = pas de réduction)."}
           >
             <Input
               type="number"

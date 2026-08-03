@@ -77,7 +77,7 @@ export function Field({
                   <Info className="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs text-xs">{hint}</TooltipContent>
+              <TooltipContent className="max-w-xs text-xs whitespace-pre-line">{hint}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         )}
