@@ -145,7 +145,7 @@ function PageInner({
             </TableHeader>
             <TableBody>
               {pp.dsfPonctuelles.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-6">Aucune dépense ponctuelle.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-6">Aucune dépense de santé future ponctuelle. Ajoutez les frais futurs non récurrents chiffrés par l’expertise (prothèse à remplacer, intervention programmée).</TableCell></TableRow>
               )}
               {pp.dsfPonctuelles.map((l) => {
                 const c = dsfP.lignes.find((x) => x.id === l.id);
@@ -181,7 +181,7 @@ function PageInner({
             </TableHeader>
             <TableBody>
               {pp.dsfRecurrentes.length === 0 && (
-                <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-6">Aucune dépense récurrente.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-6">Aucune dépense de santé future récurrente. Ajoutez les frais périodiques (soins, matériel) à capitaliser à la date de liquidation.</TableCell></TableRow>
               )}
               {pp.dsfRecurrentes.map((l) => {
                 const c = dsfR.lignes.find((x) => x.id === l.id);
@@ -386,7 +386,7 @@ function AdaptationSection({
           </TableHeader>
           <TableBody>
             {rows.length === 0 && (
-              <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-6">Aucune ligne.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-6">Aucune ligne saisie pour ce poste.</TableCell></TableRow>
             )}
             {rows.map((l) => {
               const c = calc.find((x) => x.id === l.id);
