@@ -45,6 +45,12 @@ function DossierLayout() {
       ? DOSSIER_PAGES_ORDER[currentIndex + 1]
       : null;
 
+  /** Pages à tableaux larges : elles conservent leur pleine largeur. */
+  const isWidePage = ["synthese", "comparateur", "tp", "interets", "activite"].includes(
+    currentPage.key,
+  );
+
+
   return (
     <div className="min-h-screen flex bg-background">
       {/* Sidebar desktop */}
