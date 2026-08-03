@@ -99,7 +99,11 @@ function DossierLayout() {
           <SaveIndicator status={status} />
         </header>
 
-        <main id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden">
+        <main
+          id="main-content"
+          className={`flex-1 overflow-y-auto overflow-x-hidden ${isWidePage ? "" : "vp-reading"}`}
+        >
+
           {isLoading ? (
             <div className="p-6 sm:p-8 text-muted-foreground">Chargement du dossier…</div>
           ) : (
