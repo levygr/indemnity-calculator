@@ -6,13 +6,13 @@ import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SECTION_GROUPS, pageHasData } from "@/lib/dossier/pageStatus";
 import type { DossierData } from "@/lib/calculs/types";
 import { calculerSynthese, collecterAvertissements, formatEuros } from "@/lib/calculs";
 import { formatDateFR } from "@/lib/calculs/format";
 import { listSnapshots } from "@/lib/dossiers.functions";
-import { AlertTriangle, CheckCircle2, Circle, Camera } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+
 
 export function DossierDashboard({
   dossierId,
