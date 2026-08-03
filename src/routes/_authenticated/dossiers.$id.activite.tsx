@@ -58,7 +58,7 @@ function Page() {
         <p className="text-muted-foreground">Chargement…</p>
       ) : !data || data.length === 0 ? (
         <div className="vp-card p-8 text-center text-muted-foreground">
-          Aucune activité enregistrée.
+          Aucune activité enregistrée. Les modifications du dossier et les recalculs apparaîtront ici, du plus récent au plus ancien.
         </div>
       ) : (
         <div className="vp-card overflow-hidden">

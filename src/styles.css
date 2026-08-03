@@ -168,10 +168,54 @@
   }
 }
 
+/* Séparation de sections : blanc généreux + filet fin, pas de cartes empilées. */
+@utility vp-section {
+  padding-block: 2.5rem;
+
+  & + & {
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+/* Encadré sobre à liseré latéral gauche — fond à peine teinté, pas d'icône lourde. */
+@utility vp-note {
+  border-left: 2px solid var(--color-border);
+  background-color: color-mix(in oklab, var(--muted) 45%, transparent);
+  padding: 0.75rem 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Ambre = vigilance. Jamais en couleur de texte : liseré et fond seulement. */
+@utility vp-note-vigilance {
+  border-left-color: var(--warning);
+  background-color: color-mix(in oklab, var(--warning) 10%, transparent);
+}
+
+/* Brique = dette du responsable / blocage. */
+@utility vp-note-dette {
+  border-left-color: var(--primary);
+  background-color: color-mix(in oklab, var(--primary) 6%, transparent);
+}
+
+/* Vert = part victime / validation. */
+@utility vp-note-validation {
+  border-left-color: var(--victime);
+  background-color: color-mix(in oklab, var(--victime) 8%, transparent);
+}
+
 @utility vp-row-alt {
   &:nth-child(even) {
     background-color: color-mix(in oklab, var(--muted) 55%, transparent);
   }
+}
+
+/* Colonne monétaire : alignée à droite, chiffres alignés verticalement. */
+@utility vp-montant {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* Alignement vertical parfait des chiffres dans les tableaux. */
@@ -180,6 +224,23 @@ table th,
 .tabular {
   font-variant-numeric: tabular-nums;
 }
+
+/* Taille de texte plancher : jamais sous 14 px pour le corps de texte utile. */
+p,
+li,
+label,
+td,
+button,
+a {
+  font-size: max(0.875rem, 1em);
+}
+
+/* Focus visible homogène sur tous les contrôles. */
+:is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
 
 /* Tableaux sobres : en-têtes discrets, filets horizontaux seulement. */
 table thead th {

@@ -5,7 +5,7 @@ import { useDossier } from "@/hooks/useDossier";
 import type { SaveStatus } from "@/hooks/useDossier";
 import { useUnsavedChangesGuard } from "@/hooks/useUnsavedChangesGuard";
 import { useAnchorHighlight } from "@/hooks/useAnchorHighlight";
-import { Check, ChevronLeft, ChevronRight, CircleDashed, Cloud, CloudOff, Menu } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, CircleDashed, Cloud, CloudOff, Menu, Search } from "lucide-react";
 import { collecterAvertissements } from "@/lib/calculs";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -102,7 +102,17 @@ function DossierLayout() {
             <span className="text-muted-foreground truncate">{currentPage.label}</span>
           </nav>
 
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("vp:open-command-palette"))}
+            className="hidden md:inline-flex items-center gap-2 shrink-0 text-xs text-muted-foreground hover:text-foreground border rounded px-2 min-h-9"
+          >
+            <Search className="w-3.5 h-3.5" aria-hidden="true" />
+            Rechercher — Ctrl + K
+          </button>
+
           <SaveIndicator status={status} />
+
         </header>
 
         <main
@@ -116,49 +126,39 @@ function DossierLayout() {
             <>
               <RecalculBanner dossierId={id} />
               <Outlet />
-              {/* Navigation Précédent / Suivant */}
+              {/* Parcours guidé : étape précédente / suivante, en liens sobres */}
               {(prev || next) && (
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8 pt-2 flex items-center justify-between gap-3">
+                <nav
+                  aria-label="Parcours du dossier"
+                  className="max-w-6xl mx-auto px-4 sm:px-6 pb-10 pt-6 mt-6 border-t flex items-center justify-between gap-4 text-sm"
+                >
                   {prev ? (
-                    <Button asChild variant="outline" className="min-h-11 max-w-[48%]">
-                      <Link
-                        to={prev.path as "/dossiers/$id"}
-                        params={{ id }}
-                        className="flex items-center gap-2"
-                      >
-                        <ChevronLeft className="w-4 h-4 shrink-0" />
-                        <span className="text-left">
-                          <span className="block text-[10px] uppercase tracking-wider text-muted-foreground">
-                            Précédent
-                          </span>
-                          <span className="block truncate">{prev.label}</span>
-                        </span>
-                      </Link>
-                    </Button>
+                    <Link
+                      to={prev.path as "/dossiers/$id"}
+                      params={{ id }}
+                      className="inline-flex items-center gap-2 min-h-11 text-muted-foreground hover:text-foreground underline underline-offset-4 max-w-[48%]"
+                    >
+                      <ChevronLeft className="w-4 h-4 shrink-0" />
+                      <span className="truncate">Étape précédente : {prev.label}</span>
+                    </Link>
                   ) : (
                     <span />
                   )}
                   {next ? (
-                    <Button asChild className="min-h-11 max-w-[48%]">
-                      <Link
-                        to={next.path as "/dossiers/$id"}
-                        params={{ id }}
-                        className="flex items-center gap-2"
-                      >
-                        <span className="text-right">
-                          <span className="block text-[10px] uppercase tracking-wider text-primary-foreground/70">
-                            Suivant
-                          </span>
-                          <span className="block truncate">{next.label}</span>
-                        </span>
-                        <ChevronRight className="w-4 h-4 shrink-0" />
-                      </Link>
-                    </Button>
+                    <Link
+                      to={next.path as "/dossiers/$id"}
+                      params={{ id }}
+                      className="inline-flex items-center gap-2 min-h-11 font-medium text-primary underline underline-offset-4 max-w-[48%]"
+                    >
+                      <span className="truncate">Étape suivante : {next.label}</span>
+                      <ChevronRight className="w-4 h-4 shrink-0" />
+                    </Link>
                   ) : (
                     <span />
                   )}
-                </div>
+                </nav>
               )}
+
             </>
           )}
         </main>

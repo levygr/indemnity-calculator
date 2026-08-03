@@ -110,7 +110,7 @@ function PageInner({
           <Button size="sm" variant="outline" onClick={addProche}><Plus className="w-4 h-4 mr-1" /> Ajouter un proche</Button>
         </div>
         {ps.proches.length === 0 ? (
-          <Note>Aucun proche renseigné.</Note>
+          <Note>Aucun proche renseigné. Ajoutez les victimes indirectes pour évaluer leur préjudice d’affection et leurs préjudices exceptionnels.</Note>
         ) : (
           <Table>
             <TableHeader>
@@ -207,7 +207,7 @@ function PageInner({
           <Button size="sm" variant="outline" onClick={addFrais}><Plus className="w-4 h-4 mr-1" /> Ajouter</Button>
         </div>
         {ps.fraisDivers.length === 0 ? (
-          <Note>Aucun frais divers.</Note>
+          <Note>Aucun frais divers exposé par les proches.</Note>
         ) : (
           <Table>
             <TableHeader>

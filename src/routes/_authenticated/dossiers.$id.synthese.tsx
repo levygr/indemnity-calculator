@@ -478,7 +478,7 @@ function ProvisionsSection({ provisions, onChange, total }: {
           </TableHeader>
           <TableBody ref={grid.ref} onKeyDown={grid.onKeyDown}>
             {provisions.length === 0 && (
-              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune provision.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune provision. Ajoutez les provisions déjà versées par le responsable ou son assureur pour les déduire du solde dû.</TableCell></TableRow>
             )}
             {provisions.map((p, i) => (
               <TableRow key={p.id} className="vp-row-alt">

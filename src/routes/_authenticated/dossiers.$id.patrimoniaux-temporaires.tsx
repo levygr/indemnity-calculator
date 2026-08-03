@@ -217,7 +217,7 @@ function PatrimoniauxTempPageInner({
               {pt.dsaPonctuelles.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={9} className="text-center text-muted-foreground py-6">
-                    Aucune dépense ponctuelle.
+                    Aucune dépense de santé actuelle ponctuelle. Commencez par les frais restés à charge entre l’accident et la consolidation.
                   </TableCell>
                 </TableRow>
               )}
@@ -281,7 +281,7 @@ function PatrimoniauxTempPageInner({
             <TableBody>
               {pt.dsaRecurrentes.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={12} className="text-center text-muted-foreground py-6">Aucune dépense récurrente.</TableCell>
+                  <TableCell colSpan={12} className="text-center text-muted-foreground py-6">Aucune dépense de santé actuelle récurrente. Ajoutez les frais périodiques exposés avant consolidation.</TableCell>
                 </TableRow>
               )}
               {pt.dsaRecurrentes.map((l) => {
@@ -354,7 +354,7 @@ function PatrimoniauxTempPageInner({
               {pt.fraisDivers.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={9} className="text-center text-muted-foreground py-6">
-                    Aucun frais divers.
+                    Aucun frais divers. Ajoutez les frais annexes justifiés (transports, aide ménagère, honoraires de médecin-conseil).
                   </TableCell>
                 </TableRow>
               )}
@@ -421,7 +421,7 @@ function PatrimoniauxTempPageInner({
             </TableHeader>
             <TableBody>
               {pt.atpTemp.length === 0 && (
-                <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-6">Aucune période d'ATP temporaire.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-6">Aucune période d’assistance par tierce personne temporaire. Ajoutez les périodes retenues par l’expertise (heures/jour et durée).</TableCell></TableRow>
               )}
               {pt.atpTemp.map((l) => {
                 const calc = atpCalc.lignes.find((x) => x.id === l.id);
@@ -502,7 +502,7 @@ function PatrimoniauxTempPageInner({
               </TableHeader>
               <TableBody>
                 {pt.pgpa.periodes.length === 0 && (
-                  <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune période.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground py-6">Aucune période de perte de gains professionnels actuels. Ajoutez les périodes d’arrêt indemnisées.</TableCell></TableRow>
                 )}
                 {pt.pgpa.periodes.map((p) => (
                   <TableRow key={p.id} className="vp-row-alt">

@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import logoAsset from "@/assets/logo-vp.png.asset.json";
 import type { DossierData } from "@/lib/calculs/types";
-import { SECTION_GROUPS, pageHasData, type SectionMeta } from "@/lib/dossier/pageStatus";
+import { SECTION_GROUPS, pageStatut, LIBELLE_STATUT, type SectionMeta } from "@/lib/dossier/pageStatus";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -96,7 +96,7 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
               const target = s.route === "/dossiers/$id" ? `/dossiers/${id}` : s.route.replace("$id", id);
               const active = pathname === target;
               const Icon = ICONS[s.key] ?? FileText;
-              const hasData = pageHasData(s.key, dossier);
+              const statut = pageStatut(s.key, dossier);
               return (
                 <Link
                   key={s.label}
@@ -132,15 +132,17 @@ export function AppSidebar({ id, reference, nbAvertissements = 0, dossier = null
                       </span>
                     )}
                     <span
-                      aria-hidden="true"
-                      title={hasData ? "Contient des données" : "Vide"}
+                      title={LIBELLE_STATUT[statut]}
                       className={cn(
                         "w-1.5 h-1.5 rounded-full shrink-0 border",
-                        hasData
-                          ? "bg-accent border-accent"
-                          : "bg-transparent border-sidebar-foreground/35",
+                        statut === "complete" && "bg-success border-success",
+                        statut === "en_cours" && "bg-transparent border-accent",
+                        statut === "vide" && "bg-transparent border-sidebar-foreground/30",
                       )}
-                    />
+                    >
+                      <span className="sr-only">{LIBELLE_STATUT[statut]}</span>
+                    </span>
+
                   </div>
                 </Link>
               );

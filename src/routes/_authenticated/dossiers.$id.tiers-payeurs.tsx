@@ -106,7 +106,7 @@ function Page() {
             </TableHeader>
             <TableBody>
               {organismes.length === 0 && (
-                <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-6">Aucun organisme.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-6">Aucun organisme de tiers payeur. Ajoutez la caisse de sécurité sociale, la mutuelle ou l’employeur avant de ventiler leurs créances.</TableCell></TableRow>
               )}
               {organismes.map((o) => (
                 <TableRow key={o.id} className="vp-row-alt">
@@ -151,7 +151,7 @@ function Page() {
             </TableHeader>
             <TableBody>
               {creances.length === 0 && (
-                <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-6">Aucune créance ventilée.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground py-6">Aucune créance de tiers payeur ventilée. La ventilation poste par poste conditionne le calcul du recours et de la part victime.</TableCell></TableRow>
               )}
               {creances.map((c) => (
                 <TableRow key={c.id} className="vp-row-alt">

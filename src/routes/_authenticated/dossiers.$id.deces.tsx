@@ -138,7 +138,7 @@ function PageInner({
           <Button size="sm" variant="outline" onClick={() => addProche("autre")}><Plus className="w-4 h-4 mr-1" /> Autre</Button>
         </div>
         {pd.proches.length === 0 ? (
-          <Note>Aucun proche renseigné.</Note>
+          <Note>Aucun proche renseigné. Ajoutez les victimes indirectes (conjoint, enfants, ascendants) pour évaluer leurs préjudices.</Note>
         ) : (
           <Table>
             <TableHeader>
@@ -330,7 +330,7 @@ function PageInner({
           <Button size="sm" variant="outline" onClick={addFrais}><Plus className="w-4 h-4 mr-1" /> Ajouter</Button>
         </div>
         {pd.fraisDivers.length === 0 ? (
-          <Note>Aucun frais divers.</Note>
+          <Note>Aucun frais divers. Ajoutez notamment les frais d’obsèques justifiés.</Note>
         ) : (
           <Table>
             <TableHeader>

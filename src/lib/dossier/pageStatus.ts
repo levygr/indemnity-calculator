@@ -54,9 +54,9 @@ export const SECTION_GROUPS: { title: string; items: SectionMeta[] }[] = [
     title: "Recours & synthèse",
     items: [
       { key: "tp", label: "Tiers payeurs", route: "/dossiers/$id/tiers-payeurs", group: "Recours & synthèse" },
+      { key: "interets", label: "Intérêts", route: "/dossiers/$id/interets", group: "Recours & synthèse" },
       { key: "synthese", label: "Synthèse", route: "/dossiers/$id/synthese", group: "Recours & synthèse" },
       { key: "comparateur", label: "Comparateur", route: "/dossiers/$id/comparateur", group: "Recours & synthèse" },
-      { key: "interets", label: "Intérêts", route: "/dossiers/$id/interets", group: "Recours & synthèse" },
       { key: "activite", label: "Activité", route: "/dossiers/$id/activite", group: "Recours & synthèse" },
     ],
   },
@@ -98,3 +98,40 @@ export function pageHasData(key: string, d: DossierData | null): boolean {
       return false;
   }
 }
+
+/** État d'avancement d'une page du dossier, pour le parcours guidé. */
+export type PageStatut = "vide" | "en_cours" | "complete";
+
+export const LIBELLE_STATUT: Record<PageStatut, string> = {
+  vide: "Non commencée",
+  en_cours: "En cours",
+  complete: "Complète",
+};
+
+/**
+ * Statut à trois états d'une page. Purement indicatif (navigation) :
+ * aucun effet sur les calculs.
+ */
+export function pageStatut(key: string, d: DossierData | null): PageStatut {
+  if (!d) return "vide";
+  if (!pageHasData(key, d)) return "vide";
+  const pt = d.postesTemp;
+  switch (key) {
+    case "identite":
+      return d.reference?.trim() && d.dateNaissance && d.dateAccident ? "complete" : "en_cours";
+    case "pt":
+      return pt?.pgpa?.methode &&
+        ((pt?.dsaPonctuelles?.length ?? 0) > 0 || (pt?.dsaRecurrentes?.length ?? 0) > 0)
+        ? "complete"
+        : "en_cours";
+    case "ept":
+      return pt?.dft?.tauxJournalier && pt?.se?.montant ? "complete" : "en_cours";
+    case "tp":
+      return (d.organismesTP?.length ?? 0) > 0 && (d.creancesTP?.length ?? 0) > 0
+        ? "complete"
+        : "en_cours";
+    default:
+      return "en_cours";
+  }
+}
+
