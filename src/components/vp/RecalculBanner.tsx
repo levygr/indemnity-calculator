@@ -6,8 +6,6 @@ import {
   pinCurrentEditionsForDossier,
 } from "@/lib/referentiels/dossier.functions";
 import { recalculDossier } from "@/lib/referentiels/recalcul.functions";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, X, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -72,57 +70,47 @@ export function RecalculBanner({ dossierId }: { dossierId: string }) {
   if (query.isLoading || query.error || !query.data) return null;
   if (query.data.diffs.length === 0) return null;
 
+  const n = query.data.diffs.length;
+
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6" role="status" aria-live="polite" aria-atomic="true">
-      <Alert className="rounded-none border-0 border-l-2 border-primary/60 bg-transparent px-4 py-0">
-        <AlertTriangle className="w-4 h-4 text-primary" />
-        <div className="flex-1">
-          <AlertTitle className="text-[13px] font-display">
-            Nouvelle édition disponible pour {query.data.diffs.length} référentiel
-            {query.data.diffs.length > 1 ? "s" : ""}
-          </AlertTitle>
-
-          <AlertDescription className="text-xs space-y-2 mt-2">
-            <p>
-              Les montants de ce dossier restent calculés avec l'édition
-              épinglée. Cliquez sur « Recalculer » pour basculer sur les
-              éditions actives. L'opération est tracée.
-            </p>
-            <ul className="list-disc list-inside pl-1">
-              {query.data.diffs.map((d) => (
-                <li key={d.referentielId}>
-                  <span className="font-medium">{d.libelle}</span> — épinglée :{" "}
-                  <span className="italic">{d.pinnedLibelle || "—"}</span> •
-                  disponible : <span className="italic">{d.currentLibelle}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="pt-2">
-              <Button
-                size="sm"
-                onClick={() => recalcMutation.mutate()}
-                disabled={recalcMutation.isPending}
-              >
-                <RefreshCw
-                  className={`w-3.5 h-3.5 mr-2 ${
-                    recalcMutation.isPending ? "animate-spin" : ""
-                  }`}
-                />
-                Recalculer le dossier
-              </Button>
-            </div>
-          </AlertDescription>
+      <div className="vp-note vp-note-vigilance">
+        <p className="font-display text-[13px] font-semibold">
+          Nouvelle édition disponible pour {n} référentiel{n > 1 ? "s" : ""}
+        </p>
+        <p className="mt-1 text-[13px]">
+          Ce dossier est actuellement liquidé avec l'édition épinglée à son
+          ouverture. Le recalcul remplacera cette édition par l'édition en
+          vigueur : les montants capitalisés et revalorisés du dossier seront
+          recalculés, les saisies restent inchangées, et l'opération est tracée.
+        </p>
+        <ul className="mt-2 list-disc pl-5 text-[13px] space-y-0.5">
+          {query.data.diffs.map((d) => (
+            <li key={d.referentielId}>
+              <span className="font-medium">{d.libelle}</span> — épinglée :{" "}
+              <span className="italic">{d.pinnedLibelle || "—"}</span> • en
+              vigueur : <span className="italic">{d.currentLibelle}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-3 flex items-center gap-4">
+          <Button
+            size="sm"
+            className="min-h-11"
+            onClick={() => recalcMutation.mutate()}
+            disabled={recalcMutation.isPending}
+          >
+            {recalcMutation.isPending ? "Recalcul en cours…" : "Recalculer le dossier"}
+          </Button>
+          <button
+            type="button"
+            onClick={() => setDismissed(true)}
+            className="text-[13px] underline underline-offset-4 text-muted-foreground hover:text-foreground min-h-11"
+          >
+            Conserver l'édition épinglée
+          </button>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          aria-label="Masquer"
-          onClick={() => setDismissed(true)}
-          className="h-6 w-6 shrink-0"
-        >
-          <X className="w-4 h-4" />
-        </Button>
-      </Alert>
+      </div>
     </div>
   );
 }
