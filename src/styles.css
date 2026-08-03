@@ -62,7 +62,8 @@
 }
 
 :root {
-  --radius: 1rem; /* 16 px, cartes arrondies */
+  --radius: 0.4rem; /* 6-7 px : chrome allégé, esthétique éditoriale */
+
 
   /* Fonds */
   --background: oklch(0.985 0.003 85);       /* gris très clair #F6F5F3 approx */
@@ -128,14 +129,19 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
   }
+
+  h1 { font-weight: 600; }
+  h2, h3 { font-weight: 600; }
 
   /* Pas de zoom forcé iOS lors du focus des champs : taille de police ≥ 16 px sur mobile */
   @media (max-width: 767px) {
@@ -146,17 +152,25 @@
 }
 
 
+/* Surface de contenu : filet fin, pas d'ombre — esthétique éditoriale. */
 @utility vp-card {
   background-color: var(--color-card);
   color: var(--color-card-foreground);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  box-shadow: 0 1px 2px oklch(0 0 0 / 4%), 0 1px 3px oklch(0 0 0 / 4%);
+}
+
+/* Colonne de lecture : les pages de saisie sont contraintes en largeur,
+   les tableaux larges peuvent déborder via leur conteneur scrollable. */
+@utility vp-reading {
+  & :is(.max-w-4xl, .max-w-5xl, .max-w-6xl, .max-w-7xl) {
+    max-width: 52rem;
+  }
 }
 
 @utility vp-row-alt {
   &:nth-child(even) {
-    background-color: var(--color-muted);
+    background-color: color-mix(in oklab, var(--muted) 55%, transparent);
   }
 }
 
@@ -166,6 +180,17 @@ table th,
 .tabular {
   font-variant-numeric: tabular-nums;
 }
+
+/* Tableaux sobres : en-têtes discrets, filets horizontaux seulement. */
+table thead th {
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted-foreground);
+}
+
 
 /* Mise en évidence temporaire d'une section ciblée par un lien contextuel. */
 .vp-anchor-flash {

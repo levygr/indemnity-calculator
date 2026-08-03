@@ -109,10 +109,14 @@ export function Section({
   id?: string;
 }) {
   return (
-    <section id={id} className="vp-card p-6">
-      <h2 className="font-display text-lg font-semibold">{title}</h2>
-      {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
-      <div className="mt-5">{children}</div>
+    <section id={id} className="border-t border-border pt-6 pb-2">
+      <h2 className="font-display text-[17px] font-semibold tracking-tight">{title}</h2>
+      {description && (
+        <p className="text-[13px] text-muted-foreground mt-1 max-w-prose leading-relaxed">
+          {description}
+        </p>
+      )}
+      <div className="mt-6">{children}</div>
     </section>
   );
 }
@@ -127,13 +131,14 @@ export function Note({
   return (
     <div
       className={cn(
-        "text-xs rounded-md px-3 py-2 border",
+        "text-[13px] leading-relaxed pl-3 py-1 border-l-2",
         variant === "warning"
-          ? "bg-warning/15 border-warning/40 text-foreground"
-          : "bg-muted border-border text-muted-foreground",
+          ? "border-warning text-foreground/90"
+          : "border-border text-muted-foreground",
       )}
     >
       {children}
     </div>
   );
 }
+

@@ -45,6 +45,12 @@ function DossierLayout() {
       ? DOSSIER_PAGES_ORDER[currentIndex + 1]
       : null;
 
+  /** Pages à tableaux larges : elles conservent leur pleine largeur. */
+  const isWidePage = ["synthese", "comparateur", "tp", "interets", "activite"].includes(
+    currentPage.key,
+  );
+
+
   return (
     <div className="min-h-screen flex bg-background">
       {/* Sidebar desktop */}
@@ -99,7 +105,11 @@ function DossierLayout() {
           <SaveIndicator status={status} />
         </header>
 
-        <main id="main-content" className="flex-1 overflow-y-auto overflow-x-hidden">
+        <main
+          id="main-content"
+          className={`flex-1 overflow-y-auto overflow-x-hidden ${isWidePage ? "" : "vp-reading"}`}
+        >
+
           {isLoading ? (
             <div className="p-6 sm:p-8 text-muted-foreground">Chargement du dossier…</div>
           ) : (

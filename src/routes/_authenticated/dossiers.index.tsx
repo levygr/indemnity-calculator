@@ -225,14 +225,14 @@ function DossiersList() {
             {/* Vue tableau (≥ md) */}
             <div className="vp-card overflow-hidden hidden md:block">
               <table className="w-full text-sm">
-                <thead className="bg-muted text-left font-display">
+                <thead className="text-left border-b border-border">
                   <tr>
-                    <th className="px-4 py-3 font-semibold">Référence</th>
-                    <th className="px-4 py-3 font-semibold w-32">Portée</th>
-                    <th className="px-4 py-3 font-semibold">Fait générateur</th>
-                    <th className="px-4 py-3 font-semibold">Créé le</th>
-                    <th className="px-4 py-3 font-semibold">Modifié le</th>
-                    <th className="px-4 py-3 font-semibold w-0"></th>
+                    <th className="px-4 py-3">Référence</th>
+                    <th className="px-4 py-3 w-32">Portée</th>
+                    <th className="px-4 py-3">Fait générateur</th>
+                    <th className="px-4 py-3">Créé le</th>
+                    <th className="px-4 py-3">Modifié le</th>
+                    <th className="px-4 py-3 w-0"></th>
                   </tr>
                 </thead>
                 <tbody>
